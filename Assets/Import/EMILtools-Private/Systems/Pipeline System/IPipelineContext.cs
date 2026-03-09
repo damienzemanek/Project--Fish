@@ -1,0 +1,1 @@
+﻿public interface IPipelineContext : IContext { }
