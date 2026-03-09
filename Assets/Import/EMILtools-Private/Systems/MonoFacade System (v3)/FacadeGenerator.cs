@@ -4,7 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace EMILtools_Private.Testing.MonoFacade_System
+namespace EMILtools.Systems
 {
     public class FacadeGenerator : EditorWindow
     {
