@@ -8,7 +8,7 @@ namespace EMILtools.Systems
     {
         public void Init();
         public IBlackboard API_Blackboard { get; }
-        public IContextViewImmutable API_Context { get; }
+        public IContextViewImmutable API_ContextData { get; }
     }
 
     [HideLabel]
@@ -22,7 +22,7 @@ namespace EMILtools.Systems
         public TBlackboard Blackboard;
     
         [Title("Context")] [field: NonSerialized] [field: HideLabel]
-        public Context<TContextData, TContextViewImmutable> Context { get; internal set; }
+        public ContextProvider<TContextData, TContextViewImmutable> ContextProvider { get; internal set; }
 
 
         /// <summary>
@@ -31,11 +31,11 @@ namespace EMILtools.Systems
         public void Init()
         {
             if(Blackboard == null) Debug.LogError($"Blackboard not assigned in {GetType().Name}");
-            Context = new Context<TContextData, TContextViewImmutable>(Blackboard);
+            ContextProvider = new ContextProvider<TContextData, TContextViewImmutable>(Blackboard);
         }
         
         public IBlackboard API_Blackboard => Blackboard;
-        public IContextViewImmutable API_Context => Context.View;
+        public IContextViewImmutable API_ContextData => ContextProvider.View;
     }
 }
 

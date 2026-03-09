@@ -15,10 +15,10 @@ public class PlayerFunctionality : Functionalities<
 
 
     public class Move : BoundSetFunctionality<
-        PlayerController,
-        PlayerStructure,
-        Context<PlayerContextData, IPlayerContextView>,
-        Move.Setter>,
+            PlayerController,
+            PlayerStructure,
+            PlayerContextData,
+            Move.Setter>,
         FIXED_UPDATE
     {
         PlayerConfig cfg => facade.Config;
@@ -26,26 +26,26 @@ public class PlayerFunctionality : Functionalities<
         
         
         public class Setter : SettableTemplate<bool, Vector2> 
-        { [ShowInInspector] public Vector2 move => unnamedStoredValue2; }
+        { [ShowInInspector] public Vector2 move {get => unnamedStoredValue2; set => unnamedStoredValue2 = value;} }
 
         public Move(IPersistentDelegate _action, PlayerController facade) : base(_action, facade) { }
 
-        public override PipelineBuilder<Context<PlayerContextData, IPlayerContextView>> InjectSteps(
-            PipelineBuilder<Context<PlayerContextData, IPlayerContextView>> builder)
-        {
-            builder.Add_ShortCircuit(ctx => !isActive);
-            return builder;
-        }
+        public override PipelineBuilder<PlayerContextData> InjectSteps(
+            PipelineBuilder<PlayerContextData> builder)
+        => builder.Add_ShortCircuit(ctx => !isActive, new Callback(ResetMove));
 
-        public override bool ExecutionImplementation(Context<PlayerContextData, IPlayerContextView> ctx)
+        public override bool ExecutionImplementation(PlayerContextData ctx)
         {
             Vector2 moveDir = SetContext.move * cfg.move.speedScalar;
             bb.rb.AddForce(moveDir);
             return true;
         }
+        
+        public void ResetMove()
+        {
+            SetContext.move = Vector2.zero;
+        }
 
-        public void OnFixedTick() => Execute<Context<PlayerContextData, IPlayerContextView>>();
+        public void OnFixedTick() => Execute();
     }
-        
-        
 }

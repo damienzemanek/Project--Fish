@@ -428,9 +428,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   <Config>k__BackingField: {fileID: 11400000, guid: 5c38bbdf6f1d0214a95cba78aa53205e, type: 2}
-  structure:
-    Blackboard:
-      <rb>k__BackingField: {fileID: 389884464}
+  structure: {}
+  <inputSubordinateContext>k__BackingField:
+    Subordinate:
+      underlyingValue: {fileID: 389884465}
+    Authority:
+      underlyingValue: {fileID: 0}
+    key: 0
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,9 +697,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237382218}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3cdff2a51d742558aad5a34cb6b866e, type: 3}
+  m_Script: {fileID: 11500000, guid: d8224f77c2dc1574297511a7f2949dc7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FishInputAuthority
+  m_EditorClassIdentifier: Assembly-CSharp::PrimaryInputAuthority
   presetWithInitialSubordinate: 1
   InitialSubordinate:
     underlyingValue: {fileID: 389884465}

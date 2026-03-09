@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using UnityEngine;
 
 namespace EMILtools.Systems
 {
@@ -16,19 +17,40 @@ namespace EMILtools.Systems
             for (int i = 0; i < pipeline.Size; i++)
             {
                 var step = pipeline[i];
-                var contexts = step.resolveContexts;
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                for (int j = 0; j < contexts.Length; j++)
+                
+                //Debug.Log($"Resolving Contexts : {step.resolveContextsBeforeExecution.Length}");
+                for (int j = 0; j < step.resolveContextsBeforeExecution.Length; j++)
                 {
-                    var resolve = contexts[j];
+                    var resolve = step.resolveContextsBeforeExecution[j];
+                    //Debug.Log($" (!) RESOLVING... context {j} of {step.resolveContextsBeforeExecution.Length}");
                     if (!resolve.Resolve(ctx) && isShortCircuit) return;
                     if (resolve is IResolveWaitable waitable && !waitable.waiting)
                     {
                         waitable.waiting = true; // Must set waiting here because Resolve() just starts the timer
                         await waitable.WaitUntilResolved();
+                        //Debug.Log($" (RESOLVED) Waiting Context {j} resolved");
                     }
-                }
+                    //Debug.Log($"(RESOLVED) Context {j} fully resolved");
+                }                
+                
                 if (step.Execute(ctx) && isShortCircuit) return;
+                
+                //Debug.Log($"Resolving Contexts : {step.resolveContextsAfterExecution.Length}");
+                for (int j = 0; j < step.resolveContextsAfterExecution.Length; j++)
+                {
+                    var resolve = step.resolveContextsAfterExecution[j];
+                   // Debug.Log($" (!) RESOLVING... context {j} of {step.resolveContextsAfterExecution.Length}");
+                    if (!resolve.Resolve(ctx) && isShortCircuit) return;
+                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
+                    {
+                        waitable.waiting = true; // Must set waiting here because Resolve() just starts the timer
+                        await waitable.WaitUntilResolved();
+                        //Debug.Log($"Waiting Context {j} resolved");
+                    }
+                    //Debug.Log($"Context {j} fully resolved");
+                }                                
+
             }
                 
         }

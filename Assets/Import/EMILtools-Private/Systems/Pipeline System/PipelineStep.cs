@@ -28,21 +28,27 @@ public readonly struct PipelineStep<TContext>
 
     // ------ Variables --------
     public readonly PipelineStepDelegate<TContext> Execute;
-    public readonly IResolveContext[] resolveContexts;
+    public readonly IResolveContext[] resolveContextsBeforeExecution;
+    public readonly IResolveContext[] resolveContextsAfterExecution;
+
     public readonly StepType StepType;
 
     
     // ------ Ctors ------
-    public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, IResolveContext[] resolveContexts)
+    public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
+        IResolveContext[] resolveContextsBeforeExecution = null,
+        IResolveContext[] resolveContextsAfterExecution = null)
     {
         this.Execute = execute;
-        this.resolveContexts = resolveContexts ?? Array.Empty<IResolveContext>();
+        this.resolveContextsBeforeExecution = resolveContextsBeforeExecution ?? Array.Empty<IResolveContext>();
+        this.resolveContextsAfterExecution = resolveContextsAfterExecution ?? Array.Empty<IResolveContext>();
         StepType = stepType;
     }
     public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
     {
         Execute = mainMethod;
-        resolveContexts = Array.Empty<IResolveContext>();
+        resolveContextsBeforeExecution = Array.Empty<IResolveContext>();
+        resolveContextsAfterExecution = Array.Empty<IResolveContext>();
         StepType = StepType.MainMethod;
     }
 }

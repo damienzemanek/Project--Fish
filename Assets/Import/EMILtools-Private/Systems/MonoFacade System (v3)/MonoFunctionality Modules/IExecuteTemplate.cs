@@ -10,7 +10,7 @@ namespace EMILtools.Systems
     public interface IExecuteTemplate<TContext> 
         where TContext : class
     {
-        public void Execute<GenericContext>() where GenericContext : TContext;
+        public void Execute();
         public bool ExecutionImplementation(TContext ctx);
     }
 }

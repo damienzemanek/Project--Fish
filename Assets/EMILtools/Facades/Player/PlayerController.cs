@@ -1,9 +1,10 @@
-using EMILtools.Core;
-using UnityEngine;
 using EMILtools.Systems;
+using UnityEngine;
 using Sirenix.OdinInspector;
-using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,FishInputAuthority.Subordinates>;
-using static FishInputAuthority;
+using static PrimaryInputAuthority;
+using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,PrimaryInputAuthority.Subordinates>;
+using EMILtools.Core;
+
 
 public class PlayerController : MonoFacade<
     PlayerController,
@@ -15,18 +16,17 @@ public class PlayerController : MonoFacade<
 {
     public class ActionMap : IActionMap
     {
-        // Add Available Actions here as PersistentActions
-        // Actions are separate from InputActions
     }
 
     public class PlayerInputMap : InputMap
     {
         public PersistentAction<bool, Vector2> Move = new();
-
     }
 
     public PlayerInputMap Input { get; set; }
-    [field: SerializeField] [field: PropertyOrder(-1)] public SubordinateContext inputSubordinateContext { get; set; }
+
+    [field: SerializeField] [field: PropertyOrder(-1)]
+    public SubordinateContext inputSubordinateContext { get; set; }
 
     public PlayerInputMap InjectInputMap() => new PlayerInputMap();
 
@@ -37,11 +37,11 @@ public class PlayerController : MonoFacade<
 
     public void OnAuthorityReceived()
     {
-        // no op atm
+        Functionality.Bind();
     }
 
     public void OnAuthorityLost()
     {
-        // no op atm
+        Functionality.Unbind();
     }
 }

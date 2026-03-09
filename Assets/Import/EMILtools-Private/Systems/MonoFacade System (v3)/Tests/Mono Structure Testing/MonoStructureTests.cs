@@ -34,15 +34,15 @@ public class MonoStructureTests
     [Test]
     public void Test1_MonoStructure_Init_CreatesContext()
     {
-        Assert.IsNotNull(structure.Context);
-        Assert.IsNotNull(structure.Context.Data);
-        Assert.IsNotNull(structure.Context.View);
+        Assert.IsNotNull(structure.ContextProvider);
+        Assert.IsNotNull(structure.ContextProvider.Data);
+        Assert.IsNotNull(structure.ContextProvider.View);
     }
     
     [Test]
     public void Test2_View_IsImmutableInterface()
     {
-        var view = structure.Context.View;
+        var view = structure.ContextProvider.View;
 
         Assert.IsInstanceOf<ITestContextDataImmutable>(view);
     }
@@ -51,18 +51,18 @@ public class MonoStructureTests
     [Test]
     public void Test3_MonoStructure_WriteData_ReflectedInView()
     {
-        structure.Context.Data.SomeInt = 1;
+        structure.ContextProvider.Data.SomeInt = 1;
 
-        Assert.AreEqual(1, structure.Context.View.SomeInt);
+        Assert.AreEqual(1, structure.ContextProvider.View.SomeInt);
     }
 
     /// View from external location — a "receiver" can read the immutable view
     [Test]
     public void Test4_MonoStructure_ViewAccessibleExternally()
     {
-        structure.Context.Data.SomeInt = 1;
+        structure.ContextProvider.Data.SomeInt = 1;
 
-        IContextViewImmutable apiContext = structure.API_Context;
+        IContextViewImmutable apiContext = structure.API_ContextData;
         var typedView = (ITestContextDataImmutable)apiContext;
 
         Assert.AreEqual(1, typedView.SomeInt);

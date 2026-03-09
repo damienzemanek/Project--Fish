@@ -7,7 +7,7 @@ namespace EMILtools.Systems
     /// Override this to add data to the context
     /// </summary>
     /// <typeparam name="TBlackboard"></typeparam>
-    public abstract class ContextData : IContextViewImmutable
+    public abstract class ContextData : IContextViewImmutable, IModuleUsabableContext
     {
         internal IBlackboard Blackboard;
         public TBlackboard API_Blackboard<TBlackboard>()
@@ -26,7 +26,7 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TContextData"></typeparam>
     /// <typeparam name="TContextViewImmutable"></typeparam>
-    public class Context<TContextData, TContextViewImmutable> : IModuleUsabableContext
+    public class ContextProvider<TContextData, TContextViewImmutable>
         where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
@@ -41,7 +41,7 @@ namespace EMILtools.Systems
         /// </summary>
         public readonly TContextViewImmutable View;
 
-        public Context(IBlackboard blackboard)
+        public ContextProvider(IBlackboard blackboard)
         {
             Data = new TContextData() { Blackboard = blackboard };
             View = Data;

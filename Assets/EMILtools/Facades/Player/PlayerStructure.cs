@@ -7,5 +7,4 @@ public class PlayerStructure : MonoStructure<
     PlayerContextData,
     IPlayerContextView>
 {
-
 }
