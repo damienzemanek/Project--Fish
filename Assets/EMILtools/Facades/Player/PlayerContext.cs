@@ -7,7 +7,7 @@ public interface IPlayerContextView : IContextViewImmutable
     public float SomeInt { get; }
 }
 
-public class PlayerContextData : ContextData<PlayerBlackboard>, IPlayerContextView, IModuleUsabableContext
+public class PlayerContextData : ContextData, IPlayerContextView, IModuleUsabableContext
 {
     // Mutable state
     [field: ShowInInspector] public float SomeInt { get; set; }

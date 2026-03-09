@@ -40,8 +40,8 @@ namespace EMILtools.Systems
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => action.Add(Execute);
-        public virtual void Unbind() => action.Remove(Execute);
+        public virtual void Bind() => action.Add(Execute<TContext>);
+        public virtual void Unbind() => action.Remove(Execute<TContext>);
     }
 
 

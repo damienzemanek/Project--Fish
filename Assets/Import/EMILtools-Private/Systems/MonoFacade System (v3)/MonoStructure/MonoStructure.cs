@@ -15,14 +15,14 @@ namespace EMILtools.Systems
     [Serializable]
     public abstract class MonoStructure<TBlackboard, TContextData, TContextViewImmutable> : IMonoStructure
         where TBlackboard : class, IBlackboard
-        where TContextData : ContextData<TBlackboard>, TContextViewImmutable, new()
+        where TContextData : ContextData, TContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
         [Title("Blackboard")] [SerializeField] [HideLabel]
         public TBlackboard Blackboard;
     
         [Title("Context")] [field: NonSerialized] [field: HideLabel]
-        public Context<TContextData, TBlackboard, TContextViewImmutable> Context { get; internal set; }
+        public Context<TContextData, TContextViewImmutable> Context { get; internal set; }
 
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace EMILtools.Systems
         public void Init()
         {
             if(Blackboard == null) Debug.LogError($"Blackboard not assigned in {GetType().Name}");
-            Context = new Context<TContextData, TBlackboard, TContextViewImmutable>(Blackboard);
+            Context = new Context<TContextData, TContextViewImmutable>(Blackboard);
         }
         
         public IBlackboard API_Blackboard => Blackboard;

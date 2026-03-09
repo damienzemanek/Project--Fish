@@ -26,7 +26,7 @@ namespace EMILtools.Systems
         public PipelineStepDelegate<TContext> InjectMainStep() => new(ExecutionImplementation);
 
         [Button]
-        public void Execute()
+        public void Execute<GenericContext>() where GenericContext : TContext
             => PipelineExecutor.Execute(executionPipeline, (TContext)facade.API_Structure().API_Context);
     
         public override void SetupModule()

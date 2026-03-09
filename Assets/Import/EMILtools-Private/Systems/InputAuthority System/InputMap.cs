@@ -1,10 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public abstract class InputMap : IInputMap
+
+namespace EMILtools.Systems
 {
-    [SerializeField] public string ownerName;
-    public InputMap() { }
-    public InputMap(string ownerName) => this.ownerName = ownerName;
+    public interface IInputMap { }
+    
+    [Serializable]
+    public abstract class InputMap : IInputMap
+    {
+        [SerializeField] public string ownerName;
+        protected InputMap() { }
+        protected InputMap(string ownerName) => this.ownerName = ownerName;
+    }
 }
