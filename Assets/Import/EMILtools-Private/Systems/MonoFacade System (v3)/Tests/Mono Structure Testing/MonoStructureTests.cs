@@ -8,7 +8,7 @@ public interface ITestContextDataImmutable : IContextViewImmutable
     int SomeInt { get; }
 }
 
-public class TestContextData : ContextData, ITestContextDataImmutable, IModuleUsabableContext
+public class TestContextData : ContextData<TestBlackboard>, ITestContextDataImmutable, IModuleUsabableContext
 {
     public int SomeInt { get; set; }
 }
@@ -20,25 +20,37 @@ public class TestMonoStructure : MonoStructure<TestBlackboard, TestContextData, 
 
 public class MonoStructureTests
 {
+    private TestMonoStructure structure;
+
+    [SetUp]
+    public void Setup()
+    {
+        structure = new TestMonoStructure();
+        structure.Blackboard = new TestBlackboard();
+        structure.Init();
+    }
+
     /// Initialization 
     [Test]
     public void Test1_MonoStructure_Init_CreatesContext()
     {
-        var structure = new TestMonoStructure();
-        structure.Init();
-
         Assert.IsNotNull(structure.Context);
         Assert.IsNotNull(structure.Context.Data);
         Assert.IsNotNull(structure.Context.View);
     }
-
-    ///  Write-then-read — changes via .Data are reflected in .View
+    
     [Test]
-    public void Test2_MonoStructure_WriteData_ReflectedInView()
+    public void Test2_View_IsImmutableInterface()
     {
-        var structure = new TestMonoStructure();
-        structure.Init();
+        var view = structure.Context.View;
 
+        Assert.IsInstanceOf<ITestContextDataImmutable>(view);
+    }
+
+    /// Write-then-read — changes via .Data are reflected in .View
+    [Test]
+    public void Test3_MonoStructure_WriteData_ReflectedInView()
+    {
         structure.Context.Data.SomeInt = 1;
 
         Assert.AreEqual(1, structure.Context.View.SomeInt);
@@ -46,17 +58,12 @@ public class MonoStructureTests
 
     /// View from external location — a "receiver" can read the immutable view
     [Test]
-    public void Test3_MonoStructure_ViewAccessibleExternally()
+    public void Test4_MonoStructure_ViewAccessibleExternally()
     {
-        var structure = new TestMonoStructure();
-        structure.Init();
-
         structure.Context.Data.SomeInt = 1;
 
-        // Simulate a module/receiver getting the view through the IMonoStructure API
         IContextViewImmutable apiContext = structure.API_Context;
         var typedView = (ITestContextDataImmutable)apiContext;
-        
 
         Assert.AreEqual(1, typedView.SomeInt);
     }

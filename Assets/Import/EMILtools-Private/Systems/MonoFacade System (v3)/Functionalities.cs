@@ -11,6 +11,9 @@ namespace EMILtools.Systems
         where TMonoFacade : class, IFacade<TMonoStructure>
         where TMonoStructure : IMonoStructure
     {
+        /// <summary>
+        /// Later: Dictionary of Type and List of Modules for multi-service subscription
+        /// </summary>
         readonly Dictionary<Type, MonoFunctionalityModule<TMonoFacade, TMonoStructure>> API_Modules = new();
         [field: NonSerialized] public TMonoFacade facade { get; private set; }
         

@@ -10,7 +10,8 @@ public class PlayerController : MonoFacade<
 {
     public class ActionMap : IActionMap
     {
-        // PersistentActions
+        // Add Available Actions here as PersistentActions
+        // Actions are separate from InputActions
     }
 
     // If using InputAuthority, put InitializeFacade in InitSubordinate

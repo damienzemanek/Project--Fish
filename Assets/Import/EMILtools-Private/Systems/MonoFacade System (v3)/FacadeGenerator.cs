@@ -9,7 +9,7 @@ namespace EMILtools.Systems
     public class FacadeGenerator : EditorWindow
     {
         string facadeName = "";
-        [SerializeField] string path = "Assets/EMILtools/Facades/";
+        string path = "Assets/EMILtools/Facades/";
     
         [MenuItem("Tools/EMILTools/MonoFacade")]
         public static void ShowWindow() => GetWindow<FacadeGenerator>("EMILtools MonoFacade Generator");
@@ -25,7 +25,6 @@ namespace EMILtools.Systems
 
         void GenerateScripts()
         {
-            path += facadeName;
             string createdPath = path + facadeName;
             if (!Directory.Exists(createdPath)) Directory.CreateDirectory(createdPath);
 
@@ -60,11 +59,13 @@ $@"using EMILtools.Systems;
 public interface I{facadeName}ContextView : IContextViewImmutable
 {{
     // Readonly properties
+    public float SomeInt {{ get; }}
 }}
 
-public class {facadeName}ContextData : ContextData<I{facadeName}ContextView>, I{facadeName}ContextView, IModuleUsabableContext
+public class {facadeName}ContextData : ContextData<{facadeName}Blackboard>, I{facadeName}ContextView, IModuleUsabableContext
 {{
     // Mutable state
+    public float SomeInt {{ get; set; }}
 }}");
 
 

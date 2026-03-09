@@ -41,9 +41,10 @@ namespace EMILtools.Systems
             return null;
         }
 
-        protected void InitializeFacade()
+        protected void InitializeFacade(TConfig injectConfig = null)
         {
             if (initialized) return;
+            if (injectConfig != null) Config = injectConfig;
             
             structure.Init();
             Actions = new();

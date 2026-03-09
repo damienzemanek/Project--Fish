@@ -6,6 +6,9 @@ using UnityEngine;
 namespace EMILtools.Systems
 {
         
+    /// <summary>
+    /// Context used in MonoFacade Functionalities
+    /// </summary>
     public interface IModuleUsabableContext : IPipelineContext { }
      
     public interface IBindable

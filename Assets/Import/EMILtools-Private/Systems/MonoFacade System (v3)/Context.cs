@@ -3,9 +3,14 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-    
-    public abstract class ContextData : IContextViewImmutable
+    /// <summary>
+    /// Override this to add data to the context
+    /// </summary>
+    /// <typeparam name="TBlackboard"></typeparam>
+    public abstract class ContextData<TBlackboard> : IContextViewImmutable
+        where TBlackboard : IBlackboard
     {
+        internal TBlackboard Blackboard;
         protected ContextData() { }
     }
 
@@ -18,9 +23,10 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TContextData"></typeparam>
     /// <typeparam name="TContextViewImmutable"></typeparam>
-    public class Context<TContextData, TContextViewImmutable> : IContext
-        where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
+    public class Context<TContextData, TBlackboard, TContextViewImmutable> : IContext
+        where TContextData : ContextData<TBlackboard>, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
+        where TBlackboard : IBlackboard
     {
         
         /// <summary>
@@ -31,11 +37,13 @@ namespace EMILtools.Systems
         /// <summary>
         /// This will be passed around to scripts that depend on it
         /// </summary>
-        public TContextViewImmutable View => Data;
+        public readonly TContextViewImmutable View;
 
-        public Context() => Data = new TContextData();
-
-        public Context(TContextData data) => Data = data;
+        public Context(TBlackboard blackboard)
+        {
+            Data = new TContextData() { Blackboard = blackboard };
+            View = Data;
+        }
     }
 }
 

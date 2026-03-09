@@ -1,18 +1,92 @@
+using System;
 using System.Collections;
+using EMILtools.Systems;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
 public class MonoFacadeTests
 {
+    [Serializable] public class TestBlackboard : Blackboard { }
+    public class TestConfig : Config { }
     
-
-    [Test]
-    public void Test1_Initializes()
-    {
-        
-        
+    public interface ITestContextView : IContextViewImmutable
+{
+        // Readonly properties
+        public float SomeInt { get; }
     }
+
+    public class TestContextData : ContextData<TestBlackboard>, ITestContextView, IModuleUsabableContext
+    {
+        // Mutable state
+        public float SomeInt { get; set; }
+    }
+    
+    public class TestController : MonoFacade<
+        TestController,
+        TestFunctionality,
+        TestConfig,
+        TestStructure,
+        TestController.ActionMap>
+    {
+        public class ActionMap : IActionMap
+        {
+            // Add Available Actions here as PersistentActions
+            // Actions are separate from InputActions
+        }
+
+        // If using InputAuthority, put InitializeFacade in InitSubordinate
+        protected void Awake()
+        {
+            var config = ScriptableObject.CreateInstance<TestConfig>();
+            InitializeFacade(config);
+        }
+    }
+    
+    public class TestFunctionality : Functionalities<
+        TestController,
+        TestStructure>
+    {
+        protected override void AddModulesHere()
+        {
+            // AddModule(new ExampleModule());
+        }
+    }
+    
+    public class TestStructure : MonoStructure<
+        TestBlackboard,
+        TestContextData,
+        ITestContextView>
+    {
+
+    }
+    
+    TestConfig config;
+    TestController fcd;
+    
+    
+    [SetUp]
+    public void Setup()
+    {
+        config = ScriptableObject.CreateInstance<TestConfig>();
+        fcd = new GameObject("TestFacade").AddComponent<TestController>();
+    }
+    
+    
+    
+    //
+    // [UnityTest]
+    // public IEnumerator Test1_Initializes()
+    // {
+    //     
+    //     yield return new WaitForSeconds(1);
+    //     
+    //     Assert.IsNotNull(fcd, "The FACADE was not created");
+    //     Assert.IsNotNull(fcd.API_Config<TestConfig>(), "The CONFIG was not created");
+    //     Assert.IsNotNull(fcd.API_Structure(), "The STRUCTURE was not created");
+    //     Assert.IsNotNull(fcd.API_Blackboard<TestBlackboard>(), "The BLACKBOARD was not created");
+    //     Assert.IsNotNull(fcd.API_Functionality<TestFunctionality>(), "The FUNCTIONALITY was not created");
+    // }
     
     
     
