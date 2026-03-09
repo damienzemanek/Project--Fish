@@ -21,7 +21,7 @@ public delegate bool PipelineStepDelegate<in TContext>(TContext context);
 /// The type of context used in the pipeline. Must be a struct.
 /// </typeparam>
 public readonly struct PipelineStep<TContext>
-    where TContext : struct
+    where TContext : class
 {
     const bool ResolveSuccessfull = true;
 

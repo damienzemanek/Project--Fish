@@ -11,7 +11,7 @@
 /// type must be a value type and implement the <see cref="IPipelineContext"/> interface.
 /// </typeparam>
 public class Pipeline<TContext>
-    where TContext : struct, IPipelineContext
+    where TContext : class, IPipelineContext
 {
     readonly PipelineStep<TContext>[] steps;
     public int Size => steps?.Length ?? throw new System.NullReferenceException();

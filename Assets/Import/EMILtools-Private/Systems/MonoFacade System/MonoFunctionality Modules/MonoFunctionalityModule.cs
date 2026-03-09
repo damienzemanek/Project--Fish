@@ -12,7 +12,7 @@ using UnityEngine;
 /// </summary>
 /// <typeparam name="TContext"></typeparam>
 public interface IExecuteTemplate<TContext> 
-    where TContext : struct
+    where TContext : class
 {
     public void Execute();
     public bool ExecutionImplementation(TContext ctx);
@@ -23,9 +23,9 @@ public interface IExecuteTemplate<TContext>
 
 
 
-public abstract class MonoFunctionalityModule<TFacade, TContext> 
-    where TFacade : class, IFacade<TContext>
-    where TContext : struct, IModuleUsabableContext
+public abstract class MonoFunctionalityModule<TFacade, TMonoStructure> 
+    where TFacade : class, IFacade<TMonoStructure>
+    where TMonoStructure : IMonoStructure
 {
     [Title("$Name"), PropertyOrder(-1)]
     [ShowInInspector] public string Name => "Module: " + this.GetType().Name;
@@ -33,7 +33,6 @@ public abstract class MonoFunctionalityModule<TFacade, TContext>
     
     // ---------- Variables ----------
     public TFacade facade { get; set; }
-    public TContext context => facade.API_Context();
     
 
     // ---------- Ctor ----------

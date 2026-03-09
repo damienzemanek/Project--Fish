@@ -6,20 +6,23 @@ using static InterfaceEX;
 
 namespace EMILtools_Private.Testing
 {
-    public abstract class Functionalities<TMonoFacade, TContext> : IFunctionality
-        where TMonoFacade : class, IFacade<TContext>
-        where TContext : struct, IModuleUsabableContext
+    
+    
+    
+    public abstract class Functionalities<TMonoFacade, TMonoStructure> : IFunctionality
+        where TMonoFacade : class, IFacade<TMonoStructure>
+        where TMonoStructure : IMonoStructure
     {
-        readonly Dictionary<Type, MonoFunctionalityModule<TMonoFacade, TContext>> API_Modules = new();
+        readonly Dictionary<Type, MonoFunctionalityModule<TMonoFacade, TMonoStructure>> API_Modules = new();
         [field: NonSerialized] public TMonoFacade facade { get; private set; }
         
-        [ShowInInspector] List<MonoFunctionalityModule<TMonoFacade, TContext>> modules; 
+        [ShowInInspector] List<MonoFunctionalityModule<TMonoFacade, TMonoStructure>> modules; 
         List<UPDATE> _update = new();
         List<FIXED_UPDATE> _fixed = new();
         List<LATE_UPDATE> _late = new();
-        public Functionalities() => modules = new List<MonoFunctionalityModule<TMonoFacade, TContext>>();
+        public Functionalities() => modules = new List<MonoFunctionalityModule<TMonoFacade, TMonoStructure>>();
         
-        public void InjectFacadeReference(IFacade<TContext> f) => facade = f as TMonoFacade;
+        public void InjectFacadeReference(IFacade<TMonoStructure> f) => facade = f as TMonoFacade;
         public void SetupModules()
         {
             AddModulesHere();
@@ -44,7 +47,7 @@ namespace EMILtools_Private.Testing
         public void LateTick() { foreach (var t in _late) t.OnLateTick(); }
         
         
-        public void AddModule(MonoFunctionalityModule<TMonoFacade, TContext> module)
+        public void AddModule(MonoFunctionalityModule<TMonoFacade, TMonoStructure> module)
         {
             modules.Add(module);
             Debug.Log("ADDING module " + module.GetType().Name + " new count is " + modules.Count);
@@ -62,7 +65,7 @@ namespace EMILtools_Private.Testing
             }
         }
 
-        public Dictionary<Type, MonoFunctionalityModule<TMonoFacade, TContext>> APIs() => API_Modules;
+        public Dictionary<Type, MonoFunctionalityModule<TMonoFacade, TMonoStructure>> APIs() => API_Modules;
 
 
         protected abstract void AddModulesHere();

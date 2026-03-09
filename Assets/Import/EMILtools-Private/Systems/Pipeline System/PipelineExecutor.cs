@@ -8,7 +8,7 @@
 public static class PipelineExecutor
 {
     public static async Task Execute<TContext>(Pipeline<TContext> pipeline, TContext ctx)
-        where TContext : struct, IPipelineContext
+        where TContext : class, IPipelineContext
     {
         // For loop for structs,
         // - Has no mutations to TContext
@@ -50,7 +50,7 @@ public static class PipelineExecutor
     /// <typeparam name="TContext"></typeparam>
     /// <returns></returns>
     public static Task TryTo<TContext>(Pipeline<TContext> pipeline, in TContext ctx)
-        where TContext : struct, IPipelineContext
+        where TContext : class, IPipelineContext
     => Execute(pipeline, ctx);
 
 
@@ -71,7 +71,7 @@ public static class PipelineExecutor
     /// <typeparam name="TContext"></typeparam>
     /// <returns></returns>
     public static Task TryTo<TContext>(this TContext ctx, Pipeline<TContext> pipeline)
-        where TContext : struct, IPipelineContext
+        where TContext : class, IPipelineContext
         => Execute(pipeline, ctx);
 
 

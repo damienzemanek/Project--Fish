@@ -1,1 +1,4 @@
-﻿public interface IPipelineContext : IContext { }
+﻿
+
+
+public interface IPipelineContext : IContext, IContextViewImmutable { }

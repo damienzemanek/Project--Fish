@@ -12,7 +12,7 @@ using static EMILtools.Timers.TimerUtility;
 public interface IResolveContext
 {
     public virtual void Reset() { }
-    public bool Resolve<TContext>(in TContext ctx) where TContext : struct;
+    public bool Resolve<TContext>(in TContext ctx) where TContext : class;
 }
 
 /// <summary>
@@ -41,7 +41,7 @@ public class Callback : IResolveContext
     public readonly Action Action;
     public Callback(Action _action) => Action = _action;
 
-    public bool Resolve<TContext>(in TContext ctx) where TContext : struct
+    public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
         Debug.Log("CALLBACK");
         Action?.Invoke();
@@ -65,7 +65,7 @@ public class Timed : IResolveContext, ITimerUser
         timer = new CountdownTimer(sec);
         this.InitTimer(timer, isFixed: true);
     }
-    public bool Resolve<TContext>(in TContext ctx) where TContext : struct
+    public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
         if(!timer.isRunning && !timer.isFinished()) timer.Start();
         return timer.isFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
@@ -116,7 +116,7 @@ public class Wait : IResolveContext, ITimerUser, IResolveWaitable
         timer.Reset();
     }
     
-    public bool Resolve<TContext>(in TContext ctx) where TContext : struct
+    public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
         if (!timer.isRunning && !timer.isFinished())
         {

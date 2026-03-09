@@ -9,7 +9,7 @@
 /// TContext must be a structure and implement the IPipelineContext interface.
 /// </typeparam>
 public class PipelineBuilder<TContext>
-    where TContext : struct, IPipelineContext
+    where TContext : class, IPipelineContext
 {
     // ------ Variables ---------
     List<PipelineStep<TContext>> steps;

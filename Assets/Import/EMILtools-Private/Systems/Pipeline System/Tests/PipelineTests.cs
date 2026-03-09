@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 public class PipelineTests
 {
     // Define a simple context for testing
-    public struct TestContext : IPipelineContext
+    public class TestContext : IPipelineContext
     {
         public int Value;
         public TestContext(int _value = 0) => Value = _value;

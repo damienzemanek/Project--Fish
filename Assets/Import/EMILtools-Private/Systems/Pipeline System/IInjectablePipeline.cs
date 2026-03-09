@@ -1,5 +1,5 @@
 public interface IInjectablePipeline<TContext>
-    where TContext : struct, IPipelineContext
+    where TContext : class, IPipelineContext
 {
     public Pipeline<TContext> executionPipeline { get; set; }
 

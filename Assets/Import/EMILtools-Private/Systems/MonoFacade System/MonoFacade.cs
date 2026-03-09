@@ -9,36 +9,33 @@ using UnityEngine;
 public abstract class MonoFacade<TMonoFacade, 
         TFunctionality,  // Systems and functionality
         TConfig,         // Immutable Configuration
-        TBlackboard,     // References
-        TContext,        // Transient state 
-        TActionMap>:     // Internal Action bindings
-        MonoBehaviour, IFacade<TContext>
-    where TMonoFacade    : class, IFacade<TContext>    
-    where TConfig        : Config                              
-    where TBlackboard    : Blackboard                       
-    where TContext       : struct, IModuleUsabableContext               
-    where TFunctionality : Functionalities<TMonoFacade, TContext>, new()
+        TMonoStructure,  // References + CQRS Context
+        TActionMap>      // Internal Action bindings
+    
+    : MonoBehaviour, IFacade<TMonoStructure>
+
+    where TMonoFacade    : class, IFacade<TMonoStructure>   
+    where TConfig        : Config        
+    where TMonoStructure : IMonoStructure, new()
+    where TFunctionality : Functionalities<TMonoFacade, TMonoStructure>, new()
     where TActionMap     : class, IActionMap, new()
 {
-    public TContext context;
-    public FacadeComposition<TContext> comp { get => composition; private set => composition = value;}
-    FacadeComposition<TContext> composition;
+    
     bool initialized = false;
 
     [field: Title("Action Mappings")]
     [field: ShowInInspector] [field:ReadOnly] [field:HideLabel] [field: NonSerialized] public TActionMap Actions { get; protected set; }
-    [field: Title("Settings")]
+    [field: Title("Config")]
     [field:SerializeField, Required] public TConfig Config { get; private set; }
-    [field: Title("Blackboard")]
-    [field:SerializeField, Required] [field:HideLabel] public TBlackboard Blackboard { get; private set; }
+    [field: Title("Structure")]
+    [SerializeField] public TMonoStructure structure;
     [field: Title("Functionality Modules")]
     [field: ShowInInspector] [field:HideLabel] [field: NonSerialized] public TFunctionality Functionality { get; private set; }
 
     
     public T GetFunctionality<T>() where T : class, IAPI_Module
     {
-        if (Functionality.APIs().TryGetValue(typeof(T), out var module))
-            return module as T;
+        if (Functionality.APIs().TryGetValue(typeof(T), out var module)) return module as T;
         if(module == null) Debug.LogWarning("Did not find module of type " + typeof(T));
         return null;
     }
@@ -47,13 +44,11 @@ public abstract class MonoFacade<TMonoFacade,
     {
         if (initialized) return;
         
-        context = default;
-        composition = new(Blackboard, Config, Functionality);
+        structure.Init();
         Actions = new();
         Functionality = new ();
         
         Debug.Assert(Config != null, $"{name}: Config not assigned");
-        Debug.Assert(Blackboard != null, $"{name}: Blackboard not assigned");
         Debug.Assert(Functionality != null, $"{name}: Functionality did not initialize");
 
         Functionality.InjectFacadeReference(this);
@@ -79,5 +74,23 @@ public abstract class MonoFacade<TMonoFacade,
     {
         if (!initialized) return;
         Functionality.LateTick();
+    }
+    
+
+    public TMonoStructure API_Structure() => structure;
+
+    public TBlackboardType API_Blackboard<TBlackboardType>() where TBlackboardType : IBlackboard
+    {
+        if(structure.API_Blackboard is TBlackboardType blackboard) return blackboard; throw new InvalidCastException();
+    }
+
+    public TConfigType API_Config<TConfigType>() where TConfigType : IConfig
+    {
+        if(Config is TConfigType config) return config; throw new InvalidCastException();
+    }
+
+    public TFunctionalityType API_Functionality<TFunctionalityType>() where TFunctionalityType : IFunctionality
+    {
+        if(Functionality is TFunctionalityType functionality) return functionality; throw new InvalidCastException();
     }
 }

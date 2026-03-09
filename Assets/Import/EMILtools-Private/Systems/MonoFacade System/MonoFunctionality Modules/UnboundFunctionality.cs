@@ -2,11 +2,12 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public abstract class UnboundFunctionality<TFacade, TContext> : MonoFunctionalityModule<TFacade, TContext>, 
+public abstract class UnboundFunctionality<TFacade, TMonoStructure, TContext> : MonoFunctionalityModule<TFacade, TMonoStructure>, 
     IExecuteTemplate<TContext>, 
     IInjectablePipeline<TContext>
-    where TFacade : class, IFacade<TContext>
-    where TContext : struct, IModuleUsabableContext
+    where TFacade : class, IFacade<TMonoStructure>
+    where TContext : class, IModuleUsabableContext
+    where TMonoStructure : IMonoStructure
 {
     // Variables
     public Pipeline<TContext> executionPipeline { get; set; }
@@ -20,7 +21,11 @@ public abstract class UnboundFunctionality<TFacade, TContext> : MonoFunctionalit
     
     // Methods
     public PipelineStepDelegate<TContext> InjectMainStep() => new(ExecutionImplementation);
-    [Button] public void Execute() => context.TryTo(executionPipeline);
+
+    [Button]
+    public void Execute()
+        => PipelineExecutor.Execute(executionPipeline, (TContext)facade.API_Structure().API_Context);
+    
     public override void SetupModule()
     {
         injectablePipeline.Setup(setupWithFinalStep: false);

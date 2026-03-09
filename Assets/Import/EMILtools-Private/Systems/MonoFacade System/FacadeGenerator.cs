@@ -50,13 +50,13 @@ namespace EMILtools_Private.Testing.MonoFacade_System
             CreateScript(path, $"{facadeName}Controller",
                 $"using EMILtools_Private.Testing;\n" +
                 $"using EMILtools.Core;\n" +
-                $"using static {facadeName};\n" +
+                $"using static {facadeName}Controller;\n" +
                 $"using UnityEngine;\n\n" +
-                $"public class {facadeName}Controller : MonoFacade<\n" +
-                $"    {facadeName}Controller, \n" +
+                $"public class {facadeName}Controller : MonoFacade<{facadeName}Controller, \n" +
                 $"    {facadeName}Functionality, \n" +
                 $"    {facadeName}Config, \n" +
                 $"    {facadeName}Blackboard, \n" +
+                $"    {facadeName}Context, \n" +
                 $"    {facadeName}Controller.ActionMap>\n" + 
                 $"{{\n" +
                 $"    public class ActionMap : IActionMap \n" +

@@ -20,11 +20,12 @@ public interface ISettableImplementer { }
 /// </summary>
 /// <typeparam name="TFacade"></typeparam>
 /// <typeparam name="TContext"></typeparam>
-public abstract class BoundFunctionality<TFacade, TContext> : 
-        UnboundFunctionality<TFacade, TContext>, 
+public abstract class BoundFunctionality<TFacade, TMonoStructure, TContext> : 
+        UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
         IBindable
-    where TFacade : class, IFacade<TContext>
-    where TContext : struct, IModuleUsabableContext
+    where TFacade : class, IFacade<TMonoStructure>
+    where TContext : class, IModuleUsabableContext
+    where TMonoStructure : IMonoStructure
 {
     [NonSerialized] PersistentAction action = new();
     protected BoundFunctionality(PersistentAction action, TFacade facade) : base(facade)
@@ -49,13 +50,15 @@ public abstract class BoundFunctionality<TFacade, TContext> :
 /// <typeparam name="SettableTemplate"></typeparam>
 public abstract class BoundSetFunctionality<
         TFacade,
+        TMonoStructure,
         TContext,
         SettableTemplate> 
-        : UnboundFunctionality<TFacade, TContext>, 
+        : UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
     IBindable,
     ISettableImplementer
-    where TFacade : class, IFacade<TContext>
-    where TContext : struct, IModuleUsabableContext
+    where TFacade : class, IFacade<TMonoStructure>
+    where TMonoStructure : IMonoStructure   
+    where TContext : class, IModuleUsabableContext
     where SettableTemplate : class, ISettableTemplate<bool>, new()
 {
     /// <summary>
