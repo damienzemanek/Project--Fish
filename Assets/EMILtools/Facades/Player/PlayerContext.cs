@@ -5,7 +5,7 @@ public interface IPlayerContextView : IContextViewImmutable
     // Readonly properties
 }
 
-public class PlayerContextData : ContextData<IPlayerContextView>, IPlayerContextView, IModuleUsabableContext
+public class PlayerContextData : ContextData, IPlayerContextView, IModuleUsabableContext
 {
     // Mutable state
 }

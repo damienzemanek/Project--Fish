@@ -1,23 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace EMILtools.Systems
 {
     
-    public abstract class ContextData<TContextViewImmutable> : IContextViewImmutable
-        where TContextViewImmutable : IContextViewImmutable
+    public abstract class ContextData : IContextViewImmutable
     {
-        public TContextViewImmutable ContextDataImmutableAsInterface
-        {
-            // Can't use "as" becauseTcontextViewImmutable is an interface, not a class
-            get
-            {
-                Debug.Log(typeof(TContextViewImmutable).Name);
-                if (this is TContextViewImmutable) return (TContextViewImmutable)(object)this;
-                throw new System.InvalidCastException($"ContextData of type {GetType().Name} cannot be cast to interface {typeof(TContextViewImmutable).Name}");
-            }
-        }
-    
-        public ContextData() { }
+        protected ContextData() { }
     }
 
     /// <summary>
@@ -30,18 +19,22 @@ namespace EMILtools.Systems
     /// <typeparam name="TContextData"></typeparam>
     /// <typeparam name="TContextViewImmutable"></typeparam>
     public class Context<TContextData, TContextViewImmutable> : IContext
-        where TContextData : ContextData<TContextViewImmutable>, IContextViewImmutable, new()
+        where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
-        public TContextData Data;
-        public TContextViewImmutable View => Data.ContextDataImmutableAsInterface;
-        public Context() => Data = new TContextData();
-    
-    
+        
         /// <summary>
-        /// Mainly for testing
+        /// Data is mutated where it's visible (public is OK)
         /// </summary>
-        /// <param name="data"></param>
+        public TContextData Data;
+
+        /// <summary>
+        /// This will be passed around to scripts that depend on it
+        /// </summary>
+        public TContextViewImmutable View => Data;
+
+        public Context() => Data = new TContextData();
+
         public Context(TContextData data) => Data = data;
     }
 }
