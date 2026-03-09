@@ -9,6 +9,7 @@ namespace EMILtools_Private.Testing.MonoFacade_System
     public class FacadeGenerator : EditorWindow
     {
         string facadeName = "";
+        [SerializeField] string path = "Assets/EMILtools/Facades/";
     
         [MenuItem("Tools/EMILTools/MonoFacade")]
         public static void ShowWindow() => GetWindow<FacadeGenerator>("EMILtools MonoFacade Generator");
@@ -16,20 +17,20 @@ namespace EMILtools_Private.Testing.MonoFacade_System
         private void OnGUI()
         {
             facadeName = EditorGUILayout.TextField("MonoFacade Name", facadeName);
+            path = EditorGUILayout.TextField("Path", path);
 
-            if (GUILayout.Button("Generate MonoFacade Scripts"))
-            {
+            if (GUILayout.Button("Generate MonoFacade Scripts")) 
                 GenerateScripts();
-            }
         }
 
         void GenerateScripts()
         {
-            string path = "Assets/EMILtools/Facades/" + facadeName;
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            path += facadeName;
+            string createdPath = path + facadeName;
+            if (!Directory.Exists(createdPath)) Directory.CreateDirectory(createdPath);
 
             // Config
-            CreateScript(path, $"{facadeName}Config", 
+            CreateScript(createdPath, $"{facadeName}Config", 
 $@"using UnityEngine;
 using EMILtools.Systems;
 
@@ -41,7 +42,7 @@ public class {facadeName}Config : Config
 
 
             // Blackboard
-            CreateScript(path, $"{facadeName}Blackboard",
+            CreateScript(createdPath, $"{facadeName}Blackboard",
 $@"using System;
 using EMILtools.Systems;
 
@@ -53,7 +54,7 @@ public class {facadeName}Blackboard : Blackboard
 
 
             // Context
-            CreateScript(path, $"{facadeName}Context",
+            CreateScript(createdPath, $"{facadeName}Context",
 $@"using EMILtools.Systems;
 
 public interface I{facadeName}ContextView : IContextViewImmutable
@@ -68,7 +69,7 @@ public class {facadeName}ContextData : ContextData<I{facadeName}ContextView>, I{
 
 
             // Structure
-            CreateScript(path, $"{facadeName}Structure",
+            CreateScript(createdPath, $"{facadeName}Structure",
 $@"using System;
 using EMILtools.Systems;
 
@@ -83,7 +84,7 @@ public class {facadeName}Structure : MonoStructure<
 
 
             // Functionality
-            CreateScript(path, $"{facadeName}Functionality",
+            CreateScript(createdPath, $"{facadeName}Functionality",
 $@"using EMILtools.Systems;
 
 public class {facadeName}Functionality : Functionalities<
@@ -98,7 +99,7 @@ public class {facadeName}Functionality : Functionalities<
 
 
             // Controller
-            CreateScript(path, $"{facadeName}Controller",
+            CreateScript(createdPath, $"{facadeName}Controller",
 $@"using UnityEngine;
 using EMILtools.Systems;
 
@@ -123,7 +124,7 @@ public class {facadeName}Controller : MonoFacade<
 }}");
 
             AssetDatabase.Refresh();
-            Debug.Log($"Generated MonoFacade: {facadeName} at {path}");
+            Debug.Log($"Generated MonoFacade: {facadeName} at {createdPath}");
         }
 
         void CreateScript(string path, string fileName, string content)
