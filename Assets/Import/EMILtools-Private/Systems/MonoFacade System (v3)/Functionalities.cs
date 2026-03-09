@@ -4,11 +4,9 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using static InterfaceEX;
 
-namespace EMILtools_Private.Testing
+
+namespace EMILtools.Systems
 {
-    
-    
-    
     public abstract class Functionalities<TMonoFacade, TMonoStructure> : IFunctionality
         where TMonoFacade : class, IFacade<TMonoStructure>
         where TMonoStructure : IMonoStructure

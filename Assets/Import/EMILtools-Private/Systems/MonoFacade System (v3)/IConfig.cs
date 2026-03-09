@@ -1,6 +1,10 @@
 using UnityEngine;
 
-public interface IConfig
+namespace EMILtools.Systems
 {
+    public interface IConfig
+    {
 
+    }
 }
+

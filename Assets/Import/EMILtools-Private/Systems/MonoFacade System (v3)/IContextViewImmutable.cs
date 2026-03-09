@@ -1,1 +1,5 @@
-﻿public interface IContextViewImmutable { }
+﻿
+namespace EMILtools.Systems
+{
+    public interface IContextViewImmutable { }
+}

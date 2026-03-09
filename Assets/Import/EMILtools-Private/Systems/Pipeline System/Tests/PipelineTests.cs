@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using EMILtools.Timers;
 using UnityEngine.TestTools;
+using EMILtools.Systems;
 
 public class PipelineTests
 {

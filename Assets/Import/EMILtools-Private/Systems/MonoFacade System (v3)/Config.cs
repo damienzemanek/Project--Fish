@@ -1,10 +1,15 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public abstract class Config : ScriptableObject, IConfig
+
+namespace EMILtools.Systems
 {
+    [Serializable]
+    public abstract class Config : ScriptableObject, IConfig
+    {
     
+    }
 }
+
         
 

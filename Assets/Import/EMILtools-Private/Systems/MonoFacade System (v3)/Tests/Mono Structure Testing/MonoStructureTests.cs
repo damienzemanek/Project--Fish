@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using EMILtools.Systems;
 
 // --- Test Types ---
 
@@ -38,9 +39,9 @@ public class MonoStructureTests
         var structure = new TestMonoStructure();
         structure.Init();
 
-        structure.Context.Data.SomeInt = 42;
+        structure.Context.Data.SomeInt = 1;
 
-        Assert.AreEqual(42, structure.Context.View.SomeInt);
+        Assert.AreEqual(1, structure.Context.View.SomeInt);
     }
 
     /// View from external location — a "receiver" can read the immutable view
@@ -50,13 +51,13 @@ public class MonoStructureTests
         var structure = new TestMonoStructure();
         structure.Init();
 
-        structure.Context.Data.SomeInt = 99;
+        structure.Context.Data.SomeInt = 1;
 
         // Simulate a module/receiver getting the view through the IMonoStructure API
         IContextViewImmutable apiContext = structure.API_Context;
         var typedView = (ITestContextDataImmutable)apiContext;
         
 
-        Assert.AreEqual(99, typedView.SomeInt);
+        Assert.AreEqual(1, typedView.SomeInt);
     }
 }
