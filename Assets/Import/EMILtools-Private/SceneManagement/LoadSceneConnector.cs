@@ -4,7 +4,7 @@ public class LoadSceneConnector : MonoBehaviour
 {
     public void Load(int sceneIndx)
     {
-        LoadScene loader = FindObjectOfType<LoadScene>();
+        LoadScene loader = FindAnyObjectByType<LoadScene>();
         loader.LoadSceneFadeScreenToOpaque(sceneIndx);
     }
 }

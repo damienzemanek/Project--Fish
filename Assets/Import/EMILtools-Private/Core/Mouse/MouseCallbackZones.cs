@@ -5,7 +5,6 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "Mouse Callback Zones", menuName = "ScriptableObjects/Mouse/Callback Zones")]
 public class MouseCallbackZones
 { 
     public int w = 1920;

@@ -28,7 +28,7 @@ using Sirenix.OdinInspector;
     {
         public IReadOnlyList<LazyGuard> Guards => guards;
         
-        [ShowInInspector, Sirenix.OdinInspector.ReadOnly, ListDrawerSettings(Expanded = true)]
+        [ShowInInspector, Sirenix.OdinInspector.ReadOnly]
         readonly List<LazyGuard> guards;
     
         public LazyGuarderMutable(params LazyGuard[] guards)

@@ -55,7 +55,7 @@ public class SimpleGuarderMutable : IGuarder
 /// </summary>
 public readonly struct SimpleGuarderImmutable : IGuarder
 {
-    [ShowInInspector, ReadOnly, ListDrawerSettings(Expanded = true)] SimpleGuard[] InspectGuards => guards;
+    [ShowInInspector, ReadOnly] SimpleGuard[] InspectGuards => guards;
     readonly SimpleGuard[] guards;
 
     public SimpleGuarderImmutable(params (string name, Func<bool> method)[] guards)
