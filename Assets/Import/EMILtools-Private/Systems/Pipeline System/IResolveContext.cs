@@ -11,7 +11,6 @@ using static EMILtools.Timers.TimerUtility;
 /// </summary>
 public interface IResolveContext
 {
-    public bool resolveBeforeExecution { get; set; }
     public virtual void Reset() { }
     public bool Resolve<TContext>(in TContext ctx) where TContext : class;
 }
@@ -41,10 +40,9 @@ public class Callback : IResolveContext
     static readonly bool ContinueResolving = true;
     public readonly Action Action;
 
-    public Callback(Action _action, bool resolveBeforeExecution = false)
+    public Callback(Action _action)
     {
         Action = _action;
-        this.resolveBeforeExecution = resolveBeforeExecution;
     }
     public bool resolveBeforeExecution { get; set; }
 
@@ -67,15 +65,11 @@ public class Timed : IResolveContext, ITimerUser
     bool ContinueResolving => true;
     public CountdownTimer Timer => timer;
     CountdownTimer timer;
-    public Timed(float sec, bool resolveBeforeExecution = false)
+    public Timed(float sec)
     {
         timer = new CountdownTimer(sec);
-        this.InitTimer(timer, isFixed: true);
-        this.resolveBeforeExecution = resolveBeforeExecution;
-    }
-
-    public bool resolveBeforeExecution { get; set; }
-
+        this.InitTimer(timer, isFixed: true); }
+    
     public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
         if(!timer.isRunning && !timer.isFinished()) timer.Start();
@@ -104,14 +98,13 @@ public class Wait : IResolveContext, ITimerUser, IResolveWaitable
     public CountdownTimer Timer => timer;
     public bool resolveBeforeExecution { get; set; }
     // --- Ctor ----
-    public Wait(float sec, bool resolveBeforeExecution = false)
+    public Wait(float sec)
     {
         timer = new CountdownTimer(sec);
         this.InitTimer(timer, isFixed: true);
         tcs = new();
         cachedWaitTask = tcs.Task;
         timer.OnTimerStop.Add(TimerStopped);
-        this.resolveBeforeExecution = resolveBeforeExecution;
         Debug.Log("Wait Timer Initialized");
     }
     

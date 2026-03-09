@@ -12,45 +12,42 @@ namespace EMILtools.Systems
         public static async Task Execute<TContext>(Pipeline<TContext> pipeline, TContext ctx)
             where TContext : class, IPipelineContext
         {
-            // For loop for structs,
-            // - Has no mutations to TContext
             for (int i = 0; i < pipeline.Size; i++)
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
                 
-                //Debug.Log($"Resolving Contexts : {step.resolveContextsBeforeExecution.Length}");
-                for (int j = 0; j < step.resolveContextsBeforeExecution.Length; j++)
-                {
-                    var resolve = step.resolveContextsBeforeExecution[j];
-                    //Debug.Log($" (!) RESOLVING... context {j} of {step.resolveContextsBeforeExecution.Length}");
-                    if (!resolve.Resolve(ctx) && isShortCircuit) return;
-                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
-                    {
-                        waitable.waiting = true; // Must set waiting here because Resolve() just starts the timer
-                        await waitable.WaitUntilResolved();
-                        //Debug.Log($" (RESOLVED) Waiting Context {j} resolved");
-                    }
-                    //Debug.Log($"(RESOLVED) Context {j} fully resolved");
-                }                
-                
-                if (step.Execute(ctx) && isShortCircuit) return;
-                
-                //Debug.Log($"Resolving Contexts : {step.resolveContextsAfterExecution.Length}");
-                for (int j = 0; j < step.resolveContextsAfterExecution.Length; j++)
-                {
-                    var resolve = step.resolveContextsAfterExecution[j];
-                   // Debug.Log($" (!) RESOLVING... context {j} of {step.resolveContextsAfterExecution.Length}");
-                    if (!resolve.Resolve(ctx) && isShortCircuit) return;
-                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
-                    {
-                        waitable.waiting = true; // Must set waiting here because Resolve() just starts the timer
-                        await waitable.WaitUntilResolved();
-                        //Debug.Log($"Waiting Context {j} resolved");
-                    }
-                    //Debug.Log($"Context {j} fully resolved");
-                }                                
+                if (!await ResolveContexts(step.resolveContextsBeforeExecution, ctx, isShortCircuit))
+                    return;
 
+                if (step.Execute(ctx) && isShortCircuit)
+                    return;
+
+                if (!await ResolveContexts(step.resolveContextsAfterExecution, ctx, isShortCircuit))
+                    return; 
+            }
+            
+            static async Task<bool> ResolveContexts<TContext>(
+                IResolveContext[] contexts,
+                TContext ctx,
+                bool isShortCircuit)
+                where TContext : class
+            {
+                for (int j = 0; j < contexts.Length; j++)
+                {
+                    var resolve = contexts[j];
+
+                    if (!resolve.Resolve(ctx) && isShortCircuit)
+                        return false;
+
+                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
+                    {
+                        waitable.waiting = true;
+                        await waitable.WaitUntilResolved();
+                    }
+                }
+
+                return true;
             }
                 
         }
