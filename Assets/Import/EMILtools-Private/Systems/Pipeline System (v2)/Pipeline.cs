@@ -7,7 +7,10 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TContext">
     /// The context type that is passed and operated upon by the pipeline. The context
-    /// type must be a value type and implement the <see cref="IPipelineContext"/> interface.
+    /// Intent: High Throughput, so the CONTEXT a CLASS
+    ///
+    /// Extra Functionality Option: Since the main method returns a bool, you can use that to determine if the
+    /// full pipeline execution was SUCCESSFUL dynamically
     /// </typeparam>
     public class Pipeline<TContext>
         where TContext : class, IPipelineContext

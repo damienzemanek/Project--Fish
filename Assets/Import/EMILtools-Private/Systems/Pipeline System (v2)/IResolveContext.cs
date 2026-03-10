@@ -7,7 +7,10 @@ using static EMILtools.Timers.TimerUtility;
 
 /// <summary>
 /// Context for ResolveContexts, used to pass data and control the flow of the pipeline
-/// Resolves happen BEFORE execution
+/// Resolve "BEFORE" and "AFTER" the execution of the pipeline step
+/// (!) NOTE: "AFTER" resolves will NOT run if the pipeline step short circuits
+/// (!) NOTE: "BEFORE" resolves will run even if the pipeline step short circuits
+/// (!) NOTE: The main method will NOT run if ANY pipeline step short circuits
 /// </summary>
 public interface IResolveContext
 {
@@ -48,7 +51,7 @@ public class Callback : IResolveContext
 
     public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
-        //Debug.Log("CALLBACK");
+        Debug.Log("CALLBACK");
         Action?.Invoke();
         return ContinueResolving;
     }

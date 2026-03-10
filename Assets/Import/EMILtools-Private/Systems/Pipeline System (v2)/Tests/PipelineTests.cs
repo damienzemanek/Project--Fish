@@ -16,7 +16,7 @@ public class PipelineTests
 
     
     [Test]
-    public void PipelineBuilder_CreatesCorrectSize()
+    public void Test1_PipelineBuilder_CreatesCorrectSize()
     {
         // Arrange
         var builder = new PipelineBuilder<TestContextProvider>();
@@ -29,9 +29,9 @@ public class PipelineTests
         Assert.AreEqual(2, pipeline.Size);
     }
 
-
+    
     [Test]
-    public void StepsAllPass_FinalExecutes()
+    public void Test2_StepsAllPass_FinalExecutes()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
@@ -60,9 +60,8 @@ public class PipelineTests
         }
     }
     
-    
     [Test]
-    public void StepFail_FinalDoesNotExecute()
+    public void Test3_StepFail_FinalDoesNotExecute()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
@@ -82,14 +81,15 @@ public class PipelineTests
     }
     
     [Test]
-    public void StepFail_FailedStepCallback()
+    public void Test4_StepFail_FailedStepCallback()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
         bool failedStepCallbackExecuted = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
-            .Add_ShortCircuit(ctx => ctx.Value == 2, new Callback(() => failedStepCallbackExecuted = true))
+            .Add_ShortCircuit(ctx => ctx.Value == 2,
+                before: new IResolveContext[] { new Callback(() => failedStepCallbackExecuted = true) })
             .InjectMainMethod(ctx => Jump(ctx));
         bool Jump(TestContextProvider ctx) => true;
 
@@ -101,17 +101,72 @@ public class PipelineTests
         // Assert
         Assert.AreEqual(failedStepCallbackExecuted, true);
     }
+
+    
+    [Test]
+    public void Test5_BeforeAndAfter_AllPass_ResolveContextCalled()
+    {
+        var myctx = new TestContextProvider(3);
+        bool jumpSuccessfull = false;
+        bool beforecalled = false;
+        bool aftercalled = false;
+        var jump = new PipelineBuilder<TestContextProvider>()
+            .Add_ShortCircuit(ctx => ctx.Value == 1)
+            .Add_ShortCircuit(ctx => ctx.Value == 2, 
+                before: new IResolveContext[]{ new Callback(CallBefore) }, 
+                after: new IResolveContext[]{ new Callback(CallAfter) })
+            .InjectMainMethod(Jump);
+        
+        myctx.TryTo(jump);
+        bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
+        void CallBefore() => beforecalled = true;
+        void CallAfter() => aftercalled = true;
+        
+        Assert.IsTrue(beforecalled, "Before callback should have been called.");
+        Assert.IsTrue(aftercalled, "After callback should have been called.");
+        Assert.IsTrue(jumpSuccessfull, "Jump should have been called.");
+
+    }
+    
+    [Test]
+    public void Test6_BeforeAndAfter_BeforePassesOnly_DueToShortCircuit_ResolveContextCalled()
+    {
+        var myctx = new TestContextProvider(2);
+        bool jumpSuccessfull = false;
+        bool beforecalled = false;
+        bool aftercalled = false;
+        var jump = new PipelineBuilder<TestContextProvider>()
+            .Add_ShortCircuit(ctx => ctx.Value == 1)
+            .Add_ShortCircuit(ctx => ctx.Value == 2, 
+                before: new IResolveContext[]{ new Callback(CallBefore) }, 
+                after: new IResolveContext[]{ new Callback(CallAfter) })
+            .InjectMainMethod(Jump);
+        
+        myctx.TryTo(jump);
+        bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
+        void CallBefore() => beforecalled = true;
+        void CallAfter() => aftercalled = true;
+        
+        Assert.IsTrue(beforecalled, "Before callback should have been called.");
+        Assert.IsFalse(aftercalled, "After callback should have been called.");
+        Assert.IsFalse(jumpSuccessfull, "Jump should have been called.");
+
+    }
+
+    
+    
     
         
     [UnityTest]
-    public IEnumerator TimedStepBlocking()
+    public IEnumerator Test7_TimedStepBlocking()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
         bool jumpCalled = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
-            .Add_ShortCircuit(ctx => ctx.Value == 1, new Timed(1))
+            .Add_ShortCircuit(ctx => ctx.Value == 1, 
+                before: new IResolveContext[] { new Timed(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 
@@ -135,14 +190,15 @@ public class PipelineTests
     }
     
     [UnityTest]
-    public IEnumerator WaitingStepBlockingAndEventuallyCompletes()
+    public IEnumerator Test8_WaitingStepBlockingAndEventuallyCompletes()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
         bool jumpCalled = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
-            .Add_ShortCircuit(ctx => ctx.Value == 1, new Wait(1))
+            .Add_ShortCircuit(ctx => ctx.Value == 1, 
+                before: new IResolveContext[] { new Wait(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 

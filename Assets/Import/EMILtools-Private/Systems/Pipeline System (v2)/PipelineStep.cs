@@ -7,7 +7,8 @@
 /// SRP: Execution logic for pipeline steps.
 /// </summary>
 /// <typeparam name="TContext">
-/// The type of context used in the pipeline. Must be a struct.
+/// The type of context used in the pipeline.
+/// Intent: High Throughput, so it's a CLASS
 /// </typeparam>
 public delegate bool PipelineStepDelegate<in TContext>(TContext context);
 
@@ -18,7 +19,8 @@ public delegate bool PipelineStepDelegate<in TContext>(TContext context);
 /// SRP: Storage
 /// </summary>
 /// <typeparam name="TContext">
-/// The type of context used in the pipeline. Must be a struct.
+/// The type of context used in the pipeline.
+/// Intent: High Throughput, so it's a CLASS
 /// </typeparam>
 public readonly struct PipelineStep<TContext>
     where TContext : class
