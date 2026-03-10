@@ -38,7 +38,8 @@ public class PlayerFunctionality : Functionalities<
         public override bool ExecutionImplementation(PlayerContextData ctx)
         {
             Vector2 moveDir = SetContext.move * cfg.move.speedScalar;
-            bb.rb.AddForce(moveDir);
+            bb.rb.AddForce(moveDir, cfg.move.forceMode2d);
+            Debug.Log("moving");
             return true;
         }
         

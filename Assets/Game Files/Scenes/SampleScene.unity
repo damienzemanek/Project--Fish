@@ -428,7 +428,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   <Config>k__BackingField: {fileID: 11400000, guid: 5c38bbdf6f1d0214a95cba78aa53205e, type: 2}
-  structure: {}
+  structure:
+    Blackboard:
+      <rb>k__BackingField: {fileID: 389884464}
   <inputSubordinateContext>k__BackingField:
     Subordinate:
       underlyingValue: {fileID: 389884465}

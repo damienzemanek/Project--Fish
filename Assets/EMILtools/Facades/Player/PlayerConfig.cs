@@ -11,5 +11,7 @@ public class PlayerConfig : Config
     public struct Move
     {
         [field: SerializeField] public float speedScalar { get; private set; }
+        [field: SerializeField] public ForceMode2D forceMode2d { get; private set; }
+
     }
 }

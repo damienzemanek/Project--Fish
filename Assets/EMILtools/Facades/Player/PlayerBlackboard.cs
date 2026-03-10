@@ -5,5 +5,5 @@ using UnityEngine;
 [Serializable]
 public class PlayerBlackboard : Blackboard
 {
-    [field:NonSerialized] public Rigidbody2D rb { get; private set;}
+    [field: SerializeField] public Rigidbody2D rb { get; private set;}
 }
