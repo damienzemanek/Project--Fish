@@ -81,15 +81,15 @@ public class PipelineTests
     }
     
     [Test]
-    public void Test4_StepFail_FailedStepCallback()
+    public void Test4_StepFail_Executes_ShortCircuitCallback()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
-        bool failedStepCallbackExecuted = false;
+        var failedStepCallbackExecuted = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2,
-                before: new IResolveContext[] { new Callback(() => failedStepCallbackExecuted = true) })
+                shortCircuited: new IResolveContext[] { new Callback(ShortCircuitCallback) })
             .InjectMainMethod(ctx => Jump(ctx));
         bool Jump(TestContextProvider ctx) => true;
 
@@ -97,9 +97,9 @@ public class PipelineTests
         // Act
         myctx.TryTo(jump);
         
-        
+        void ShortCircuitCallback() => failedStepCallbackExecuted = true;
         // Assert
-        Assert.AreEqual(failedStepCallbackExecuted, true);
+        Assert.IsTrue(failedStepCallbackExecuted, "Short circuit callback should have been called.");
     }
 
     
@@ -132,9 +132,9 @@ public class PipelineTests
     public void Test6_BeforeAndAfter_BeforePassesOnly_DueToShortCircuit_ResolveContextCalled()
     {
         var myctx = new TestContextProvider(2);
-        bool jumpSuccessfull = false;
-        bool beforecalled = false;
-        bool aftercalled = false;
+        var jumpCalled = false;
+        var beforecalled = false;
+        var aftercalled = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
@@ -143,14 +143,17 @@ public class PipelineTests
             .InjectMainMethod(Jump);
         
         myctx.TryTo(jump);
-        bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
-        void CallBefore() => beforecalled = true;
-        void CallAfter() => aftercalled = true;
+        
         
         Assert.IsTrue(beforecalled, "Before callback should have been called.");
-        Assert.IsFalse(aftercalled, "After callback should have been called.");
-        Assert.IsFalse(jumpSuccessfull, "Jump should have been called.");
+        Assert.IsFalse(aftercalled, "After callback should NOT have been called.");
+        Assert.IsFalse(jumpCalled, "Jump should NOT have been called.");
+        return;
 
+        
+        void CallBefore() => beforecalled = true;
+        void CallAfter() => aftercalled = true;
+        bool Jump(TestContextProvider ctx) { return jumpCalled = true; }
     }
 
     
@@ -162,7 +165,7 @@ public class PipelineTests
     {
         // Arrange
         var myctx = new TestContextProvider(2);
-        bool jumpCalled = false;
+        var jumpCalled = false;
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
             .Add_ShortCircuit(ctx => ctx.Value == 1, 
@@ -218,4 +221,33 @@ public class PipelineTests
     }
 
     
+        
+    [Test]
+    public void Test9_ShortCircuitCallbackCalled()
+    {
+        var myctx = new TestContextProvider(2);
+        bool jumpSuccessfull = false;
+        bool beforecalled = false;
+        bool aftercalled = false;
+        bool shortCircuitCalled = false;
+        var jump = new PipelineBuilder<TestContextProvider>()
+            .Add_ShortCircuit(ctx => ctx.Value == 1)
+            .Add_ShortCircuit(ctx => ctx.Value == 2, 
+                before: new IResolveContext[]{ new Callback(CallBefore) }, 
+                after: new IResolveContext[]{ new Callback(CallAfter) },
+                shortCircuited: new IResolveContext[]{ new Callback(ShortCircuit) })
+            .InjectMainMethod(Jump);
+        
+        myctx.TryTo(jump);
+        bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
+        void CallBefore() => beforecalled = true;
+        void CallAfter() => aftercalled = true;
+        void ShortCircuit() => shortCircuitCalled = true;
+        
+        Assert.IsTrue(beforecalled, "Before callback should have been called.");
+        Assert.IsTrue(shortCircuitCalled, "Short circuit callback should have been called.");
+        Assert.IsFalse(aftercalled, "After callback should NOT have been called.");
+        Assert.IsFalse(jumpSuccessfull, "Jump should NOT have been called.");
+
+    }
 }

@@ -20,29 +20,31 @@ namespace EMILtools.Systems
         public PipelineBuilder() => steps = new List<PipelineStep<TContext>>();
     
         // ------ Methods ---------
-        PipelineBuilder<TContext> AddStep(StepType stepType,
+        PipelineBuilder<TContext> AddStep(
+            StepType stepType,
             PipelineStepDelegate<TContext> @if,
-            IResolveContext[] before = null, IResolveContext[] after = null)  
+            IResolveContext[] before = null,
+            IResolveContext[] after = null,
+            IResolveContext[] shortCircuited = null)
         {
-            steps.Add(new PipelineStep<TContext>(stepType, @if, before, after)); 
+            steps.Add(new PipelineStep<TContext>(stepType, @if, before, after, shortCircuited));
             return this;
         }
     
         // ------ API Methods ---------
         public PipelineBuilder<TContext> Add_ShortCircuit(
             PipelineStepDelegate<TContext> @if,
-            IResolveContext[] before = null, IResolveContext[] after = null)
+            IResolveContext[] before = null, IResolveContext[] after = null, IResolveContext[] shortCircuited = null)
         {
-            AddStep(StepType.ShortCircuit, @if, before, after);
-            return this;
+            return AddStep(StepType.ShortCircuit, @if, before, after, shortCircuited);
         }
-
         public PipelineBuilder<TContext> Add_Middleware(PipelineStepDelegate<TContext> method, 
             IResolveContext[] before = null, IResolveContext[] after = null)
         {
-            AddStep(StepType.Middleware, method, before, after);
-            return this;
+            return AddStep(StepType.Middleware, method, before, after);
         }
+        
+        
     
         public Pipeline<TContext> InjectMainMethod(PipelineStepDelegate<TContext> mainMethod) 
         {

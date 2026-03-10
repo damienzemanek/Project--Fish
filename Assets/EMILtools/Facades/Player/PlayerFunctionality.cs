@@ -33,7 +33,7 @@ public class PlayerFunctionality : Functionalities<
         public override PipelineBuilder<PlayerContextData> InjectSteps(
             PipelineBuilder<PlayerContextData> builder)
         => builder.Add_ShortCircuit(ctx => !isActive, 
-            before: new IResolveContext[] { new Callback(ResetMove) });
+            shortCircuited: new IResolveContext[] { new Callback(ResetMove) });
 
         public override bool ExecutionImplementation(PlayerContextData ctx)
         {

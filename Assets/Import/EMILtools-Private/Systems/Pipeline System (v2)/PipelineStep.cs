@@ -32,6 +32,7 @@ public readonly struct PipelineStep<TContext>
     public readonly PipelineStepDelegate<TContext> Execute;
     public readonly IResolveContext[] resolveContextsBeforeExecution;
     public readonly IResolveContext[] resolveContextsAfterExecution;
+    public readonly IResolveContext[] shortCircuited;
 
     public readonly StepType StepType;
 
@@ -39,11 +40,13 @@ public readonly struct PipelineStep<TContext>
     // ------ Ctors ------
     public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
         IResolveContext[] resolveContextsBeforeExecution = null,
-        IResolveContext[] resolveContextsAfterExecution = null)
+        IResolveContext[] resolveContextsAfterExecution = null,
+        IResolveContext[] shortCircuited = null)
     {
         this.Execute = execute;
         this.resolveContextsBeforeExecution = resolveContextsBeforeExecution ?? Array.Empty<IResolveContext>();
         this.resolveContextsAfterExecution = resolveContextsAfterExecution ?? Array.Empty<IResolveContext>();
+        this.shortCircuited = shortCircuited ?? Array.Empty<IResolveContext>();
         StepType = stepType;
     }
     public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
@@ -51,6 +54,7 @@ public readonly struct PipelineStep<TContext>
         Execute = mainMethod;
         resolveContextsBeforeExecution = Array.Empty<IResolveContext>();
         resolveContextsAfterExecution = Array.Empty<IResolveContext>();
+        shortCircuited = Array.Empty<IResolveContext>();
         StepType = StepType.MainMethod;
     }
 }

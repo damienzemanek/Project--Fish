@@ -20,7 +20,8 @@ namespace EMILtools.Systems
                 //Debug.Log($" [===== Executing & Resolving Step {i}... =====] ");
 
                 
-                if (!await ResolveContexts(step.resolveContextsBeforeExecution, ctx, isShortCircuit))
+                if (step.resolveContextsBeforeExecution.Length > 0 && 
+                    !await ResolveContexts(step.resolveContextsBeforeExecution, ctx, isShortCircuit))
                 {
                     //Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
                     return;
@@ -29,11 +30,14 @@ namespace EMILtools.Systems
                 if (step.Execute(ctx) && isShortCircuit)
                 {
                     //Debug.Log(" (!) Short Circuit Triggered (Execution)");
+                    if(step.shortCircuited.Length > 0)
+                        await ResolveContexts(step.shortCircuited, ctx, true);
                     return;
                 }
                 //Debug.Log($"    >> Step {i} Executed << ");
 
-                if (!await ResolveContexts(step.resolveContextsAfterExecution, ctx, isShortCircuit))
+                if (step.resolveContextsAfterExecution.Length > 0 && 
+                    !await ResolveContexts(step.resolveContextsAfterExecution, ctx, isShortCircuit))
                 {
                     //Debug.Log(" (!) Resolver Short Circuited (After Execution)");
                     return;

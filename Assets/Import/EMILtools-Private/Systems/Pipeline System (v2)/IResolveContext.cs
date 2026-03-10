@@ -51,7 +51,6 @@ public class Callback : IResolveContext
 
     public bool Resolve<TContext>(in TContext ctx) where TContext : class
     {
-        Debug.Log("CALLBACK");
         Action?.Invoke();
         return ContinueResolving;
     }
