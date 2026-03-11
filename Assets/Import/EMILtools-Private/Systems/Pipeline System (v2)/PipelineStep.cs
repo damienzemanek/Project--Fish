@@ -1,21 +1,4 @@
-﻿using System;
-using EMILtools.Core;
-
-
-public abstract class CommandDelegate<TDelegate, TContext, TReturn> : ICommand<TContext, TReturn>
-    where TDelegate : Delegate
-{
-    protected readonly TDelegate Command;
-    public abstract TReturn Execute(TContext ctx);
-    public CommandDelegate(TDelegate command) => Command = command;
-
-}
-
-public sealed class PipelineCommand<TContext> : CommandDelegate<PipelineStepDelegate<TContext>, TContext, bool>
-{
-    public PipelineCommand(PipelineStepDelegate<TContext> command) : base(command) { }
-    public override bool Execute(TContext ctx) => Command.Invoke(ctx);
-}
+﻿using EMILtools.Core;
 
 
 /// <summary>
@@ -46,7 +29,7 @@ public readonly struct PipelineStep<TContext>
 
 
     // ------ Variables --------
-    public readonly PipelineCommand<TContext> Execute;
+    public readonly PipelineStepDelegate<TContext> Execute;
     public readonly ResolveContainer<IResolveContext> Resolves;
     public readonly StepType StepType;
 
@@ -55,13 +38,13 @@ public readonly struct PipelineStep<TContext>
     public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
         ResolveContainer<IResolveContext> resolves = default)
     {
-        Execute = new PipelineCommand<TContext>(execute);
+        Execute = execute;
         Resolves = resolves;
         StepType = stepType;
     }
     public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
     {
-        Execute = new PipelineCommand<TContext>(mainMethod);
+        Execute = mainMethod;
         Resolves = new ResolveContainer<IResolveContext>(autoInit: true);
         StepType = StepType.MainMethod;
     }

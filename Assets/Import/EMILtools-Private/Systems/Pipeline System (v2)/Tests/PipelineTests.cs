@@ -5,6 +5,7 @@ using EMILtools.Core;
 using EMILtools.Timers;
 using UnityEngine.TestTools;
 using EMILtools.Systems;
+using static EMILtools.Systems.PipelineExecutor<PipelineTests.TestContextProvider>;
 
 public class PipelineTests
 {
@@ -45,7 +46,7 @@ public class PipelineTests
 
         
         // Act
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         Debug.Log("------- Act Complete -------");
 
         
@@ -74,7 +75,7 @@ public class PipelineTests
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
 
         //Act
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         
         // Assert
         Assert.AreEqual(jumpSuccessfull, false);
@@ -96,7 +97,7 @@ public class PipelineTests
 
         
         // Act
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         
         void ShortCircuitCallback() => failedStepCallbackExecuted = true;
         // Assert
@@ -118,7 +119,7 @@ public class PipelineTests
                 after: new IResolveContext[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;
@@ -143,7 +144,7 @@ public class PipelineTests
                 after: new IResolveContext[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         
         
         Assert.IsTrue(beforecalled, "Before callback should have been called.");
@@ -176,17 +177,17 @@ public class PipelineTests
 
         
         // Act
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         
         // Assert
         Assert.AreEqual(jumpCalled, false, "Jump should not be called immediately.");
         // Manually tick 900ms (0.9s)
         TimerUtility.TickAllFixed(0.9f);
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         Assert.AreEqual(jumpCalled, false, "Jump should not be called after 900ms.");
         // Manually tick another 200ms (Total 1.1s)
         TimerUtility.TickAllFixed(0.2f);
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         Assert.AreEqual(jumpCalled, true, "Jump should be called after total 1100ms.");
     
         yield return null;
@@ -208,7 +209,7 @@ public class PipelineTests
 
         
         // Act
-        var task = myctx.TryTo(jump);
+        var task = TryTo(jump, myctx);
         
         // Assert
         Assert.AreEqual(jumpCalled, false, "Jump should not be called immediately.");
@@ -239,7 +240,7 @@ public class PipelineTests
                 shortCircuited: new IResolveContext[]{ new Callback(ShortCircuit) })
             .InjectMainMethod(Jump);
         
-        myctx.TryTo(jump);
+        TryTo(jump, myctx);
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;

@@ -33,7 +33,7 @@ namespace EMILtools.Systems
             //Debug.Log($"Expected: {typeof(TContext)}");
             //Debug.Log($"Actual: {ctx?.GetType()}");
 
-            PipelineExecutor.Execute(executionPipeline, (TContext)ctx);
+            PipelineExecutor<TContext>.Execute(executionPipeline, (TContext)ctx);
         }
         
         public override void SetupModule()

@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using EMILtools.Core;
 using UnityEngine;
+using static ResolverSystem;
 
 namespace EMILtools.Systems
 {
@@ -8,16 +10,24 @@ namespace EMILtools.Systems
     /// Frame-Agnostic Async Pipeline Executor
     /// SRP: Execution
     /// </summary>
-    public static class PipelineExecutor
+    public static class PipelineExecutor<TContext>
+        where TContext : class, IPipelineContext
     {
-        public static async Task Execute<TContext>(Pipeline<TContext> pipeline, TContext ctx)
-            where TContext : class, IPipelineContext
+        private static readonly PipelineResolver Resolver = new();
+        class PipelineResolver : Resolver<PipelineStepDelegate<TContext>, IPipelineContext>
+        {
+            protected override bool Execute(PipelineStepDelegate<TContext> command, IPipelineContext ctx)
+                => command((TContext)ctx); // failes loudly instead of Invoke
+        }
+
+        public static async Task Execute(Pipeline<TContext> pipeline, TContext ctx)
         {
             for (int i = 0; i < pipeline.Size; i++)
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                if(!await Resolver.ResolveContainer(step.Resolves, step.Execute, ctx, isShortCircuit)) return;
+                if(!await PipelineResolver.ResolveContainer(Resolver, step.Resolves, step.Execute, ctx, isShortCircuit )) return;
+                
             }
                 
         }
@@ -39,30 +49,8 @@ namespace EMILtools.Systems
         /// <param name="ctx"></param>
         /// <typeparam name="TContext"></typeparam>
         /// <returns></returns>
-        public static Task TryTo<TContext>(Pipeline<TContext> pipeline, in TContext ctx)
-            where TContext : class, IPipelineContext
+        public static Task TryTo(Pipeline<TContext> pipeline, in TContext ctx)
         => Execute(pipeline, ctx);
-
-
-
-        /// <summary>
-        /// Secondary API for executing pipelines,
-        /// FLUENT API-lite, call pipelines like your "Trying to" "Do something"
-        /// ---------------------------------
-        /// Usage:
-        /// var jump = PipelineBuilder...
-        /// jumpContext.TryTo(jump);
-        /// ---------------------------------
-        /// Slightly less performant option via "this" (this is pass by value for value-types)
-        /// SRP: API
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="pipeline"></param>
-        /// <typeparam name="TContext"></typeparam>
-        /// <returns></returns>
-        public static Task TryTo<TContext>(this TContext ctx, Pipeline<TContext> pipeline)
-            where TContext : class, IPipelineContext
-            => Execute(pipeline, ctx);
 
 
         /// Commented version of Executor for Debugging
