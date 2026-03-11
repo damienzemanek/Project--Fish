@@ -29,7 +29,7 @@ public abstract class SettableTemplate<T1> : ISettableTemplate<T1>
     // Template Call 
     [NonSerialized] readonly Action<T1> _templateCall; 
     public Delegate TemplateCall => _templateCall;
-    public PersistentAction OnSet { get; set; } = new();
+    public PersistentDelegate OnSet { get; set; } = new();
     void _TemplateCall(T1 val)
     {
         ((ISettableTemplate<T1>)this)._unnamedStoredValue1 = val;
@@ -41,11 +41,11 @@ public abstract class SettableTemplate<T1> : ISettableTemplate<T1>
     public SettableTemplate() => _templateCall = new Action<T1>(_TemplateCall);
     
     // Action
-    [NonSerialized] IPersistentAction<Action<T1>> _action;
-    public IPersistentDelegate action
+    [NonSerialized] IPersistentDelegate<Action<T1>> _delegate;
+    public ISystemDelegator action
     {
-        get => _action;
-        set =>  _action = (IPersistentAction<Action<T1>>)value;
+        get => _delegate;
+        set =>  _delegate = (IPersistentDelegate<Action<T1>>)value;
     }
 
     // Abstract
@@ -77,14 +77,14 @@ public abstract class SettableTemplate<T1, T2> : ISettableTemplate<T1>
     
     // Ctor
     public SettableTemplate() => _templateCall = new Action<T1, T2>(_TemplateCall);
-    public PersistentAction OnSet { get; set; } = new();
+    public PersistentDelegate OnSet { get; set; } = new();
 
     // Action
-    [NonSerialized] IPersistentAction<Action<T1, T2>> _action;
-    public IPersistentDelegate action
+    [NonSerialized] IPersistentDelegate<Action<T1, T2>> _delegate;
+    public ISystemDelegator action
     {
-        get => _action; 
-        set => _action = (IPersistentAction<Action<T1, T2>>)value;
+        get => _delegate; 
+        set => _delegate = (IPersistentDelegate<Action<T1, T2>>)value;
     }
 
     protected virtual void Set(T1 val1, T2 val2) { }

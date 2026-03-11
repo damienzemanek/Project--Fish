@@ -5,12 +5,12 @@ using UnityEngine;
 using static EMILtools.Timers.TimerUtility;
 
 
-namespace EMILtools.Core
+namespace EMILtools.Systems
 {
     /// <summary>
     /// Represents a callback mechanism that can be invoked before pipeline step execution
     /// </summary>
-    public class Callback : IResolveContext
+    public class Callback : IResolvableWithContext
     {
         static readonly bool ContinueResolving = true;
         public readonly Action Action;
@@ -32,7 +32,7 @@ namespace EMILtools.Core
     /// Timed resolving context that integrates with a pipeline execution flow.
     /// Will ShortCircuit if the timer is not finished (Only If the StepType is a ShortCircuit)
     /// </summary>
-    public class Timed : IResolveContext, ITimerUser
+    public class Timed : IResolvableWithContext, ITimerUser
     {
         // Is not intended to be read as ShortCircuit FALSE, used just for readability in the Resolve()
         bool ShortCircuitIfNotFinished => false; 
@@ -59,7 +59,7 @@ namespace EMILtools.Core
     /// Provides functionality to wait asynchronously until the timer completes (Stays in UnityTime)
     /// Used when delays are necessary before progressing within the pipeline.
     /// </summary>
-    public class Wait : IResolveContext, ITimerUser, IResolveWaitable
+    public class Wait : IResolvableWithContext, ITimerUser, IResolveWaitable
     {
         // --- static ----
         static bool ContinueResolving = true;

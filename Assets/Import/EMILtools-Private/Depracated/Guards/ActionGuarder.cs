@@ -86,7 +86,7 @@ public class LazyActionGuard<TLazyFunc> : IGuardAction
 
 
 
-    public LazyActionGuard( PersistentAction onChanged, Func<bool> @if, Action then,  
+    public LazyActionGuard( PersistentDelegate onChanged, Func<bool> @if, Action then,  
         string ifName, string thenName)
     {
         observed = new LazyFuncFactory<TLazyFunc, bool>().CreateLazyFuncBool(onChanged, @if);
@@ -100,7 +100,7 @@ public class LazyActionGuard<TLazyFunc> : IGuardAction
         If ??= "null-check";
     }
 
-    public LazyActionGuard(PersistentAction onChanged, Func<bool> @if, Action then)
+    public LazyActionGuard(PersistentDelegate onChanged, Func<bool> @if, Action then)
     {
         observed = new LazyFuncFactory<TLazyFunc, bool>().CreateLazyFuncBool(onChanged, @if);
         this.then = then;
@@ -109,7 +109,7 @@ public class LazyActionGuard<TLazyFunc> : IGuardAction
         Then = then != null ? then.Method.Name : "return";
     }
     
-    public LazyActionGuard(PersistentAction onChanged, Func<bool> @if)
+    public LazyActionGuard(PersistentDelegate onChanged, Func<bool> @if)
     {
         observed = new LazyFuncFactory<TLazyFunc, bool>().CreateLazyFuncBool(onChanged, @if);
         this.then = null;
@@ -118,7 +118,7 @@ public class LazyActionGuard<TLazyFunc> : IGuardAction
         Then = "return";
     }
     
-    public LazyActionGuard(PersistentAction onChanged, Func<bool> @if, string ifName)
+    public LazyActionGuard(PersistentDelegate onChanged, Func<bool> @if, string ifName)
     {
         observed = new LazyFuncFactory<TLazyFunc, bool>().CreateLazyFuncBool(onChanged, @if);
         this.then = null;

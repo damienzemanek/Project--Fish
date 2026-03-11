@@ -91,7 +91,7 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2,
-                shortCircuited: new IResolveContext[] { new Callback(ShortCircuitCallback) })
+                shortCircuited: new IResolvableWithContext[] { new Callback(ShortCircuitCallback) })
             .InjectMainMethod(ctx => Jump(ctx));
         bool Jump(TestContextProvider ctx) => true;
 
@@ -115,8 +115,8 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolveContext[]{ new Callback(CallBefore) }, 
-                after: new IResolveContext[]{ new Callback(CallAfter) })
+                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
+                after: new IResolvableWithContext[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
         TryTo(jump, myctx);
@@ -140,8 +140,8 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolveContext[]{ new Callback(CallBefore) }, 
-                after: new IResolveContext[]{ new Callback(CallAfter) })
+                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
+                after: new IResolvableWithContext[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
         TryTo(jump, myctx);
@@ -171,7 +171,7 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
             .Add_ShortCircuit(ctx => ctx.Value == 1, 
-                before: new IResolveContext[] { new Timed(1) })
+                before: new IResolvableWithContext[] { new Timed(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 
@@ -203,7 +203,7 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
             .Add_ShortCircuit(ctx => ctx.Value == 1, 
-                before: new IResolveContext[] { new Wait(1) })
+                before: new IResolvableWithContext[] { new Wait(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 
@@ -235,9 +235,9 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolveContext[]{ new Callback(CallBefore) }, 
-                after: new IResolveContext[]{ new Callback(CallAfter) },
-                shortCircuited: new IResolveContext[]{ new Callback(ShortCircuit) })
+                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
+                after: new IResolvableWithContext[]{ new Callback(CallAfter) },
+                shortCircuited: new IResolvableWithContext[]{ new Callback(ShortCircuit) })
             .InjectMainMethod(Jump);
         
         TryTo(jump, myctx);

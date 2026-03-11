@@ -21,8 +21,8 @@ namespace EMILtools.Core
         static readonly EqualityComparer<T> Comparer = EqualityComparer<T>.Default;
         
         [SerializeField, HideLabel] T _value;
-        [NonSerialized] PersistentAction _SimpleReactions;
-        [NonSerialized] PersistentAction<T> _Reactions;
+        [NonSerialized] PersistentDelegate _SimpleReactions;
+        [NonSerialized] PersistentDelegate<T> _Reactions;
         [NonSerialized] PersistentFunc<T, T> _Intercepts;
 
         public PersistentFunc<T, T> Intercepts
@@ -34,7 +34,7 @@ namespace EMILtools.Core
             }
             set => _Intercepts = value;
         }
-        public PersistentAction<T> Reactions 
+        public PersistentDelegate<T> Reactions 
         {
             get
             {
@@ -43,11 +43,11 @@ namespace EMILtools.Core
             }
             set => _Reactions = value;
         }
-        public PersistentAction SimpleReactions
+        public PersistentDelegate SimpleReactions
         {
             get
             {
-                if (_SimpleReactions == null) _SimpleReactions = new PersistentAction();
+                if (_SimpleReactions == null) _SimpleReactions = new PersistentDelegate();
                 return _SimpleReactions;
             }
             set => _SimpleReactions = value;
@@ -81,8 +81,8 @@ namespace EMILtools.Core
             _SimpleReactions = null;
         }
         public ReactiveIntercept(T initial,
-            PersistentAction simpleReaction = null,
-            PersistentAction<T> reaction = null,
+            PersistentDelegate simpleReaction = null,
+            PersistentDelegate<T> reaction = null,
             PersistentFunc<T, T> intercept = null)
         {
             _value = initial;

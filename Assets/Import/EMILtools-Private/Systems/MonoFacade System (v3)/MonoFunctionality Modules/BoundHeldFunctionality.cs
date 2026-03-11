@@ -33,15 +33,15 @@ namespace EMILtools.Systems
         where TContext : class, IModuleUsabableContext
         where TMonoStructure : IMonoStructure
     {
-        [NonSerialized] PersistentAction action = new();
-        protected BoundFunctionality(PersistentAction action, TFacade facade) : base(facade)
-         => this.action = action;
+        [NonSerialized] PersistentDelegate _delegate = new();
+        protected BoundFunctionality(PersistentDelegate @delegate, TFacade facade) : base(facade)
+         => this._delegate = @delegate;
         
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => action.Add(Execute);
-        public virtual void Unbind() => action.Remove(Execute);
+        public virtual void Bind() => _delegate.Add(Execute);
+        public virtual void Unbind() => _delegate.Remove(Execute);
     }
 
 
@@ -73,7 +73,7 @@ namespace EMILtools.Systems
         [ShowInInspector] protected bool isActive => Settable._unnamedStoredValue1;
         protected SettableTemplate SetContext => Settable;
         [NonSerialized] [ShowInInspector] SettableTemplate Settable;
-        protected BoundSetFunctionality(IPersistentDelegate _action, TFacade facade) : base(facade)
+        protected BoundSetFunctionality(ISystemDelegator _action, TFacade facade) : base(facade)
         {
             Settable = new SettableTemplate();
             Settable.action = _action;

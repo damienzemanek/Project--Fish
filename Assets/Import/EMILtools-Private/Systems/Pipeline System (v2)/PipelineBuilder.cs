@@ -24,7 +24,7 @@ namespace EMILtools.Systems
         PipelineBuilder<TContext> AddStep(
             StepType stepType,
             PipelineStepDelegate<TContext> @if,
-            in ResolveContainer<IResolveContext> resolves)
+            in ResolveContainer<IResolvableWithContext> resolves)
         {
             steps.Add(new PipelineStep<TContext>(stepType, @if, resolves));
             return this;
@@ -34,15 +34,15 @@ namespace EMILtools.Systems
         // ------ API Methods ---------
         public PipelineBuilder<TContext> Add_ShortCircuit(
             PipelineStepDelegate<TContext> @if,
-            IResolveContext[] before = null, IResolveContext[] after = null, IResolveContext[] shortCircuited = null)
+            IResolvableWithContext[] before = null, IResolvableWithContext[] after = null, IResolvableWithContext[] shortCircuited = null)
         {
-            var NewResolves = new ResolveContainer<IResolveContext>(autoInit: true, before, after, shortCircuited);
+            var NewResolves = new ResolveContainer<IResolvableWithContext>(before, after, shortCircuited);
             return AddStep(StepType.ShortCircuit, @if, NewResolves);
         }
         public PipelineBuilder<TContext> Add_Middleware(PipelineStepDelegate<TContext> method, 
-            IResolveContext[] before = null, IResolveContext[] after = null)
+            IResolvableWithContext[] before = null, IResolvableWithContext[] after = null)
         {
-            var NewResolves = new ResolveContainer<IResolveContext>(autoInit: false, before, after);
+            var NewResolves = new ResolveContainer<IResolvableWithContext>(before, after);
             return AddStep(StepType.Middleware, method, NewResolves);
         }
         

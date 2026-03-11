@@ -15,9 +15,9 @@ public class MouseCallbackZones
     {
         public Rect zone;
         [ShowInInspector, ReadOnly] bool wasInside;
-        [NonSerialized] public PersistentAction callback;
+        [NonSerialized] public PersistentDelegate callback;
             
-        void EnsureInit() => callback ??= new PersistentAction();
+        void EnsureInit() => callback ??= new PersistentDelegate();
             
         public void CheckZone(Vector2 mousePos)
         {
@@ -31,7 +31,7 @@ public class MouseCallbackZones
         {
             this.zone = zone;
             wasInside = false;
-            callback = new PersistentAction();
+            callback = new PersistentDelegate();
         }
     }
 

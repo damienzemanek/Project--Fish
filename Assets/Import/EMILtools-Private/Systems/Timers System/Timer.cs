@@ -16,9 +16,9 @@ namespace EMILtools.Timers
         public float Progress => Mathf.Clamp01(Time / initialTime);
         public float Duration => initialTime;
         
-        [HideInInspector] public PersistentAction OnTimerStart = new();
-        [HideInInspector] public PersistentAction OnTimerStop = new();
-        [HideInInspector] public PersistentAction OnTimerTick = new();
+        [HideInInspector] public PersistentDelegate OnTimerStart = new();
+        [HideInInspector] public PersistentDelegate OnTimerStop = new();
+        [HideInInspector] public PersistentDelegate OnTimerTick = new();
 
         public Timer(float _initialTime)
         {

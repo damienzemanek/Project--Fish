@@ -2,11 +2,17 @@
 
 namespace EMILtools.Core
 {
+
+    public interface IDelegatorAbstract<TAbstractedDelegate>
+    {
+        TAbstractedDelegate Add(TAbstractedDelegate cb);
+        TAbstractedDelegate Remove(TAbstractedDelegate cb);
+    }
     
     /// <summary>
     /// Lowest level Delegate
     /// </summary>
-    public interface IPersistentDelegate
+    public interface ISystemDelegator : IDelegatorAbstract<Delegate>
     {
         Delegate Add(Delegate cb);
         Delegate Remove(Delegate cb);
@@ -15,7 +21,7 @@ namespace EMILtools.Core
     /// <summary>
     /// Persistent Action with no type constraints on the Delegate
     /// </summary>
-    public interface IPersistentAction : IPersistentDelegate
+    public interface IDelegator : ISystemDelegator
     {
         int Count { get; }
         void PrintInvokeListNames();
@@ -26,7 +32,7 @@ namespace EMILtools.Core
     /// No CRTP
     /// </summary>
     /// <typeparam name="TDelegate"></typeparam>
-    public interface IPersistentAction<TDelegate> : IPersistentAction
+    public interface IPersistentDelegate<TDelegate> : IDelegator
         where TDelegate : Delegate
     {
         void Add(TDelegate cb);

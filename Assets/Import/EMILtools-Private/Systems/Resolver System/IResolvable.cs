@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace EMILtools.Core
+namespace EMILtools.Systems
 {
     public interface IResolvable
     {
@@ -16,7 +16,7 @@ namespace EMILtools.Core
     /// (!) NOTE: "BEFORE" resolves will run even if the pipeline step short circuits
     /// (!) NOTE: The main method will NOT run if ANY pipeline step short circuits
     /// </summary>
-    public interface IResolveContext : IResolvable
+    public interface IResolvableWithContext : IResolvable
     {
         public bool Resolve<TContext>(in TContext ctx) where TContext : class;
     }

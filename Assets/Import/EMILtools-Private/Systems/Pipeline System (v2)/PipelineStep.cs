@@ -1,86 +1,91 @@
 ﻿using EMILtools.Core;
+using EMILtools.Systems;
 
 
-/// <summary>
-/// Represents a delegate that defines the execution logic for a step in the pipeline.
-/// Used to process a specific context within the pipeline's execution flow.
-/// SRP: Execution logic for pipeline steps.
-/// </summary>
-/// <typeparam name="TContext">
-/// The type of context used in the pipeline.
-/// Intent: High Throughput, so it's a CLASS
-/// </typeparam>
-public delegate bool PipelineStepDelegate<in TContext>(TContext context);
-
-
-/// <summary>
-/// Represents a step in a pipeline,
-/// Defines the type of step, its execution logic, and its associated resolution contexts.
-/// SRP: Storage
-/// </summary>
-/// <typeparam name="TContext">
-/// The type of context used in the pipeline.
-/// Intent: High Throughput, so it's a CLASS
-/// </typeparam>
-public readonly struct PipelineStep<TContext>
-    where TContext : class
-{
-    const bool ResolveSuccessfull = true;
-
-
-    // ------ Variables --------
-    public readonly PipelineStepDelegate<TContext> Execute;
-    public readonly ResolveContainer<IResolveContext> Resolves;
-    public readonly StepType StepType;
-
-    
-    // ------ Ctors ------
-    public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
-        ResolveContainer<IResolveContext> resolves = default)
-    {
-        Execute = execute;
-        Resolves = resolves;
-        StepType = stepType;
-    }
-    public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
-    {
-        Execute = mainMethod;
-        Resolves = new ResolveContainer<IResolveContext>(autoInit: true);
-        StepType = StepType.MainMethod;
-    }
-}
-
-
-/// <summary>
-/// Represents the type of a step within a pipeline.
-/// Defines the role and behavior of a step during pipeline execution.
-/// SRP: Classification of step roles.
-/// </summary>
-public enum StepType
+namespace EMILtools.Systems
 {
     /// <summary>
-    /// Allows execution to continue regardless of the return state
-    ///
-    /// Usage: Add_Middleware(ctx => { DoSomething(ctx); return false; });
+    /// Represents a delegate that defines the execution logic for a step in the pipeline.
+    /// Used to process a specific context within the pipeline's execution flow.
+    /// SRP: Execution logic for pipeline steps.
     /// </summary>
-    Middleware, 
-    
-    /// <summary>
-    /// Short-circuits execution if return state is false (Early Exit)
-    /// Typically used with validation steps to ensure that the main logic is only executed when certain conditions are met.
-    ///
-    /// Usage: Add_ShortCircuit(ctx => isSomethingValid(ctx)); 
-    /// </summary>
-    ShortCircuit,
+    /// <typeparam name="TContext">
+    /// The type of context used in the pipeline.
+    /// Intent: High Throughput, so it's a CLASS
+    /// </typeparam>
+    public delegate bool PipelineStepDelegate<in TContext>(TContext context);
+
 
     /// <summary>
-    /// Represents the primary execution step in a pipeline.
-    /// This step defines the main logic to be executed within the process
-    /// and is typically the final operation in the pipeline sequence.
-    ///
-    /// Usage: Add_MainMethod(ctx => { DoSomething(ctx); });
+    /// Represents a step in a pipeline,
+    /// Defines the type of step, its execution logic, and its associated resolution contexts.
+    /// SRP: Storage
     /// </summary>
-    MainMethod
+    /// <typeparam name="TContext">
+    /// The type of context used in the pipeline.
+    /// Intent: High Throughput, so it's a CLASS
+    /// </typeparam>
+    public readonly struct PipelineStep<TContext>
+        where TContext : class, IContextViewImmutable
+    {
+        const bool ResolveSuccessfull = true;
+
+
+        // ------ Variables --------
+        public readonly PipelineStepDelegate<TContext> Execute;
+        public readonly ResolveContainer<IResolvableWithContext> Resolves;
+        public readonly StepType StepType;
+
+        
+        // ------ Ctors ------
+        public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
+            ResolveContainer<IResolvableWithContext> resolves = default)
+        {
+            Execute = execute;
+            Resolves = resolves;
+            StepType = stepType;
+        }
+        public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
+        {
+            Execute = mainMethod;
+            Resolves = new ResolveContainer<IResolvableWithContext>();
+            StepType = StepType.MainMethod;
+        }
+    }
+
+
+    /// <summary>
+    /// Represents the type of a step within a pipeline.
+    /// Defines the role and behavior of a step during pipeline execution.
+    /// SRP: Classification of step roles.
+    /// </summary>
+    public enum StepType
+    {
+        /// <summary>
+        /// Allows execution to continue regardless of the return state
+        ///
+        /// Usage: Add_Middleware(ctx => { DoSomething(ctx); return false; });
+        /// </summary>
+        Middleware, 
+        
+        /// <summary>
+        /// Short-circuits execution if return state is false (Early Exit)
+        /// Typically used with validation steps to ensure that the main logic is only executed when certain conditions are met.
+        ///
+        /// Usage: Add_ShortCircuit(ctx => isSomethingValid(ctx)); 
+        /// </summary>
+        ShortCircuit,
+
+        /// <summary>
+        /// Represents the primary execution step in a pipeline.
+        /// This step defines the main logic to be executed within the process
+        /// and is typically the final operation in the pipeline sequence.
+        ///
+        /// Usage: Add_MainMethod(ctx => { DoSomething(ctx); });
+        /// </summary>
+        MainMethod
+    }
+
 }
 
 

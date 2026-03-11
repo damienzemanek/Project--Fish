@@ -7,8 +7,8 @@ public class LazyFuncFactory<TLazyFunc, T> : ILazyFuncFactory<TLazyFunc, T>
 {
 
     public LazyFuncFactory() { }
-    public TLazyFunc CreateLazyFuncBool(PersistentAction onChanged, Func<bool> func) => _factory(onChanged, func);
+    public TLazyFunc CreateLazyFuncBool(PersistentDelegate onChanged, Func<bool> func) => _factory(onChanged, func);
     
-    static readonly Func<PersistentAction, Func<bool>, TLazyFunc> _factory = 
+    static readonly Func<PersistentDelegate, Func<bool>, TLazyFunc> _factory = 
         (pa, f) => (TLazyFunc)Activator.CreateInstance(typeof(TLazyFunc), pa, f);
 }

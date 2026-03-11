@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using EMILtools.Core;
 using UnityEngine;
-using static ResolverSystem;
+using static EMILtools.Systems.ResolverSystem;
 
 namespace EMILtools.Systems
 {
+    
     /// <summary>
     /// Frame-Agnostic Async Pipeline Executor
     /// SRP: Execution
@@ -26,7 +27,7 @@ namespace EMILtools.Systems
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                if(!await PipelineResolver.ResolveContainer(Resolver, step.Resolves, step.Execute, ctx, isShortCircuit )) return;
+                if(!await PipelineResolver.ResolveContainer(Resolver, step.Resolves, step.Execute, ctx, isShortCircuit)) return;
                 
             }
                 

@@ -28,12 +28,12 @@ public class PlayerFunctionality : Functionalities<
         public class Setter : SettableTemplate<bool, Vector2> 
         { [ShowInInspector] public Vector2 move {get => unnamedStoredValue2; set => unnamedStoredValue2 = value;} }
 
-        public Move(IPersistentDelegate _action, PlayerController facade) : base(_action, facade) { }
+        public Move(ISystemDelegator _action, PlayerController facade) : base(_action, facade) { }
 
         public override PipelineBuilder<PlayerContextData> InjectSteps(
             PipelineBuilder<PlayerContextData> builder)
         => builder.Add_ShortCircuit(ctx => !isActive, 
-            shortCircuited: new IResolveContext[] { new Callback(ResetMove) });
+            shortCircuited: new IResolvableWithContext[] { new Callback(ResetMove) });
 
         public override bool ExecutionImplementation(PlayerContextData ctx)
         {
