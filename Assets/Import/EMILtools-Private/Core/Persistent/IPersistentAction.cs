@@ -2,6 +2,7 @@
 
 namespace EMILtools.Core
 {
+    
     /// <summary>
     /// Lowest level Delegate
     /// </summary>

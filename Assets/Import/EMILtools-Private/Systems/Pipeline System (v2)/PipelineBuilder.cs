@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using EMILtools.Core;
 
 namespace EMILtools.Systems
 {
@@ -23,29 +24,29 @@ namespace EMILtools.Systems
         PipelineBuilder<TContext> AddStep(
             StepType stepType,
             PipelineStepDelegate<TContext> @if,
-            IResolveContext[] before = null,
-            IResolveContext[] after = null,
-            IResolveContext[] shortCircuited = null)
+            in ResolveContainer<IResolveContext> resolves)
         {
-            steps.Add(new PipelineStep<TContext>(stepType, @if, before, after, shortCircuited));
+            steps.Add(new PipelineStep<TContext>(stepType, @if, resolves));
             return this;
         }
+
     
         // ------ API Methods ---------
         public PipelineBuilder<TContext> Add_ShortCircuit(
             PipelineStepDelegate<TContext> @if,
             IResolveContext[] before = null, IResolveContext[] after = null, IResolveContext[] shortCircuited = null)
         {
-            return AddStep(StepType.ShortCircuit, @if, before, after, shortCircuited);
+            var NewResolves = new ResolveContainer<IResolveContext>(autoInit: true, before, after, shortCircuited);
+            return AddStep(StepType.ShortCircuit, @if, NewResolves);
         }
         public PipelineBuilder<TContext> Add_Middleware(PipelineStepDelegate<TContext> method, 
             IResolveContext[] before = null, IResolveContext[] after = null)
         {
-            return AddStep(StepType.Middleware, method, before, after);
+            var NewResolves = new ResolveContainer<IResolveContext>(autoInit: false, before, after);
+            return AddStep(StepType.Middleware, method, NewResolves);
         }
         
         
-    
         public Pipeline<TContext> InjectMainMethod(PipelineStepDelegate<TContext> mainMethod) 
         {
             steps.Add(new PipelineStep<TContext>(mainMethod));

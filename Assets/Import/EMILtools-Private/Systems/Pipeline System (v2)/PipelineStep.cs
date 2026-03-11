@@ -1,4 +1,21 @@
 ﻿using System;
+using EMILtools.Core;
+
+
+public abstract class CommandDelegate<TDelegate, TContext, TReturn> : ICommand<TContext, TReturn>
+    where TDelegate : Delegate
+{
+    protected readonly TDelegate Command;
+    public abstract TReturn Execute(TContext ctx);
+    public CommandDelegate(TDelegate command) => Command = command;
+
+}
+
+public sealed class PipelineCommand<TContext> : CommandDelegate<PipelineStepDelegate<TContext>, TContext, bool>
+{
+    public PipelineCommand(PipelineStepDelegate<TContext> command) : base(command) { }
+    public override bool Execute(TContext ctx) => Command.Invoke(ctx);
+}
 
 
 /// <summary>
@@ -29,32 +46,23 @@ public readonly struct PipelineStep<TContext>
 
 
     // ------ Variables --------
-    public readonly PipelineStepDelegate<TContext> Execute;
-    public readonly IResolveContext[] resolveContextsBeforeExecution;
-    public readonly IResolveContext[] resolveContextsAfterExecution;
-    public readonly IResolveContext[] shortCircuited;
-
+    public readonly PipelineCommand<TContext> Execute;
+    public readonly ResolveContainer<IResolveContext> Resolves;
     public readonly StepType StepType;
 
     
     // ------ Ctors ------
     public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
-        IResolveContext[] resolveContextsBeforeExecution = null,
-        IResolveContext[] resolveContextsAfterExecution = null,
-        IResolveContext[] shortCircuited = null)
+        ResolveContainer<IResolveContext> resolves = default)
     {
-        this.Execute = execute;
-        this.resolveContextsBeforeExecution = resolveContextsBeforeExecution ?? Array.Empty<IResolveContext>();
-        this.resolveContextsAfterExecution = resolveContextsAfterExecution ?? Array.Empty<IResolveContext>();
-        this.shortCircuited = shortCircuited ?? Array.Empty<IResolveContext>();
+        Execute = new PipelineCommand<TContext>(execute);
+        Resolves = resolves;
         StepType = stepType;
     }
     public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
     {
-        Execute = mainMethod;
-        resolveContextsBeforeExecution = Array.Empty<IResolveContext>();
-        resolveContextsAfterExecution = Array.Empty<IResolveContext>();
-        shortCircuited = Array.Empty<IResolveContext>();
+        Execute = new PipelineCommand<TContext>(mainMethod);
+        Resolves = new ResolveContainer<IResolveContext>(autoInit: true);
         StepType = StepType.MainMethod;
     }
 }

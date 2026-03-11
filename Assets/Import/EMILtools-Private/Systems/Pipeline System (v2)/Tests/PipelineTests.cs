@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections;
+using EMILtools.Core;
 using EMILtools.Timers;
 using UnityEngine.TestTools;
 using EMILtools.Systems;

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using EMILtools.Core;
 using UnityEngine;
 
 namespace EMILtools.Systems
@@ -16,62 +17,7 @@ namespace EMILtools.Systems
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-
-                //Debug.Log($" [===== Executing & Resolving Step {i}... =====] ");
-
-                
-                if (step.resolveContextsBeforeExecution.Length > 0 && 
-                    !await ResolveContexts(step.resolveContextsBeforeExecution, ctx, isShortCircuit))
-                {
-                    //Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
-                    return;
-                }
-
-                if (step.Execute(ctx) && isShortCircuit)
-                {
-                    //Debug.Log(" (!) Short Circuit Triggered (Execution)");
-                    if(step.shortCircuited.Length > 0)
-                        await ResolveContexts(step.shortCircuited, ctx, true);
-                    return;
-                }
-                //Debug.Log($"    >> Step {i} Executed << ");
-
-                if (step.resolveContextsAfterExecution.Length > 0 && 
-                    !await ResolveContexts(step.resolveContextsAfterExecution, ctx, isShortCircuit))
-                {
-                    //Debug.Log(" (!) Resolver Short Circuited (After Execution)");
-                    return;
-                }
-                
-                //Debug.Log($" [===== Step {i} Fully Executed & Resolved =====] ");
-            }
-            
-            static async Task<bool> ResolveContexts<TContext>(
-                IResolveContext[] contexts,
-                TContext ctx,
-                bool isShortCircuit)
-                where TContext : class
-            {
-                //Debug.Log($" ------ Resolving {contexts.Length} Contexts... ------");
-                for (int j = 0; j < contexts.Length; j++)
-                {
-                    //Debug.Log($" (?) Resolving Context {j}... ({contexts[j].GetType().Name})");
-                    var resolve = contexts[j];
-
-                    if (!resolve.Resolve(ctx) && isShortCircuit)
-                        return false;
-
-                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
-                    {
-                        waitable.waiting = true;
-                        await waitable.WaitUntilResolved();
-                    }
-                    //Debug.Log($" (#) Context {j} Resolved! ");
-                }
-
-                //Debug.Log($" ------ (#) All Contexts Resolved! ------");
-
-                return true;
+                if(!await Resolver.ResolveContainer(step.Resolves, step.Execute, ctx, isShortCircuit)) return;
             }
                 
         }

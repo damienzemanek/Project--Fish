@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
   move:
-    <speedScalar>k__BackingField: 2000
+    <speedScalar>k__BackingField: 100
     <forceMode2d>k__BackingField: 0

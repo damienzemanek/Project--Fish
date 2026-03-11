@@ -5,6 +5,7 @@ using UnityEngine;
 namespace EMILtools.Core
 {
     
+
     public sealed class PersistentAction<T1, T2> : 
         IPersistentAction<Action<T1,T2>, PersistentAction<T1, T2>>,
         IPersistentAction<Action<T1,T2>>
