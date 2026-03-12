@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using EMILtools.Systems;
-using JetBrains.Annotations;
 using UnityEngine;
 using static EMILtools.Systems.ResolverSystem;
 using static EMILtools.Systems.SubscriberExecutor;
@@ -10,12 +9,6 @@ using static EMILtools.Systems.SubscriberExecutor;
 namespace EMILtools.Systems
 {
     public class VoidCtx : IContext { }
-    public interface ISubscriber<TContext>
-        where TContext : class, IContext
-    {
-        bool isActive { get; set; }
-        Task Execute(TContext ctx);
-    }
 
     /// <summary>
     /// Use VoidCtx for no context
@@ -30,13 +23,23 @@ namespace EMILtools.Systems
         where TResolver : Resolver<TDelegate, TContext>, new()
         where TContext : class, IContext
     {
-        public static readonly VoidCtx VoidCtx = new VoidCtx();
         readonly TDelegate Callback;
         readonly ResolveContainer<IResolvableWithContext> ResolveContainer;
         static readonly TResolver Resolver = new();
         
         public bool canShortCircuit { get; set; }
         public bool isActive { get; set; }
+        
+        public Subscriber(
+            TDelegate callback,
+            bool isActive = true,
+            bool canShortCircuit = false)
+        {
+            Callback = callback;
+            this.canShortCircuit = canShortCircuit;
+            this.isActive = isActive;
+            ResolveContainer = new ResolveContainer<IResolvableWithContext>(null, null, null);
+        }
 
         public Subscriber(
             TDelegate callback,
@@ -48,6 +51,13 @@ namespace EMILtools.Systems
             ResolveContainer = resolveContainer;
             this.canShortCircuit = canShortCircuit;
             this.isActive = isActive;
+
+            if (ResolveContainer.afterExecution == null
+                && ResolveContainer.beforeExecution == null
+                && ResolveContainer.failedExecution == null)
+            {
+                ResolveContainer = new ResolveContainer<IResolvableWithContext>(null, null, null);
+            }
         }
 
         public Task Execute(TContext ctx)
@@ -70,50 +80,6 @@ namespace EMILtools.Systems
                 Callback,
                 canShortCircuit
             );
-        }
-    }
-    
-
-    public static class SubscriberExecutor
-    {
-        public class ActionResolver : Resolver<Action, VoidCtx>
-        {
-            protected override bool Execute(Action command, [CanBeNull] VoidCtx ctx)
-            {
-                command();
-                return true;
-            }
-        }
-        public class ActionContextResolver<T> : Resolver<Action<T>, T>
-            where T : class, IContext
-        {
-            protected override bool Execute(Action<T> command, [CanBeNull] T ctx)
-            {
-                command(ctx);
-                return true;
-            }
-        }
-        
-        public class PredicateResolver : Resolver<Func<bool>, VoidCtx>
-        {
-            protected override bool Execute(Func<bool> command, [CanBeNull] VoidCtx ctx)
-                => command();
-        }
-
-        public class FuncResolver<TResult> : Resolver<Func<TResult>, VoidCtx>
-        {
-            protected override bool Execute(Func<TResult> command, [CanBeNull] VoidCtx ctx)
-            {
-                command();
-                return true;
-            }
-        }
-        
-        public class PredicateContextResolver<T> : Resolver<Func<T, bool>, T>
-            where T : class, IContext
-        {
-            protected override bool Execute(Func<T, bool> command, [CanBeNull] T ctx)
-                => command(ctx);
         }
     }
 }
