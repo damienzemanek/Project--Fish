@@ -30,7 +30,7 @@ public class LivingEntity : Entity,
     public Animator animator;
     public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
-    [HideInInspector] public PersistentDelegate<DeathType> OnDeath = new();
+    [HideInInspector] public PersistentAction<DeathType> OnDeath = new();
 
     public UnityEvent OnDie = new UnityEvent();
     

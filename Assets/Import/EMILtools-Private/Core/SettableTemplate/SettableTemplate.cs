@@ -29,7 +29,7 @@ public abstract class SettableTemplate<T1> : ISettableTemplate<T1>
     // Template Call 
     [NonSerialized] readonly Action<T1> _templateCall; 
     public Delegate TemplateCall => _templateCall;
-    public PersistentDelegate OnSet { get; set; } = new();
+    public PersistentAction OnSet { get; set; } = new();
     void _TemplateCall(T1 val)
     {
         ((ISettableTemplate<T1>)this)._unnamedStoredValue1 = val;
@@ -77,7 +77,7 @@ public abstract class SettableTemplate<T1, T2> : ISettableTemplate<T1>
     
     // Ctor
     public SettableTemplate() => _templateCall = new Action<T1, T2>(_TemplateCall);
-    public PersistentDelegate OnSet { get; set; } = new();
+    public PersistentAction OnSet { get; set; } = new();
 
     // Action
     [NonSerialized] IPersistentDelegate<Action<T1, T2>> _delegate;

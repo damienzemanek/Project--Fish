@@ -19,7 +19,7 @@ public class ProjectileSpawnManager : EntitySpawnManager, ITimerUser
     [SerializeField] bool targetAPosition = false;
     [SerializeField] [ShowIf("targetAPosition")] public Vector3 targetPosition;
 
-    [NonSerialized] public PersistentDelegate OnSpawn;
+    [NonSerialized] public PersistentAction OnSpawn;
 
     protected override void InitializationImplementation()
     {

@@ -11,7 +11,7 @@ public static class LifecycleEX
         public float rate;
         [ReadOnly] public float interval => 1f / rate;
         [ReadOnly] public float timer;
-        public PersistentDelegate method;
+        public PersistentAction method;
 
         public void UpdateTick()
         {

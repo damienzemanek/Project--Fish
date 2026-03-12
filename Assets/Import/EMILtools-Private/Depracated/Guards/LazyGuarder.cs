@@ -13,7 +13,7 @@ using Sirenix.OdinInspector;
 
         readonly LazyFuncLite<bool> observed;
         
-        public LazyGuard(PersistentDelegate observedOnChanged,  Func<bool> @if, string ifName)
+        public LazyGuard(PersistentAction observedOnChanged,  Func<bool> @if, string ifName)
         {
             If = ifName;
             observed = new LazyFuncLite<bool>(observedOnChanged, @if);

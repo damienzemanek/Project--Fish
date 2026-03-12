@@ -33,15 +33,15 @@ namespace EMILtools.Systems
         where TContext : class, IModuleUsabableContext
         where TMonoStructure : IMonoStructure
     {
-        [NonSerialized] PersistentDelegate _delegate = new();
-        protected BoundFunctionality(PersistentDelegate @delegate, TFacade facade) : base(facade)
-         => this._delegate = @delegate;
+        [NonSerialized] PersistentAction _action = new();
+        protected BoundFunctionality(PersistentAction action, TFacade facade) : base(facade)
+         => this._action = action;
         
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => _delegate.Add(Execute);
-        public virtual void Unbind() => _delegate.Remove(Execute);
+        public virtual void Bind() => _action.Add(Execute);
+        public virtual void Unbind() => _action.Remove(Execute);
     }
 
 

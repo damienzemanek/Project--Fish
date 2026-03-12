@@ -9,4 +9,12 @@ namespace EMILtools.Systems
         Task Execute(TContext ctx);
         Task Execute();
     }
+    
+    public interface ISubscriber<TContext, TData> : ISubscriber<TContext>
+        where TContext : class, IContext
+    {
+        bool isActive { get; set; }
+        Task Execute(TContext ctx);
+        Task Execute();
+    }
 }

@@ -16,14 +16,14 @@ public class LazyFuncLite<T> : ILazyFunc<T>
 
     public LazyFuncLite() { }
     
-    public LazyFuncLite(PersistentDelegate onChangedReEvaluate, Func<T> func)
+    public LazyFuncLite(PersistentAction onChangedReEvaluate, Func<T> func)
     {
         this.func = func;  
         storedFuncEvaluation = func != null ? func.Invoke() : default(T);
         onChangedReEvaluate?.Add(Evaluate);
     }
     
-    public void Dispose(PersistentDelegate observedOnChanged) => observedOnChanged.Remove(Evaluate);
+    public void Dispose(PersistentAction observedOnChanged) => observedOnChanged.Remove(Evaluate);
     
     public static implicit operator T(LazyFuncLite<T> lazyFuncLite) => lazyFuncLite.storedFuncEvaluation;
     
@@ -44,11 +44,11 @@ public class LazyFunc<T> : ILazyFunc<T>
     readonly Func<T> func;
     T ILazyFunc<T>.InvokeLazy() => storedFuncEvaluation;
     
-    [NonSerialized] PersistentDelegate _onChangedReEvaluate;
+    [NonSerialized] PersistentAction _onChangedReEvaluate;
 
     public LazyFunc() { }
     
-    public LazyFunc(PersistentDelegate onChangedReEvaluate, Func<T> func)
+    public LazyFunc(PersistentAction onChangedReEvaluate, Func<T> func)
     {
         this.func = func;
         if(func == null) storedFuncEvaluation = default;

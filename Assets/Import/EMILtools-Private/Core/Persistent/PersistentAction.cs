@@ -6,8 +6,8 @@ namespace EMILtools.Core
 {
     
 
-    public sealed class PersistentDelegate<T1, T2> : 
-        IPersistentAction<Action<T1,T2>, PersistentDelegate<T1, T2>>,
+    public sealed class PersistentAction<T1, T2> : 
+        IPersistentAction<Action<T1,T2>, PersistentAction<T1, T2>>,
         IPersistentDelegate<Action<T1,T2>>
     {
         // ------------ IPersistentDelegate ------------
@@ -15,8 +15,8 @@ namespace EMILtools.Core
         public void API_Remove(Delegate cb) => Remove((Action<T1, T2>)cb);
         
         // ----------- Concrete CRTP -----------
-        public PersistentDelegate<T1, T2> Add(Action<T1, T2> cb) { _action += cb; return this; }
-        public PersistentDelegate<T1, T2> Remove(Action<T1, T2> cb) { _action -= cb; return this; }
+        public PersistentAction<T1, T2> Add(Action<T1, T2> cb) { _action += cb; return this; }
+        public PersistentAction<T1, T2> Remove(Action<T1, T2> cb) { _action -= cb; return this; }
         
         // ----------- Interface Constrained Non CRTP -----------
         void IPersistentDelegate<Action<T1, T2>>.Add(Action<T1, T2> cb) => Add(cb);
@@ -39,8 +39,8 @@ namespace EMILtools.Core
         
     }
     
-    public sealed class PersistentDelegate<T> : 
-            IPersistentAction<Action<T>, PersistentDelegate<T>>, 
+    public sealed class PersistentAction<T> : 
+            IPersistentAction<Action<T>, PersistentAction<T>>, 
             IPersistentDelegate<Action<T>>
     {
         
@@ -49,8 +49,8 @@ namespace EMILtools.Core
         public void API_Remove(Delegate cb) => Remove((Action<T>)cb);
 
         //------------  Concrete CRTP ------------ 
-        public PersistentDelegate<T> Add(Action<T> cb) { _action += cb; return this; }
-        public PersistentDelegate<T> Remove(Action<T> cb) { _action -= cb; return this; }
+        public PersistentAction<T> Add(Action<T> cb) { _action += cb; return this; }
+        public PersistentAction<T> Remove(Action<T> cb) { _action -= cb; return this; }
         
         //------------ Non CRTP ------------ 
         void IPersistentDelegate<Action<T>>.Add(Action<T> cb) => Add(cb);
@@ -75,8 +75,8 @@ namespace EMILtools.Core
     /// <summary>
     /// Non-generic version for simple triggers
     /// </summary>
-    public sealed class PersistentDelegate : 
-        IPersistentAction<Action, PersistentDelegate>,
+    public sealed class PersistentAction : 
+        IPersistentAction<Action, PersistentAction>,
         IPersistentDelegate<Action>
     {
         // ------------ API: IPersistentDelegate ------------
@@ -91,8 +91,8 @@ namespace EMILtools.Core
         // ------------ CRTP ------------
         // Allows for returning of the PersistentAction
         // - Fluent Chaining
-        public PersistentDelegate Add(Action cb) { _action += cb; return this; }
-        public PersistentDelegate Remove(Action cb) { _action -= cb; return this; }
+        public PersistentAction Add(Action cb) { _action += cb; return this; }
+        public PersistentAction Remove(Action cb) { _action -= cb; return this; }
         
         // ------------ Non CRTP ------------
         // Allows generic systems to store and cast the action w/out needing to know the type
