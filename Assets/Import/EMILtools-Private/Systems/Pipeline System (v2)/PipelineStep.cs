@@ -48,7 +48,7 @@ namespace EMILtools.Systems
         public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
         {
             Execute = mainMethod;
-            Resolves = new ResolveContainer<IResolvableWithContext>();
+            Resolves = new ResolveContainer<IResolvableWithContext>(null, null, null);
             StepType = StepType.MainMethod;
         }
     }

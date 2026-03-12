@@ -15,27 +15,35 @@ namespace EMILtools.Systems
             where TDelegate : Delegate
             where TContext : class, IContext
         {
+            /// <summary>
+            /// Return TRUE if the command should SHORT CIRCUIT
+            /// </summary>
+            /// <param name="command"></param>
+            /// <param name="ctx"></param>
+            /// <returns></returns>
             protected abstract bool Execute(TDelegate command, TContext ctx);
             
-            public static async Task<bool> ResolveContainer<TResolveType>(
-            
-                Resolver<TDelegate, TContext> resolver,
+            public async Task<bool> ResolveContainer<TResolveType>(
+                
                 ResolveContainer<TResolveType> Resolves, 
-                TDelegate command, 
-                TContext ctx,
-                bool canShortCircuit)
+                TDelegate command,
+                bool canShortCircuit,
+                TContext ctx = null)
         
                 where TResolveType : class, IResolvableWithContext
         
             {
-                if (Resolves.beforeExecution.Length > 0 && 
-                    !await ResolveArray(Resolves.beforeExecution, canShortCircuit, ctx))
+                if (Resolves.beforeExecution.Length > 0)
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
-                    return false;
+                    bool beforeSuccess = await ResolveArray(Resolves.beforeExecution, canShortCircuit, ctx);
+                    if (!beforeSuccess)
+                    {
+                        Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
+                        return false;
+                    }
                 }
 
-                if (resolver.Execute(command, ctx) && canShortCircuit)
+                if (Execute(command, ctx) && canShortCircuit)
                 {
                     Debug.Log(" (!) Short Circuit Triggered (Execution)");
                     if(Resolves.failedExecution.Length > 0)

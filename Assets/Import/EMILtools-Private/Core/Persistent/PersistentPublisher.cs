@@ -5,16 +5,16 @@ using EMILtools.Core;
 using EMILtools.Systems;
 using UnityEngine;
 
-public class Publisher<TSubscriber> : IDelegatorAbstract<TSubscriber>
-    where TSubscriber : class, ISubscriber
+public class Publisher<TSubscriber, TContext> : IDelegatorAbstract<TSubscriber>
+    where TSubscriber : class, ISubscriber<TContext>
+    where TContext : class, IContext
 {
     readonly List<TSubscriber> subscribers = new();
     
-    // ------------ Specific ------------
     public TSubscriber Add(TSubscriber subscriber) { subscribers.Add(subscriber); return subscriber; }
     public TSubscriber Remove(TSubscriber subscriber) { subscribers.Remove(subscriber); return subscriber; }
     
-    public async Task Publish()
+    public async Task Publish(TContext ctx)
     {
         for (int i = 0; i < subscribers.Count; i++)
         {
@@ -23,20 +23,20 @@ public class Publisher<TSubscriber> : IDelegatorAbstract<TSubscriber>
             if (!sub.isActive)
                 continue;
 
-            await sub.Execute();
+            await sub.Execute(ctx);
         }
     }
 }
 
 
-public class GenericPublisher : IDelegatorAbstract<ISubscriber>
+public class GenericPublisher<TContext> : IDelegatorAbstract<ISubscriber<TContext>>
+    where TContext : class, IContext
 {
-    public List<ISubscriber> subscribers = new();
-    
-    public ISubscriber Add(ISubscriber subscriber) { subscribers.Add(subscriber); return subscriber; }
-    public ISubscriber Remove(ISubscriber subscriber) { subscribers.Remove(subscriber); return subscriber; }
+    List<ISubscriber<TContext>> subscribers = new();
+    public ISubscriber<TContext> Add(ISubscriber<TContext> subscriber) { subscribers.Add(subscriber); return subscriber; }
+    public ISubscriber<TContext> Remove(ISubscriber<TContext> subscriber) { subscribers.Remove(subscriber); return subscriber; }
 
-    public async Task Publish()
+    public async Task Publish(TContext ctx)
     {
         for (int i = 0; i < subscribers.Count; i++)
         {
@@ -45,7 +45,7 @@ public class GenericPublisher : IDelegatorAbstract<ISubscriber>
             if (!sub.isActive)
                 continue;
 
-            await sub.Execute();
+            await sub.Execute(ctx);
         }
     }
 }

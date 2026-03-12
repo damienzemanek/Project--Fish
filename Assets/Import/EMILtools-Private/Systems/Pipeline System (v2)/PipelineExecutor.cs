@@ -14,7 +14,7 @@ namespace EMILtools.Systems
     public static class PipelineExecutor<TContext>
         where TContext : class, IPipelineContext
     {
-        private static readonly PipelineResolver Resolver = new();
+        static readonly PipelineResolver Resolver = new();
         class PipelineResolver : Resolver<PipelineStepDelegate<TContext>, IPipelineContext>
         {
             protected override bool Execute(PipelineStepDelegate<TContext> command, IPipelineContext ctx)
@@ -27,7 +27,7 @@ namespace EMILtools.Systems
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                if(!await PipelineResolver.ResolveContainer(Resolver, step.Resolves, step.Execute, ctx, isShortCircuit)) return;
+                if(!await Resolver.ResolveContainer(step.Resolves, step.Execute, isShortCircuit, ctx)) return;
                 
             }
                 
