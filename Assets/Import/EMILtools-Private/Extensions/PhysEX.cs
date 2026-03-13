@@ -64,12 +64,9 @@ namespace EMILtools.Extensions
         public struct JumpSettings2D
         {
             public ForceMode2D forceMode;
-            public bool useGlobal;
-            [ShowIf("useGlobal")] [FormerlySerializedAs("direction")] public Vector2 direction;
+            public Vector2 direction;
             [SerializeField] public Ref<float> cooldown;
-            public bool complexJump;
-            [ShowInInspector, InlineProperty, ShowIf("complexJump")] public AnimationCurve forceCurve;
-            [SerializeField, ShowIf("complexJump")]                  public Ref<float> inputMaxDuration;
+            public Ref<float> inputMaxDuration;
         }
 
         [Serializable]
