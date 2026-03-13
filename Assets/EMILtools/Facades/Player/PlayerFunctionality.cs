@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerFunctionality : Functionalities<
     PlayerController,
-    PlayerStructure>
+    PlayerContextData>
 {
     protected override void AddModulesHere()
     {
@@ -27,15 +27,14 @@ public class PlayerFunctionality : Functionalities<
 
         public class Setter : SettableTemplate<bool, Vector2>
         {
-            [ShowInInspector] public Vector2 move { get => data.dataSlot2; set => data.SetSlot2(value); }
+            [ShowInInspector] public Vector2 move { get => data2; set => data2 = value; }
         }
 
         public Move(IPublisher publisher, PlayerController facade) : base(publisher, facade) { }
 
         public override PipelineBuilder<PlayerContextData> InjectSteps(
             PipelineBuilder<PlayerContextData> builder)
-        => builder.Add_ShortCircuit(ctx => !isActive, 
-            shortCircuited: new IResolvableWithContext[] { new Callback(ResetMove) });
+        => builder.Add_ShortCircuit(ctx => !isActive, shortCircuited: new IResolvableWithContext[] { new Callback(ResetMove) });
 
         public override bool ExecutionImplementation(PlayerContextData ctx)
         {
@@ -50,6 +49,9 @@ public class PlayerFunctionality : Functionalities<
             SetContext.move = Vector2.zero;
         }
 
-        public void OnFixedTick<TContext>(TContext ctx) { }
+        public void OnFixedTick(IContextViewImmutable ctx)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

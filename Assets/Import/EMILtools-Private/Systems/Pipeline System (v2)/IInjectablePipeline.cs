@@ -4,7 +4,7 @@ namespace EMILtools.Systems
     public interface IInjectablePipeline<TContext>
         where TContext : class, IPipelineContext
     {
-        public Pipeline<TContext> executionPipeline { get; set; }
+        public Pipeline<TContext> ExecutionPipeline { get; set; }
 
         public virtual Pipeline<TContext> InjectPipeline(PipelineBuilder<TContext> builder)
             => throw new System.NotImplementedException();
@@ -19,8 +19,8 @@ namespace EMILtools.Systems
         {
             // + 1 to accomodate for the final step
             var builder = new PipelineBuilder<TContext>();
-            if (setupWithFinalStep) executionPipeline = InjectPipeline(builder);
-            else executionPipeline = InjectSteps(builder).InjectMainMethod(InjectMainStep());
+            if (setupWithFinalStep) ExecutionPipeline = InjectPipeline(builder);
+            else ExecutionPipeline = InjectSteps(builder).InjectMainMethod(InjectMainStep());
         }
     }
 }

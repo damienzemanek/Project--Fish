@@ -13,7 +13,7 @@ public class PublisherTests
     public void Test1_Initializes()
     {
         var sub = new Subscriber<Action, ActionResolver>(Call);
-        var publisher = new Publisher<VoidCtx>();
+        var publisher = new Publisher();
         
         void Call()  { }
         Assert.IsNotNull(sub);
@@ -101,7 +101,7 @@ public class PublisherTests
         var ctx = new MyContext();
         void ActionCall(MyContext c) => c.value = 42;
 
-        var sub = new SubscriberCtx<Action<MyContext>, ActionContextResolver<MyContext>, MyContext>(
+        var sub = new SubscriberCtx<Action<MyContext>, ActionResolverCtx<MyContext>, MyContext>(
             ActionCall
         );
 
@@ -120,8 +120,8 @@ public class PublisherTests
         void Call1(MyContext c) => c.value += 1;
         void Call2(MyContext c) => c.value += 2;
 
-        var sub1 = new SubscriberCtx<Action<MyContext>, ActionContextResolver<MyContext>, MyContext>(Call1);
-        var sub2 = new SubscriberCtx<Action<MyContext>, ActionContextResolver<MyContext>, MyContext>(Call2);
+        var sub1 = new SubscriberCtx<Action<MyContext>, ActionResolverCtx<MyContext>, MyContext>(Call1);
+        var sub2 = new SubscriberCtx<Action<MyContext>, ActionResolverCtx<MyContext>, MyContext>(Call2);
 
         var publisher = new Publisher<MyContext>();
         publisher.Add(sub1);

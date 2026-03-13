@@ -45,7 +45,7 @@ public class MonoFacadeTests
     
     public class TestFunctionality : Functionalities<
         TestController,
-        TestStructure>
+        TestContextData>
     {
         protected override void AddModulesHere()
         {

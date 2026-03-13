@@ -1,13 +1,13 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using static EMILtools.Systems.SubscriberExecutor;
 
 
 namespace EMILtools.Systems
 {
-    public abstract class MonoFunctionalityModule<TFacade, TMonoStructure> 
-        where TFacade : class, IFacade<TMonoStructure>
-        where TMonoStructure : IMonoStructure
+    public abstract class MonoFunctionalityModule<TFacade, TContext> 
+        where TFacade : class, IFacade
     {
         [Title("$Name"), PropertyOrder(-1)]
         [ShowInInspector] public string Name => "Module: " + this.GetType().Name;
@@ -15,7 +15,7 @@ namespace EMILtools.Systems
     
         // ---------- Variables ----------
         public TFacade facade { get; set; }
-    
+        protected readonly SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext> subscriber;
 
         // ---------- Ctor ----------
         public MonoFunctionalityModule(TFacade facade) => this.facade = facade;

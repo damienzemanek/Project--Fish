@@ -13,12 +13,12 @@ namespace EMILtools.Systems
             TMonoStructure,  // References + CQRS Context
             TActionMap>      // Internal Action bindings
         
-        : MonoBehaviour, IFacade<TMonoStructure>
+        : MonoBehaviour, IFacade
 
-        where TMonoFacade    : class, IFacade<TMonoStructure>   
+        where TMonoFacade    : class, IFacade   
         where TConfig        : Config        
         where TMonoStructure : IMonoStructure, new()
-        where TFunctionality : Functionalities<TMonoFacade, TMonoStructure>, new()
+        where TFunctionality : Functionalities<TMonoFacade>, new()
         where TActionMap     : class, IActionMap, new()
     {
         

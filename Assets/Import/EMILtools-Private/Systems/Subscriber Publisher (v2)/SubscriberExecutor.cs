@@ -15,12 +15,21 @@ namespace EMILtools.Systems
                 return true;
             }
         }
-        public class ActionContextResolver<T> : ContextResolver<Action<T>, T>
+        public class ActionResolverCtx<T> : ContextResolver<Action<T>, T>
         {
 
             protected override bool Execute(Action<T> command, in T ctx)
             {
                 command(ctx);
+                return true;
+            }
+        }
+        
+        public class ActionResolverCtx<T1, T2> : ContextResolver<Action<T1, T2>, T1, T2>
+        {
+            protected override bool Execute(Action<T1, T2> command, in T1 ctx1, in T2 ctx2)
+            {
+                command(ctx1, ctx2);
                 return true;
             }
         }
@@ -43,7 +52,7 @@ namespace EMILtools.Systems
             }
         }
         
-        public class PredicateContextResolver<T> : ContextResolver<Func<T, bool>, T>
+        public class PredicateResolverCtx<T> : ContextResolver<Func<T, bool>, T>
         {
             protected override bool Execute(Func<T, bool> command, in T ctx)
             {

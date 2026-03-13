@@ -120,15 +120,15 @@ namespace EMILtools.Systems
     /// <typeparam name="TDelegate"></typeparam>
     /// <typeparam name="TResolver"></typeparam>
     /// <typeparam name="TContext"></typeparam>
-    public sealed class Subscriber<TDelegate, TResolver, T1, T2> 
+    public sealed class SubscriberCtx<TDelegate, TResolver, T1, T2> 
         
         : SubscriberBase<TDelegate, TResolver>, ISubscriber<T1, T2>
     
         where TDelegate : Delegate
         where TResolver : ContextResolver<TDelegate, T1, T2>, new()
     {
-        public Subscriber(TDelegate callback, bool isActive = true, bool canShortCircuit = false) : base(callback, isActive, canShortCircuit) { }
-        public Subscriber(TDelegate callback, ResolveContainer<IResolvableWithContext> resolveContainer, bool isActive = true, bool canShortCircuit = false) : base(callback, resolveContainer, isActive, canShortCircuit) { }
+        public SubscriberCtx(TDelegate callback, bool isActive = true, bool canShortCircuit = false) : base(callback, isActive, canShortCircuit) { }
+        public SubscriberCtx(TDelegate callback, ResolveContainer<IResolvableWithContext> resolveContainer, bool isActive = true, bool canShortCircuit = false) : base(callback, resolveContainer, isActive, canShortCircuit) { }
 
         public T1 cachedCtx1 { get; set; }
         public T2 cachedCtx2 { get; set; }

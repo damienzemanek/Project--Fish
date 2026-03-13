@@ -8,8 +8,6 @@ namespace EMILtools.Systems
 { 
     public static class ResolverSystem
     {
-        //        Debug.Log($" [===== Executing & Resolving Step {i}... =====] ");
-        //        Debug.Log($" [===== Step {i} Fully Executed & Resolved =====] ");      
         
         public interface IResolver
         {
@@ -25,7 +23,7 @@ namespace EMILtools.Systems
                 if (resolvables == null || resolvables.Length == 0)
                     return true;
 
-                Debug.Log($" ------ Resolving {resolvables.Length} Contexts... ------");
+                //Debug.Log($" ------ Resolving {resolvables.Length} Contexts... ------");
 
                 for (int i = 0; i < resolvables.Length; i++)
                 {
@@ -40,7 +38,7 @@ namespace EMILtools.Systems
                         await waitable.WaitUntilResolved();
                     }
 
-                    Debug.Log($" (#) Context {i} Resolved!");
+                    //Debug.Log($" (#) Context {i} Resolved!");
                 }
 
                 return true;
@@ -54,7 +52,7 @@ namespace EMILtools.Systems
                 if (resolvables == null || resolvables.Length == 0)
                     return true;
 
-                Debug.Log($" ------ Resolving {resolvables.Length} Contexts... ------");
+                //Debug.Log($" ------ Resolving {resolvables.Length} Contexts... ------");
 
                 for (int i = 0; i < resolvables.Length; i++)
                 {
@@ -76,7 +74,7 @@ namespace EMILtools.Systems
                         await waitable.WaitUntilResolved();
                     }
 
-                    Debug.Log($" (#) Context {i} Resolved!");
+                    //Debug.Log($" (#) Context {i} Resolved!");
                 }
 
                 return true;
@@ -96,13 +94,13 @@ namespace EMILtools.Systems
             {
                 if (!await ResolveArray(resolves.beforeExecution, canShortCircuit))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
                     return false;
                 }
 
                 if (Execute(command) && canShortCircuit)
                 {
-                    Debug.Log(" (!) Short Circuit Triggered (Execution)");
+                    //Debug.Log(" (!) Short Circuit Triggered (Execution)");
 
                     if (resolves.failedExecution.Length > 0)
                         await ResolveArray(resolves.failedExecution, true);
@@ -110,11 +108,11 @@ namespace EMILtools.Systems
                     return false;
                 }
 
-                Debug.Log(" >> Step Executed << ");
+                //Debug.Log(" >> Step Executed << ");
 
                 if (!await ResolveArray(resolves.afterExecution, canShortCircuit))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (After Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (After Execution)");
                     return false;
                 }
 
@@ -136,13 +134,13 @@ namespace EMILtools.Systems
             {
                 if (!await ResolveArray(resolves.beforeExecution, canShortCircuit, ctx))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
                     return false;
                 }
 
                 if (Execute(command, ctx) && canShortCircuit)
                 {
-                    Debug.Log(" (!) Short Circuit Triggered (Execution)");
+                    //Debug.Log(" (!) Short Circuit Triggered (Execution)");
 
                     if (resolves.failedExecution.Length > 0)
                         await ResolveArray(resolves.failedExecution, true, ctx);
@@ -150,11 +148,11 @@ namespace EMILtools.Systems
                     return false;
                 }
 
-                Debug.Log(" >> Step Executed << ");
+                //Debug.Log(" >> Step Executed << ");
 
                 if (!await ResolveArray(resolves.afterExecution, canShortCircuit, ctx))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (After Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (After Execution)");
                     return false;
                 }
 
@@ -177,13 +175,13 @@ namespace EMILtools.Systems
             {
                 if (!await ResolveArray(resolves.beforeExecution, canShortCircuit, (ctx1, ctx2)))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (Before Execution)");
                     return false;
                 }
 
                 if (Execute(command, ctx1, ctx2) && canShortCircuit)
                 {
-                    Debug.Log(" (!) Short Circuit Triggered (Execution)");
+                    //Debug.Log(" (!) Short Circuit Triggered (Execution)");
 
                     if (resolves.failedExecution.Length > 0)
                         await ResolveArray(resolves.failedExecution, true, (ctx1, ctx2));
@@ -191,11 +189,11 @@ namespace EMILtools.Systems
                     return false;
                 }
 
-                Debug.Log(" >> Step Executed << ");
+                //Debug.Log(" >> Step Executed << ");
 
                 if (!await ResolveArray(resolves.afterExecution, canShortCircuit, (ctx1, ctx2)))
                 {
-                    Debug.Log(" (!) Resolver Short Circuited (After Execution)");
+                    //Debug.Log(" (!) Resolver Short Circuited (After Execution)");
                     return false;
                 }
 

@@ -29,11 +29,11 @@ namespace EMILtools.Systems
     public abstract class BoundFunctionality<TFacade, TMonoStructure, TContext> : 
             UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
             IBindable
-        where TFacade : class, IFacade<TMonoStructure>
+        where TFacade : class, IFacade
         where TContext : class, IModuleUsabableContext
         where TMonoStructure : IMonoStructure
     {
-        [NonSerialized] Publisher<TContext> publisher; // Lazy
+        [NonSerialized] Publisher<TContext> publisher; // Lazy (Injected)
         protected BoundFunctionality(Publisher<TContext> publisher, TFacade facade) : base(facade)
             => this.publisher = publisher;
         
@@ -62,7 +62,7 @@ namespace EMILtools.Systems
             : UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
         IBindable,
         ISettableImplementer
-        where TFacade : class, IFacade<TMonoStructure>
+        where TFacade : class, IFacade
         where TMonoStructure : IMonoStructure   
         where TContext : class, IModuleUsabableContext
         where SettableTemplate : class, ISettableTemplate<bool>, new()
@@ -77,15 +77,16 @@ namespace EMILtools.Systems
         {
             Settable = new SettableTemplate();
             Settable.Publisher = publisher;
-            Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
+            Debug.Log("Succesfully cached publisher : " + publisher.GetType().Name + " which is " + publisher.GetType());
+           // Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
         }
 
         public void Bind()
         {
-            Debug.Log("Trying to Bind " + GetType().Name);
+            Debug.Log("Trying to Bind (" + GetType().Name + ")");
             Settable.Publisher.Add(Settable.Subscriber);
             if(this is ON_SET onSet) Settable.OnSet.Add(onSet.OnSet);
-            Debug.Log("Bound " + GetType().Name);
+            Debug.Log("Bound(" + GetType().Name + ")");
         }
 
         public void Unbind()

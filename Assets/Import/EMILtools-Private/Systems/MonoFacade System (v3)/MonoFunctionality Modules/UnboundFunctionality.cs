@@ -8,18 +8,18 @@ namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TMonoStructure, TContext> : MonoFunctionalityModule<TFacade, TMonoStructure>, 
         IInjectablePipeline<TContext>
-        where TFacade : class, IFacade<TMonoStructure>
+        where TFacade : class, IFacade
         where TContext : class, IModuleUsabableContext
         where TMonoStructure : IMonoStructure
     {
         // Variables
-        public Pipeline<TContext> executionPipeline { get; set; }
-        public SubscriberCtx<Action<TContext>, ActionContextResolver<TContext>, TContext> subscriber { get; set; }
+        public Pipeline<TContext> ExecutionPipeline { get; set; }
+        protected readonly SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext> subscriber;
         
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
             => subscriber = 
-        new SubscriberCtx<Action<TContext>, ActionContextResolver<TContext>, TContext>(ExecuteSubscription);
+        new SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext>(ExecuteSubscription);
     
         // API Access
         protected IInjectablePipeline<TContext> injectablePipeline => this;
@@ -27,7 +27,7 @@ namespace EMILtools.Systems
         // Methods
         public PipelineStepDelegate<TContext> InjectMainStep() => new(ExecutionImplementation);
         
-        void ExecuteSubscription(TContext ctx) => PipelineExecutor<TContext>.Execute(executionPipeline, ctx);
+        void ExecuteSubscription(TContext ctx) => PipelineExecutor<TContext>.Execute(ExecutionPipeline, ctx);
         
         public override void SetupModule()
         {

@@ -33,7 +33,14 @@ namespace EMILtools.Systems
         readonly List<ISubscriber> subs = new();
 
         // ---------- Typed Generic --------------
-        public ISubscriber Add(ISubscriber cb) { subs.Add(cb); return cb; }
+        public ISubscriber Add(ISubscriber cb)
+        {
+            Debug.Log("cb type: " + cb.GetType().Name + "");
+            Debug.Log("sub type: " + typeof(ISubscriber).Name + "");
+            subs.Add(cb); 
+            Debug.Log("Add complete");
+            return cb;
+        }
         public ISubscriber Remove(ISubscriber cb) { subs.Remove(cb); return cb; }
 
         public Task Publish() => ((IPublisher)this).PublishCore();
@@ -57,10 +64,25 @@ namespace EMILtools.Systems
         TContext cachedContext;
 
         // ---------- Typed Generic --------------
-        public ISubscriber<TContext> Add(ISubscriber<TContext> cb) { subs.Add(cb); return cb; }
+        public ISubscriber<TContext> Add(ISubscriber<TContext> cb)
+        {
+            Debug.Log("cb type: " + cb.GetType().Name + "");
+            Debug.Log("sub type: " + typeof(ISubscriber<TContext>).Name + "");
+            subs.Add(cb); 
+            Debug.Log("Add complete");
+            return cb;
+        }
         public ISubscriber<TContext> Remove(ISubscriber<TContext> cb) { subs.Remove(cb); return cb; }
 
-        public ISubscriber Add(ISubscriber cb) => ((IDelegatorAbstract<ISubscriber<TContext>>)this).Add((ISubscriber<TContext>)cb);
+        public ISubscriber Add(ISubscriber cb)
+        {
+            Debug.Log("cb type: " + cb.GetType().Name + "");
+            Debug.Log("sub type: " + typeof(ISubscriber).Name + "");
+            var ret = ((IDelegatorAbstract<ISubscriber<TContext>>)this).Add((ISubscriber<TContext>)cb);
+            Debug.Log("Add complete");
+            return ret;
+            
+        }
         public ISubscriber Remove(ISubscriber cb) => ((IDelegatorAbstract<ISubscriber<TContext>>)this).Remove((ISubscriber<TContext>)cb);
         public Task PublishImplementation(ISubscriber sub)
         {
@@ -91,15 +113,28 @@ namespace EMILtools.Systems
         
         T1 cachedContext1;
         T2 cachedContext2;
-        
+
         public ISubscriber<T1, T2> Add(ISubscriber<T1, T2> cb)
-        { subs.Add(cb); return cb; }
+        {
+            Debug.Log("cb type: " + cb.GetType().Name + "");
+            Debug.Log("sub type: " + typeof(ISubscriber<T1, T2>).Name + "");
+            subs.Add(cb); 
+            Debug.Log("Add complete");
+            return cb;
+        }
 
         public ISubscriber<T1, T2> Remove(ISubscriber<T1, T2> cb)
         { subs.Remove(cb); return cb; }
-        
-        public ISubscriber Add(ISubscriber cb) =>
+
+        public ISubscriber Add(ISubscriber cb)
+        {
+            Debug.Log("cb type: " + cb.GetType().Name + "");
+            Debug.Log("sub type: " + typeof(ISubscriber).Name + "");
             ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Add((ISubscriber<T1, T2>)cb);
+            Debug.Log("Add complete");
+            return cb;
+        }
+            
 
         public ISubscriber Remove(ISubscriber cb) =>
             ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Remove((ISubscriber<T1, T2>)cb);
