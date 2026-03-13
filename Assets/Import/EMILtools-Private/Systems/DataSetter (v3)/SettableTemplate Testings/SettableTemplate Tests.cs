@@ -14,7 +14,7 @@ public class DataSetterTests
         public int setCallCount = 0;
         public int lastValue;
 
-        protected override void Set(int val)
+        protected override void LocalOnSet(int val)
         {
             setCallCount++;
             lastValue = val;
@@ -30,7 +30,7 @@ public class DataSetterTests
 
         Assert.NotNull(settable);
         Assert.NotNull(settable.Subscriber);
-        Assert.NotNull(settable.OnSet);
+        Assert.NotNull(settable.EventOnSet);
     }
 
     // -----------------------------------------------------
@@ -44,7 +44,7 @@ public class DataSetterTests
         publisher.Add(settable.Subscriber);
         publisher.Publish(5).Wait();
 
-        Assert.AreEqual(5, settable.dataSlot1);
+        Assert.AreEqual(5, settable.Get);
     }
 
     // -----------------------------------------------------
@@ -71,7 +71,7 @@ public class DataSetterTests
         var publisher = new Publisher<int>();
         bool called = false;
 
-        settable.OnSet.Add(() => called = true);
+        settable.EventOnSet.Add(() => called = true);
 
         publisher.Add(settable.Subscriber);
         publisher.Publish(7).Wait();
@@ -92,7 +92,7 @@ public class DataSetterTests
         await publisher.Publish(3);
         await publisher.Publish(9);
 
-        Assert.AreEqual(9, settable.dataSlot1);
+        Assert.AreEqual(9, settable.Get);
         Assert.AreEqual(2, settable.setCallCount);
     }
 }

@@ -1,3 +1,4 @@
+using EMILtools.Extensions;
 using EMILtools.Systems;
 using UnityEngine.InputSystem;
 using static IA_Player;
@@ -25,9 +26,9 @@ public class PlayerInputReader :
     public void OnMove(InputAction.CallbackContext context)
     {
         if(ia.Player.Move.IsPressed())
-            Input.Move.Publish(true, context.ReadValue<UnityEngine.Vector2>());
+            Input.Move.Publish((true, context.ReadValue<UnityEngine.Vector2>().x));
         else
-            Input.Move.Publish(false, UnityEngine.Vector2.zero);
+            Input.Move.Publish((false, NumEX.ZeroF));
     }
 
     public void OnLook(InputAction.CallbackContext context)

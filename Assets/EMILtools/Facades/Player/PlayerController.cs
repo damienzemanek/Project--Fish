@@ -18,7 +18,7 @@ public class PlayerController : MonoFacade<
 
     public class PlayerInputMap : InputMap
     {
-        public readonly Publisher<bool, Vector2> Move = new();
+        public readonly Publisher<(bool, float)> Move = new();
     }
 
     public PlayerInputMap Input { get; set; }

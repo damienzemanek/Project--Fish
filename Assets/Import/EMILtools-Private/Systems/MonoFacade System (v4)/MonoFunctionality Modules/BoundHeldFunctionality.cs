@@ -5,14 +5,10 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-
     /// <summary>
     /// Context used in MonoFacade Functionalities
     /// </summary>
-    public interface IModuleUsabableContext : IPipelineContext
-    {
-        
-    }
+    public interface IModuleUsabableContext : IPipelineContext { }
      
     public interface IBindable
     {
@@ -53,26 +49,21 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TFacade"></typeparam>
     /// <typeparam name="TContext"></typeparam>
-    /// <typeparam name="SettableTemplate"></typeparam>
+    /// <typeparam name="DataSetter"></typeparam>
     public abstract class BoundSetFunctionality<
             TFacade,
             TContext,
-            SettableTemplate> 
-            : UnboundFunctionality<TFacade, TContext>, 
-        IBindable
+            DataSetter> 
+            : UnboundFunctionality<TFacade, TContext>, IBindable
         where TFacade : class, IFacade
         where TContext : class, IModuleUsabableContext
-        where SettableTemplate : class, IDataSetter<bool>, new()
+        where DataSetter : class, IDataSetter, new()
     {
-        /// <summary>
-        /// Alias for Settable.unnamedStoredValue1
-        /// </summary>
-        [ShowInInspector] protected bool isActive => Settable.data;
-        protected SettableTemplate SetContext => Settable;
-        [NonSerialized] [ShowInInspector] readonly SettableTemplate Settable;
+        protected DataSetter SetContext => Settable;
+        [NonSerialized] [ShowInInspector] readonly DataSetter Settable;
         protected BoundSetFunctionality(IPublisher publisher, TFacade facade) : base(facade)
         {
-            Settable = new SettableTemplate();
+            Settable = new DataSetter();
             Settable.Publisher = publisher;
             Debug.Log("Succesfully cached publisher : " + publisher.GetType().Name + " which is " + publisher.GetType());
            // Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
@@ -82,15 +73,16 @@ namespace EMILtools.Systems
         {
             Debug.Log("Trying to Bind (" + GetType().Name + ")");
             Settable.Publisher.Add(Settable.Subscriber);
-            if(this is ON_SET onSet) Settable.OnSet.Add(onSet.OnSet);
+            if(this is ON_SET onSet) Settable.EventOnSet.Add(onSet.OnSet);
             Debug.Log("Bound(" + GetType().Name + ")");
         }
 
         public void Unbind()
         {
             Settable.Publisher.Remove(Settable.Subscriber);
-            if(this is ON_SET onSet) Settable.OnSet.Remove(onSet.OnSet);
+            if(this is ON_SET onSet) Settable.EventOnSet.Remove(onSet.OnSet);
         }
+
     }
 
 

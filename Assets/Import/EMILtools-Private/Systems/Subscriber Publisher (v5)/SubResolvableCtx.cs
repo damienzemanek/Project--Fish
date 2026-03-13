@@ -5,43 +5,32 @@ using static EMILtools.Systems.ResolverSystem;
 
 namespace EMILtools.Systems
 {
-    public struct VoidCtx : IContext { }
-
     public abstract class ResolveSubscriberBase : ISubscriber
     {
-        public static readonly VoidCtx VoidCtx = new();
         protected readonly ResolveContainer ResolveContainer;
         
         // Mutations
         public bool canShortCircuit { get; set; }
         public bool isActive { get; set; }
         public abstract Task Execute();
-
-
-        public ResolveSubscriberBase(
-            bool isActive = true,
-            bool canShortCircuit = false)
+        
+        protected ResolveSubscriberBase( bool isActive = true, bool canShortCircuit = false)
         {
             this.canShortCircuit = canShortCircuit;
             this.isActive = isActive;
             ResolveContainer = new ResolveContainer(null, null, null);
         }
 
-        public ResolveSubscriberBase(
-            ResolveContainer resolveContainer,
-            bool isActive = true,
-            bool canShortCircuit = false)
+        protected ResolveSubscriberBase( ResolveContainer resolveContainer, bool isActive = true, bool canShortCircuit = false)
         {
             ResolveContainer = resolveContainer;
             this.canShortCircuit = canShortCircuit;
             this.isActive = isActive;
 
-            if (ResolveContainer.afterExecution == null
+            if (ResolveContainer.afterExecution == null 
                 && ResolveContainer.beforeExecution == null
                 && ResolveContainer.failedExecution == null)
-            {
                 ResolveContainer = new ResolveContainer(null, null, null);
-            }
         }
     }
 
