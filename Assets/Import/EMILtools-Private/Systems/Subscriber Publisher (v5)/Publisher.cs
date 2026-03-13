@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EMILtools.Core;
 using FlyingWormConsole3.LiteNetLibEditor.Utils;
@@ -64,19 +65,47 @@ namespace EMILtools.Systems
         public ISubscriber Add(ISubscriber cb)
         {
             if(cb is ISubscriber<TContext> typedCB) return ((IDelegatorAbstract<ISubscriber<TContext>>)this).Add(typedCB);
-            throw new InvalidTypeException($"Given subscriber type ({cb.GetType().Name}) cannot convert to and publish via {typeof(ISubscriber<TContext>).Name} on Publisher {GetType().Name}");
+            throw SubscriberTypeError(cb, "added");
         }
 
         public ISubscriber Remove(ISubscriber cb)
         {
-            if(cb is ISubscriber<TContext> typedCB) return ((IDelegatorAbstract<ISubscriber<TContext>>)this).Remove(typedCB);
-            throw new InvalidTypeException($"Given subscriber type ({cb.GetType().Name}) cannot convert to and remove via {typeof(ISubscriber<TContext>).Name} on Publisher {GetType().Name}");
+            if (cb is ISubscriber<TContext> typed)
+                return ((IDelegatorAbstract<ISubscriber<TContext>>)this).Remove(typed);
+
+            throw SubscriberTypeError(cb, "removed");
         }
-        
+
         public Task PublishImplementation(ISubscriber sub)
         {
-            if(sub is ISubscriber<TContext> subTyped) return subTyped.Execute(cachedContext);
-            throw new InvalidTypeException($"Given subscriber type ({sub.GetType().Name}) cannot convert to and publish via {typeof(ISubscriber<TContext>).Name} on Publisher {GetType().Name}");
+            if (sub is ISubscriber<TContext> typed)
+                return typed.Execute(cachedContext);
+
+            throw SubscriberTypeError(sub, "published");
+        }
+        
+        private InvalidTypeException SubscriberTypeError(object obj, string operation)
+        {
+            var givenType = FormatType(obj.GetType());
+            var expectedType = FormatType(typeof(ISubscriber<TContext>));
+            var publisher = FormatType(GetType());
+
+            throw new InvalidTypeException(
+                $"Subscriber type '{givenType}' cannot be added.\n" +
+                $"Expected type: '{expectedType}'.\n" +
+                $"Publisher: {publisher}."
+            );
+            
+                    
+            static string FormatType(Type type)
+            {
+                if (!type.IsGenericType)
+                    return type.Name;
+
+                var name = type.Name[..type.Name.IndexOf('`')];
+                var args = string.Join(", ", type.GetGenericArguments().Select(FormatType));
+                return $"{name}<{args}>";
+            }
         }
         
 
@@ -93,54 +122,4 @@ namespace EMILtools.Systems
         }
     }
     
-    public class Publisher<T1, T2> : 
-        IDelegatorAbstract<ISubscriber<T1, T2>>,
-        IPublisher
-    {
-        // ISubscriber directly inherits from ISubscriber<TContext> and ISubscriber<T1, T2>
-        [NonSerialized] readonly List<ISubscriber<T1, T2>> subs = new();
-        [NonSerialized] readonly List<ISubscriber> snapshot = new();
-        public IReadOnlyList<ISubscriber> API_Snapshot => snapshot;
-        
-        [NonSerialized] T1 cachedContext1;
-        [NonSerialized] T2 cachedContext2;
-
-        public ISubscriber<T1, T2> Add(ISubscriber<T1, T2> cb) { subs.Add(cb); return cb; }
-
-        public ISubscriber<T1, T2> Remove(ISubscriber<T1, T2> cb) { subs.Remove(cb); return cb; }
-
-        public ISubscriber Add(ISubscriber cb)
-        {
-            if(cb is ISubscriber<T1, T2> typedCB) ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Add(typedCB);
-            else throw new InvalidTypeException($"Given subscriber type ({cb.GetType().Name}) cannot convert to/add into {typeof(ISubscriber<T1, T2>).Name} on Publisher {GetType().Name}");
-            return cb;
-        }
-
-
-        public ISubscriber Remove(ISubscriber cb)
-        {
-            if(cb is ISubscriber<T1, T2> typedCB) ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Remove(typedCB);
-            else throw new InvalidTypeException($"Given subscriber type ({cb.GetType().Name}) cannot convert to/remove via {typeof(ISubscriber<T1, T2>).Name} on Publisher {GetType().Name}");
-            return cb;
-        }
-        
-        public Task PublishImplementation(ISubscriber sub)
-        {
-            if(sub is ISubscriber<T1, T2> typedSub) return typedSub.Execute(cachedContext1, cachedContext2);
-            throw new InvalidTypeException($"Given subscriber type ({sub.GetType().Name}) cannot convert to and publish via {typeof(ISubscriber<T1, T2>).Name} on Publisher {GetType().Name}");
-        }
-        public Task Publish(T1 ctx1, T2 ctx2)
-        {
-            cachedContext1 = ctx1;
-            cachedContext2 = ctx2;
-            return ((IPublisher)this).PublishCore();
-        }
-        
-        public void Snapshot()
-        {
-            snapshot.Clear();
-            snapshot.AddRange(subs);
-        }
-
-    }
 }

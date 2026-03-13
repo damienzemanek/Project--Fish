@@ -35,6 +35,18 @@ namespace EMILtools.Extensions
             public Vector3 dir;
             public float inAirMoveScalar;
         }
+        
+        [Serializable]
+        public struct FallSettings2D
+        {
+            public ForceMode2D forceMode;
+             public float mult;
+            public Vector2 dir;
+            public float inAirMoveScalar;
+            
+            public void SetMult(float mult) => this.mult = mult;
+            public void SetInAirMoveScalar(float inairmovescalar) => this.inAirMoveScalar = inairmovescalar;
+        }
 
         [Serializable]
         public struct JumpSettings
@@ -42,6 +54,18 @@ namespace EMILtools.Extensions
             public ForceMode forceMode;
             public bool useGlobal;
             [ShowIf("useGlobal")] [FormerlySerializedAs("direction")] public Vector3 globalDirection;
+            [SerializeField] public Ref<float> cooldown;
+            public bool complexJump;
+            [ShowInInspector, InlineProperty, ShowIf("complexJump")] public AnimationCurve forceCurve;
+            [SerializeField, ShowIf("complexJump")]                  public Ref<float> inputMaxDuration;
+        }
+        
+        [Serializable]
+        public struct JumpSettings2D
+        {
+            public ForceMode2D forceMode;
+            public bool useGlobal;
+            [ShowIf("useGlobal")] [FormerlySerializedAs("direction")] public Vector2 direction;
             [SerializeField] public Ref<float> cooldown;
             public bool complexJump;
             [ShowInInspector, InlineProperty, ShowIf("complexJump")] public AnimationCurve forceCurve;
@@ -103,8 +127,26 @@ namespace EMILtools.Extensions
 
             return isGrounded;
         }
+        
+        public static bool IsGrounded2D(this Transform transform, ref GroundedSettings ground)
+        {
+            transform.GroundDefaultCheck(ref ground);
+
+            bool isGrounded = Physics2D.Raycast(
+                ground.feetPoint.position,
+                -transform.up,
+                ground.checkDist,
+                ground.mask);
+
+            return isGrounded;
+        }
 
         public static void FallFaster(this Rigidbody rb, FallSettings fall)
+        {
+            rb.AddForce(fall.dir * fall.mult, fall.forceMode);
+        }
+        
+        public static void FallFaster2D(this Rigidbody2D rb, FallSettings2D fall)
         {
             rb.AddForce(fall.dir * fall.mult, fall.forceMode);
         }
@@ -113,6 +155,13 @@ namespace EMILtools.Extensions
         {
             Vector3 force = Vector3.zero;
             force += jump.globalDirection;
+            rb.AddForce(force, jump.forceMode);
+        }
+        
+        public static void Jump2D(this Rigidbody2D rb, JumpSettings2D jump)
+        {
+            Vector2 force = Vector2.zero;
+            force += jump.direction;
             rb.AddForce(force, jump.forceMode);
         }
 
@@ -132,6 +181,14 @@ namespace EMILtools.Extensions
             rb.AddForce(dir, jump.forceMode);
         }
 
+        public static void JumpScaled2D(this Rigidbody2D rb, JumpSettings2D jump, float progress)
+        {
+            progress = Mathf.Clamp01(progress);
+            float mult = progress;
+            Vector2 dir = jump.direction;
+            rb.AddForce(dir * mult, jump.forceMode);
+        }
+        
 
         public static void InputDirectionalMove(this Rigidbody rb, Vector2 moveInput, MoveSettings move)
         {

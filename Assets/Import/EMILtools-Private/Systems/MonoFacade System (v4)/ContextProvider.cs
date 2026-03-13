@@ -1,4 +1,5 @@
 ﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace EMILtools.Systems
@@ -7,7 +8,7 @@ namespace EMILtools.Systems
     /// Override this to add data to the context
     /// </summary>
     /// <typeparam name="TBlackboard"></typeparam>
-    public abstract class ContextData : IContextViewImmutable, IModuleUsabableContext
+    public abstract class ContextData : IModuleUsabableContext
     {
         internal IBlackboard Blackboard;
         public TBlackboard API_Blackboard<TBlackboard>()
@@ -26,6 +27,7 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TContextData"></typeparam>
     /// <typeparam name="TContextViewImmutable"></typeparam>
+    [HideLabel]
     public class ContextProvider<TContextData, TContextViewImmutable>
         where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
@@ -34,12 +36,12 @@ namespace EMILtools.Systems
         /// <summary>
         /// Data is mutated where it's visible (public is OK)
         /// </summary>
-        public TContextData Data;
+        [ShowInInspector, HideLabel] public TContextData Data;
 
         /// <summary>
         /// This will be passed around to scripts that depend on it
         /// </summary>
-        public readonly TContextViewImmutable View;
+        [HideInInspector] public readonly TContextViewImmutable View;
 
         public ContextProvider(IBlackboard blackboard)
         {

@@ -8,15 +8,16 @@ public class SubsctiberTests : MonoBehaviour
 
     public class TestFailResolvable : IResolvable
     {
-
+        public bool Resolve<TContext>(TContext ctx) => false;
         public bool Resolve() => false;
-        public bool Resolve<TContext>(in TContext ctx) => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) where TContext : IContextViewImmutable => Resolve();
     }
     public class TestResolvable : IResolvable
     {
         public bool wasCalled;
+        public bool Resolve<TContext>(TContext ctx) => wasCalled = true;
         public bool Resolve() => wasCalled = true;
-        public bool Resolve<TContext>(in TContext ctx)  => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) where TContext : IContextViewImmutable => Resolve();
         
     }
     

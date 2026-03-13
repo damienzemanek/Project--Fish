@@ -20,7 +20,9 @@ namespace EMILtools.Systems
             Action = _action;
         }
         public bool resolveBeforeExecution { get; set; }
-        public bool Resolve<TContext>(in TContext ctx) => Resolve();
+        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable => Resolve();
+        public bool Resolve<TContext>(TContext ctx)=> Resolve();
+
         public bool Resolve()
         {
             Action?.Invoke();
@@ -41,15 +43,27 @@ namespace EMILtools.Systems
             Action = _action;
         }
         public bool resolveBeforeExecution { get; set; }
-    
-        public bool Resolve<API_Context>(in API_Context ctx)
+        [NonSerialized] TContext cached;
+        
+        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable
         {
-            if(ctx is TContext typed) Action?.Invoke(typed);
+            if (ctx is TContext typed) cached = typed;
             else throw new InvalidCastException("Wrong Context Type given to Callback");
+            return Resolve();
+        }
+
+        public bool Resolve<TContext1>(TContext1 ctx)
+        {
+            if (ctx is TContext typed) cached = typed;
+            else throw new InvalidCastException("Wrong Context Type given to Callback");
+            return Resolve();
+        }
+
+        public bool Resolve()
+        {
+            Action?.Invoke(cached);
             return ContinueResolving;
         }
-    
-        public bool Resolve() => throw new NotImplementedException();
     }
     
 
@@ -70,7 +84,9 @@ namespace EMILtools.Systems
             this.InitTimer(timer, isFixed: true); 
         }
 
-        public bool Resolve<TContext>(in TContext ctx) => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) where TContext : IContextViewImmutable => Resolve();
+        public bool Resolve<TContext>(TContext ctx) => Resolve();
+
         public bool Resolve()
         {
             if(!timer.isRunning && !timer.isFinished()) timer.Start();
@@ -124,7 +140,9 @@ namespace EMILtools.Systems
             timer.Reset();
         }
 
-        public bool Resolve<TContext>(in TContext ctx)  => Resolve();
+        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable => Resolve();
+        public bool Resolve<TContext>(TContext ctx) => Resolve();
+
         public bool Resolve()
         {
             if (!timer.isRunning && !timer.isFinished())

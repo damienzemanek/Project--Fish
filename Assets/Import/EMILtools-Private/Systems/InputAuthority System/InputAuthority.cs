@@ -24,7 +24,8 @@ namespace EMILtools.Systems
         protected virtual void Awake()
         {
             Reader = new TInputReader();
-            if(InitialSubordinate.Value == null) Debug.Log("Input Authoriry Initial Subordinate is null!");
+            if(InitialSubordinate.Value == null) 
+                Debug.LogError($"Input Authority Initial Subordinate is null! Please assign initial subordinate in InputAuthority {gameObject.name}");
             if (presetWithInitialSubordinate) InitialSubordinate.Value.SetupFirstAuthority(this);
         }
       

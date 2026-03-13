@@ -25,10 +25,24 @@ public class PlayerInputReader :
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if(ia.Player.Move.IsPressed())
+        if(ia.Player.Move.IsPressed() && context.ReadValue<UnityEngine.Vector2>().x != 0)
             Input.Move.Publish((true, context.ReadValue<UnityEngine.Vector2>().x));
         else
             Input.Move.Publish((false, NumEX.ZeroF));
+    }
+    
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed:
+                Input.Jump.Publish(true);
+                break;
+            case InputActionPhase.Canceled:
+                Input.Jump.Publish(false);
+                break;
+        }
+
     }
 
     public void OnLook(InputAction.CallbackContext context)
@@ -51,10 +65,7 @@ public class PlayerInputReader :
         
     }
 
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        
-    }
+
 
     public void OnPrevious(InputAction.CallbackContext context)
     {

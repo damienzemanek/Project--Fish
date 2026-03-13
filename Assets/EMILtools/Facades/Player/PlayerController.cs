@@ -9,8 +9,8 @@ public class PlayerController : MonoFacade<
     PlayerFunctionality,
     PlayerConfig,
     PlayerStructure,
-    PlayerController.ActionMap>,
-    IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>
+    PlayerController.ActionMap>
+    , IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>
 {
     public class ActionMap : IActionMap
     {
@@ -19,6 +19,7 @@ public class PlayerController : MonoFacade<
     public class PlayerInputMap : InputMap
     {
         public readonly Publisher<(bool, float)> Move = new();
+        public readonly Publisher<bool> Jump = new();
     }
 
     public PlayerInputMap Input { get; set; }

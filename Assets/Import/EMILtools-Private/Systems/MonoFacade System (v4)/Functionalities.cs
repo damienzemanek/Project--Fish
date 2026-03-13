@@ -19,9 +19,9 @@ namespace EMILtools.Systems
         public void LateTick();
     }
     
-    public abstract class Functionalities<TMonoFacade, TContext> : IFunctionality
+    public abstract class Functionalities<TMonoFacade, TViewCtx> : IFunctionality
         where TMonoFacade : class, IFacade
-        where TContext : class, IModuleUsabableContext
+        where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
         [field: NonSerialized] protected TMonoFacade facade { get; private set; }
 
@@ -33,9 +33,9 @@ namespace EMILtools.Systems
         public Dictionary<Type, IMonoFunctionalityModule> APIs => API_Modules;
         [ShowInInspector] readonly List<IMonoFunctionalityModule> modules = new();
 
-        readonly Publisher<TContext> updateTick = new();
-        readonly Publisher<TContext> fixedTick = new();
-        readonly Publisher<TContext> lateTick = new();
+        readonly Publisher<TViewCtx> updateTick = new();
+        readonly Publisher<TViewCtx> fixedTick = new();
+        readonly Publisher<TViewCtx> lateTick = new();
 
         public void InjectFacadeReference(IFacade f)
         {
@@ -62,9 +62,9 @@ namespace EMILtools.Systems
             foreach (var t in modules)
                 if(t is IBindable bindable) bindable.Unbind();
         }
-        public void UpdateTick() => updateTick.Publish(facade.API_Context<TContext>()).Forget("UpdateTick");
-        public void FixedTick() => fixedTick.Publish(facade.API_Context<TContext>()).Forget("FixedTick");
-        public void LateTick() => lateTick.Publish(facade.API_Context<TContext>()).Forget("LateTick");
+        public void UpdateTick() => updateTick.Publish(facade.API_Context<TViewCtx>()).Forget("UpdateTick");
+        public void FixedTick() => fixedTick.Publish(facade.API_Context<TViewCtx>()).Forget("FixedTick");
+        public void LateTick() => lateTick.Publish(facade.API_Context<TViewCtx>()).Forget("LateTick");
         protected void AddModule(MonoFunctionalityModule<TMonoFacade> module)
         {
             modules.Add(module);

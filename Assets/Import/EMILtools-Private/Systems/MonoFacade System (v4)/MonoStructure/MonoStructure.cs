@@ -21,7 +21,7 @@ namespace EMILtools.Systems
         [Title("Blackboard")] [SerializeField] [HideLabel]
         public TBlackboard Blackboard;
     
-        [Title("Context")] [field: NonSerialized] [field: HideLabel]
+        [Title("Context")] [field: NonSerialized] [field: HideLabel] [field: ShowInInspector]
         public ContextProvider<TContextData, TContextViewImmutable> ContextProvider { get; internal set; }
 
 

@@ -4,30 +4,30 @@ using System;
 
 namespace EMILtools.Systems
 {
-    public abstract class UnboundFunctionality<TFacade, TContext> : MonoFunctionalityModule<TFacade>, 
-        IInjectablePipeline<TContext>
+    public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
+        IInjectablePipeline<TViewCtx>
         where TFacade : class, IFacade
-        where TContext : class, IModuleUsabableContext
+        where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
         // Variables
-        public Pipeline<TContext> ExecutionPipeline { get; set; }
-        protected readonly SubResolvableCtx<TContext> subscriber;
+        public Pipeline<TViewCtx> ExecutionPipeline { get; set; }
+        protected readonly SubResolvableCtx<TViewCtx> subscriber;
         
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
             => subscriber = 
-        new SubResolvableCtx<TContext>(ExecuteSubscription);
+        new SubResolvableCtx<TViewCtx>(ExecuteSubscription);
     
         // API Access
-        IInjectablePipeline<TContext> injectablePipeline => this;
+        IInjectablePipeline<TViewCtx> injectablePipeline => this;
         public override ISubscriber Subscriber => subscriber;
     
         // Methods
-        public Func<TContext, bool> InjectMainStep() => new(ExecutionImplementation);
+        public Func<TViewCtx, bool> InjectMainStep() => new(ExecutionImplementation);
 
-        bool ExecuteSubscription(TContext ctx)
+        bool ExecuteSubscription(TViewCtx ctx)
         {
-            PipelineExecutor<TContext>.Execute(ExecutionPipeline, ctx).Forget("Pipeline Execution");
+            PipelineExecutor<TViewCtx>.Execute(ExecutionPipeline, ctx).Forget("Pipeline Execution");
             return false;
         }
         
@@ -43,7 +43,7 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public abstract PipelineBuilder<TContext> InjectSteps(PipelineBuilder<TContext> builder);
+        public abstract PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder);
 
 
         /// <summary>
@@ -51,6 +51,6 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public abstract bool ExecutionImplementation(TContext ctx);
+        public abstract bool ExecutionImplementation(TViewCtx ctx);
     }
 }

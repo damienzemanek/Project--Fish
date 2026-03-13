@@ -17,7 +17,7 @@ namespace EMILtools.Systems
     }
     
     /// <summary>
-    /// Binds a functionality to a PersistentAction
+    /// Binds a functionality to a Publisher
     /// - Only to be used with PersistentAction (No Args)
     /// - Use TContext to pass around information
     /// </summary>
@@ -43,7 +43,7 @@ namespace EMILtools.Systems
 
 
     /// <summary>d
-    /// Binds a functionality to a PersistentAction<...>
+    /// Binds a functionality to a Publisher
     /// - Set Args with SettableTemplate
     /// - Tracks: isActive
     /// </summary>
@@ -52,12 +52,12 @@ namespace EMILtools.Systems
     /// <typeparam name="DataSetter"></typeparam>
     public abstract class BoundSetFunctionality<
             TFacade,
-            TContext,
+            TViewCtx, 
             DataSetter> 
-            : UnboundFunctionality<TFacade, TContext>, IBindable
+            : UnboundFunctionality<TFacade, TViewCtx>, IBindable
         where TFacade : class, IFacade
-        where TContext : class, IModuleUsabableContext
         where DataSetter : class, IDataSetter, new()
+        where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
         protected DataSetter SetContext => Settable;
         [NonSerialized] [ShowInInspector] readonly DataSetter Settable;

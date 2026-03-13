@@ -1,11 +1,20 @@
 using EMILtools.Systems;
+using EMILtools.Timers;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
-public interface IPlayerContextView : IContextViewImmutable
+public interface IPlayerContextView : IModuleUsabableContext
 {
-    public float SomeInt { get; }
+    public ICurveValue JumpCurve { get; }
+    public bool isGrounded { get; }
+    public int jumps { get; }
 }
 
-public class PlayerContextData : ContextData, IPlayerContextView, IModuleUsabableContext
+[InlineProperty]
+public class PlayerContextData : ContextData, IPlayerContextView
 {
-    public float SomeInt { get; set; }
+    [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
+    [ShowInInspector] public bool isGrounded => API_Blackboard<PlayerBlackboard>().phys.isGrounded;
+    [ShowInInspector] public int jumps { get; set; }
+    
 }

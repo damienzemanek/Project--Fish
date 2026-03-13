@@ -84,10 +84,14 @@ namespace EMILtools.Systems
                 for (int i = 0; i < resolvables.Length; i++)
                 {
                     var resolve = resolvables[i];
-
-                    bool result = resolve is IResolvable ctxResolve
-                                    ? ctxResolve.Resolve(ctx)
-                                    : resolve.Resolve();
+                    
+                    bool result = resolve switch
+                    {
+                        IResolvable r when r is IContextViewImmutable ctxView => r.Resolve(ctxView),
+                        IResolvable r => r.Resolve(ctx),
+                        _ => resolve.Resolve()
+                    };
+                    
 
                     if (!result && isShortCircuit)
                         return false;

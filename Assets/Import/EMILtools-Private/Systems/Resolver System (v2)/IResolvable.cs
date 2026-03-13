@@ -13,7 +13,8 @@ namespace EMILtools.Systems
     public interface IResolvable
     {
         public virtual void Reset() { }
-        public bool Resolve<TContext>(in TContext ctx);
+        public bool Resolve<TViewCtx>(in TViewCtx ctx) where TViewCtx : IContextViewImmutable;
+        public bool Resolve<TContext>(TContext ctx);
         public bool Resolve();
     }
 
