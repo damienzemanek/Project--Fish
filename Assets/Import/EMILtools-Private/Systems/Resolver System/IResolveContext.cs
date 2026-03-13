@@ -20,7 +20,7 @@ namespace EMILtools.Systems
             Action = _action;
         }
         public bool resolveBeforeExecution { get; set; }
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) => Resolve();
         public bool Resolve()
         {
             Action?.Invoke();
@@ -45,7 +45,7 @@ namespace EMILtools.Systems
             this.InitTimer(timer, isFixed: true); 
         }
 
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) => Resolve();
         public bool Resolve()
         {
             if(!timer.isRunning && !timer.isFinished()) timer.Start();
@@ -99,7 +99,7 @@ namespace EMILtools.Systems
             timer.Reset();
         }
 
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class => Resolve();
+        public bool Resolve<TContext>(in TContext ctx)  => Resolve();
         public bool Resolve()
         {
             if (!timer.isRunning && !timer.isFinished())

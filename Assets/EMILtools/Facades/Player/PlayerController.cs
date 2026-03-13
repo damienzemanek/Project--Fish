@@ -20,7 +20,7 @@ public class PlayerController : MonoFacade<
 
     public class PlayerInputMap : InputMap
     {
-        public PersistentAction<bool, Vector2> Move = new();
+        public readonly Publisher<bool, Vector2> Move = new();
     }
 
     public PlayerInputMap Input { get; set; }

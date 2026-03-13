@@ -11,13 +11,13 @@ public class SubsctiberTests : MonoBehaviour
     public class TestFailResolvable : IResolvableWithContext
     {
         public bool Resolve() => false;
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class => Resolve();
+        public bool Resolve<TContext>(in TContext ctx) => Resolve();
     }
     public class TestResolvable : IResolvableWithContext
     {
         public bool wasCalled;
         public bool Resolve() => wasCalled = true;
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class => Resolve();
+        public bool Resolve<TContext>(in TContext ctx)  => Resolve();
         
     }
     

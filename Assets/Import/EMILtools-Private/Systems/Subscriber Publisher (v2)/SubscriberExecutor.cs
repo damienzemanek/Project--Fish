@@ -1,11 +1,12 @@
 ﻿using System;
 using JetBrains.Annotations;
+using static EMILtools.Systems.ResolverSystem;
 
 namespace EMILtools.Systems
 {
     public static class SubscriberExecutor
     {
-        public class ActionResolver : ResolverSystem.Resolver<Action, VoidCtx>
+        public class ActionResolver : Resolver<Action, VoidCtx>
         {
             protected override bool Execute(Action command, [CanBeNull] VoidCtx ctx)
             {
@@ -13,8 +14,7 @@ namespace EMILtools.Systems
                 return true;
             }
         }
-        public class ActionContextResolver<T> : ResolverSystem.Resolver<Action<T>, T>
-            where T : class, IContext
+        public class ActionContextResolver<T> : Resolver<Action<T>, T>
         {
             protected override bool Execute(Action<T> command, [CanBeNull] T ctx)
             {
@@ -23,13 +23,14 @@ namespace EMILtools.Systems
             }
         }
         
-        public class PredicateResolver : ResolverSystem.Resolver<Func<bool>, VoidCtx>
+        
+        public class PredicateResolver : Resolver<Func<bool>, VoidCtx>
         {
             protected override bool Execute(Func<bool> command, [CanBeNull] VoidCtx ctx)
                 => command();
         }
 
-        public class FuncResolver<TResult> : ResolverSystem.Resolver<Func<TResult>, VoidCtx>
+        public class FuncResolver<TResult> : Resolver<Func<TResult>, VoidCtx>
         {
             protected override bool Execute(Func<TResult> command, [CanBeNull] VoidCtx ctx)
             {
@@ -38,8 +39,7 @@ namespace EMILtools.Systems
             }
         }
         
-        public class PredicateContextResolver<T> : ResolverSystem.Resolver<Func<T, bool>, T>
-            where T : class, IContext
+        public class PredicateContextResolver<T> : Resolver<Func<T, bool>, T>
         {
             protected override bool Execute(Func<T, bool> command, [CanBeNull] T ctx)
                 => command(ctx);

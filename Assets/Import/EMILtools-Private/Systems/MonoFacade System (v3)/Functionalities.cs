@@ -43,9 +43,9 @@ namespace EMILtools.Systems
                 if(t is IBindable bindable) bindable.Unbind();
             
         }
-        public void UpdateTick() { foreach (var t in _update) t.OnUpdateTick(); }
-        public void FixedTick() { foreach (var t in _fixed) { t.OnFixedTick(); } }
-        public void LateTick() { foreach (var t in _late) t.OnLateTick(); }
+        public void UpdateTick() { foreach (var t in _update) t.OnUpdateTick(facade.API_Structure().API_ContextData); }
+        public void FixedTick() { foreach (var t in _fixed) { t.OnFixedTick(facade.API_Structure().API_ContextData); } }
+        public void LateTick() { foreach (var t in _late) t.OnLateTick(facade.API_Structure().API_ContextData); }
         
         
         public void AddModule(MonoFunctionalityModule<TMonoFacade, TMonoStructure> module)

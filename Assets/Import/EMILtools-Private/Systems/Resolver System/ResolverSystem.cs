@@ -13,7 +13,6 @@ namespace EMILtools.Systems
 
         public abstract class Resolver<TDelegate, TContext>
             where TDelegate : Delegate
-            where TContext : class, IContext
         {
             /// <summary>
             /// Return TRUE if the command should SHORT CIRCUIT
@@ -22,17 +21,20 @@ namespace EMILtools.Systems
             /// <param name="ctx"></param>
             /// <returns></returns>
             protected abstract bool Execute(TDelegate command, TContext ctx);
+
             
             public async Task<bool> ResolveContainer<TResolveType>(
                 
                 ResolveContainer<TResolveType> Resolves, 
                 TDelegate command,
                 bool canShortCircuit,
-                TContext ctx = null)
+                TContext ctx)
         
                 where TResolveType : class, IResolvableWithContext
 
             {
+                
+                
                 if (Resolves.beforeExecution.Length > 0)
                 {
                     bool beforeSuccess = await ResolveArray(Resolves.beforeExecution, canShortCircuit, ctx);
@@ -64,10 +66,10 @@ namespace EMILtools.Systems
         }
 
         
-        public static async Task<bool> ResolveArray(
+        public static async Task<bool> ResolveArray<TContext>(
             IResolvableWithContext[] resolvables,
             bool isShortCircuit,
-            IContext ctx = null)
+            TContext ctx)
         {
             Debug.Log($" ------ Resolving {resolvables.Length} Contexts... ------");
             for (int j = 0; j < resolvables.Length; j++)

@@ -18,7 +18,7 @@ namespace EMILtools.Systems
     /// </summary>
     public interface IResolvableWithContext : IResolvable
     {
-        public bool Resolve<TContext>(in TContext ctx) where TContext : class;
+        public bool Resolve<TContext>(in TContext ctx);
     }
 
     /// <summary>

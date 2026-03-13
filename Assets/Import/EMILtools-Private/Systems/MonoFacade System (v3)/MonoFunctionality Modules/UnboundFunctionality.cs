@@ -1,12 +1,12 @@
 ﻿using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using static EMILtools.Systems.SubscriberExecutor;
 
 
 namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TMonoStructure, TContext> : MonoFunctionalityModule<TFacade, TMonoStructure>, 
-        IExecuteTemplate<TContext>, 
         IInjectablePipeline<TContext>
         where TFacade : class, IFacade<TMonoStructure>
         where TContext : class, IModuleUsabableContext
@@ -14,27 +14,20 @@ namespace EMILtools.Systems
     {
         // Variables
         public Pipeline<TContext> executionPipeline { get; set; }
-    
+        public Subscriber<Action<TContext>, ActionContextResolver<TContext>, TContext> subscriber { get; set; }
+        
         // Ctor
-        protected UnboundFunctionality(TFacade facade) : base(facade) { }
+        protected UnboundFunctionality(TFacade facade) : base(facade)
+            => subscriber = 
+        new Subscriber<Action<TContext>, ActionContextResolver<TContext>, TContext>(ExecuteSubscription);
     
         // API Access
         protected IInjectablePipeline<TContext> injectablePipeline => this;
-        protected IExecuteTemplate<TContext> ExecuteTemplate => this;
     
         // Methods
         public PipelineStepDelegate<TContext> InjectMainStep() => new(ExecutionImplementation);
-
-        [Button]
-        public void Execute()
-        {
-            var ctx = facade.API_Structure().API_ContextData;
-
-            //Debug.Log($"Expected: {typeof(TContext)}");
-            //Debug.Log($"Actual: {ctx?.GetType()}");
-
-            PipelineExecutor<TContext>.Execute(executionPipeline, (TContext)ctx);
-        }
+        
+        void ExecuteSubscription(TContext ctx) => PipelineExecutor<TContext>.Execute(executionPipeline, ctx);
         
         public override void SetupModule()
         {
@@ -49,7 +42,8 @@ namespace EMILtools.Systems
         /// <param name="builder"></param>
         /// <returns></returns>
         public abstract PipelineBuilder<TContext> InjectSteps(PipelineBuilder<TContext> builder);
-    
+
+
         /// <summary>
         /// Execute the functionality's purpose
         /// </summary>

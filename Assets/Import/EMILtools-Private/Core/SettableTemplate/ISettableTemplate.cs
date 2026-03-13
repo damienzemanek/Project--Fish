@@ -1,5 +1,8 @@
 using System;
 using EMILtools.Core;
+using EMILtools.Systems;
+using static EMILtools.Systems.SubscriberExecutor;
+
 
 /// <summary>
 /// Settables manage generic state using Template Method Pattern
@@ -7,12 +10,13 @@ using EMILtools.Core;
 /// <typeparam name="T1"></typeparam>
 public interface ISettableTemplate<T1>
 {
-    public ISystemDelegator action { get; set; }
-    public Delegate TemplateCall { get; }
-    public PersistentAction OnSet { get; set; }
+    public IDelegatorAbstract<ISubscriber> Publisher { get; set;  }
+    public ISubscriber Subscriber { get; }
+    public PersistentAction OnSet { get; }
     
     /// <summary>
     /// All SettableTMP's will have at least 1 unnamedStoredValue1, meaning it is accessible from the interface
     /// </summary>
-    public T1 _unnamedStoredValue1 { get; set; }
+    public T1 data { get; set; }
 }
+

@@ -3,7 +3,8 @@
 namespace EMILtools.Core
 {
 
-    public interface IDelegatorAbstract<TAbstractedDelegate>
+    
+    public interface IDelegatorAbstract<TAbstractedDelegate> 
     {
         TAbstractedDelegate Add(TAbstractedDelegate cb);
         TAbstractedDelegate Remove(TAbstractedDelegate cb);

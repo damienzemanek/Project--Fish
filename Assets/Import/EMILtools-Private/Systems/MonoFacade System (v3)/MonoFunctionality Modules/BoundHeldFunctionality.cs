@@ -33,15 +33,15 @@ namespace EMILtools.Systems
         where TContext : class, IModuleUsabableContext
         where TMonoStructure : IMonoStructure
     {
-        [NonSerialized] PersistentAction _action = new();
-        protected BoundFunctionality(PersistentAction action, TFacade facade) : base(facade)
-         => this._action = action;
+        [NonSerialized] Publisher<TContext> publisher; // Lazy
+        protected BoundFunctionality(Publisher<TContext> publisher, TFacade facade) : base(facade)
+            => this.publisher = publisher;
         
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => _action.Add(Execute);
-        public virtual void Unbind() => _action.Remove(Execute);
+        public virtual void Bind() => publisher.Add(subscriber);
+        public virtual void Unbind() => publisher.Remove(subscriber);
     }
 
 
@@ -70,25 +70,27 @@ namespace EMILtools.Systems
         /// <summary>
         /// Alias for Settable.unnamedStoredValue1
         /// </summary>
-        [ShowInInspector] protected bool isActive => Settable._unnamedStoredValue1;
+        [ShowInInspector] protected bool isActive => Settable.data;
         protected SettableTemplate SetContext => Settable;
         [NonSerialized] [ShowInInspector] SettableTemplate Settable;
-        protected BoundSetFunctionality(ISystemDelegator _action, TFacade facade) : base(facade)
+        protected BoundSetFunctionality(IDelegatorAbstract<ISubscriber> publisher, TFacade facade) : base(facade)
         {
             Settable = new SettableTemplate();
-            Settable.action = _action;
-            Debug.Log($"Settable action is : " + Settable.action + $" and template call is : " + Settable.TemplateCall + $" for functionality : " + GetType().Name);
+            Settable.Publisher = publisher;
+            Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
         }
 
         public void Bind()
         {
-            Settable.action.Add(Settable.TemplateCall);
+            Debug.Log("Trying to Bind " + GetType().Name);
+            Settable.Publisher.Add(Settable.Subscriber);
             if(this is ON_SET onSet) Settable.OnSet.Add(onSet.OnSet);
+            Debug.Log("Bound " + GetType().Name);
         }
 
         public void Unbind()
         {
-            Settable.action.Remove(Settable.TemplateCall);
+            Settable.Publisher.Remove(Settable.Subscriber);
             if(this is ON_SET onSet) Settable.OnSet.Remove(onSet.OnSet);
         }
     }

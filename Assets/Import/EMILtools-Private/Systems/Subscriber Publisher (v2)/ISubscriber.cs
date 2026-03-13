@@ -2,19 +2,22 @@
 
 namespace EMILtools.Systems
 {
-    public interface ISubscriber<TContext>
-        where TContext : class, IContext
+    public interface ISubscriber
     {
         bool isActive { get; set; }
-        Task Execute(TContext ctx);
         Task Execute();
+
     }
     
-    public interface ISubscriber<TContext, TData> : ISubscriber<TContext>
-        where TContext : class, IContext
+    public interface ISubscriber<TContext> : ISubscriber
     {
-        bool isActive { get; set; }
         Task Execute(TContext ctx);
-        Task Execute();
     }
+    
+    public interface ISubscriber<T1, T2> : ISubscriber
+    {
+        Task Execute(T1 ctx1, T2 ctx2);
+    }
+    
+
 }

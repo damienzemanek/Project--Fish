@@ -23,12 +23,14 @@ public class PlayerFunctionality : Functionalities<
     {
         PlayerConfig cfg => facade.Config;
         PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>();
-        
-        
-        public class Setter : SettableTemplate<bool, Vector2> 
-        { [ShowInInspector] public Vector2 move {get => unnamedStoredValue2; set => unnamedStoredValue2 = value;} }
 
-        public Move(ISystemDelegator _action, PlayerController facade) : base(_action, facade) { }
+
+        public class Setter : SettableTemplate<bool, Vector2>
+        {
+            [ShowInInspector] public Vector2 move { get => data.dataSlot2; set => data.SetSlot2(value); }
+        }
+
+        public Move(IDelegatorAbstract<ISubscriber> publisher, PlayerController facade) : base(publisher, facade) { }
 
         public override PipelineBuilder<PlayerContextData> InjectSteps(
             PipelineBuilder<PlayerContextData> builder)
@@ -48,6 +50,6 @@ public class PlayerFunctionality : Functionalities<
             SetContext.move = Vector2.zero;
         }
 
-        public void OnFixedTick() => Execute();
+        public void OnFixedTick<TContext>(TContext ctx) { }
     }
 }

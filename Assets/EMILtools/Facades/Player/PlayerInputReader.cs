@@ -25,9 +25,9 @@ public class PlayerInputReader :
     public void OnMove(InputAction.CallbackContext context)
     {
         if(ia.Player.Move.IsPressed())
-            Input.Move.Invoke(true, context.ReadValue<UnityEngine.Vector2>());
+            Input.Move.Publish(true, context.ReadValue<UnityEngine.Vector2>());
         else
-            Input.Move.Invoke(false, UnityEngine.Vector2.zero);
+            Input.Move.Publish(false, UnityEngine.Vector2.zero);
     }
 
     public void OnLook(InputAction.CallbackContext context)

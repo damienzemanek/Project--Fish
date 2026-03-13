@@ -8,7 +8,7 @@ using static EMILtools.Systems.SubscriberExecutor;
 
 namespace EMILtools.Systems
 {
-    public class VoidCtx : IContext { }
+    public struct VoidCtx : IContext { }
 
     /// <summary>
     /// Use VoidCtx for no context
@@ -21,8 +21,8 @@ namespace EMILtools.Systems
     public sealed class Subscriber<TDelegate, TResolver, TContext> : ISubscriber<TContext>
         where TDelegate : Delegate
         where TResolver : Resolver<TDelegate, TContext>, new()
-        where TContext : class, IContext
     {
+        public static readonly VoidCtx VoidCtx = new();
         readonly TDelegate Callback;
         readonly ResolveContainer<IResolvableWithContext> ResolveContainer;
         static readonly TResolver Resolver = new();
@@ -75,11 +75,18 @@ namespace EMILtools.Systems
         {
             if (typeof(TContext) != typeof(VoidCtx)) throw new InvalidOperationException();
             if (!isActive) return Task.CompletedTask;
-            return Resolver.ResolveContainer(
-                ResolveContainer,
-                Callback,
-                canShortCircuit
-            );
+            if (VoidCtx is TContext ctx)
+                return Resolver.ResolveContainer(
+                    ResolveContainer,
+                    Callback,
+                    canShortCircuit,
+                    ctx
+                );
+            else
+            {
+                Debug.LogError("VoidCtx is not the same type as the context");
+                return Task.CompletedTask;
+            }
         }
     }
 }

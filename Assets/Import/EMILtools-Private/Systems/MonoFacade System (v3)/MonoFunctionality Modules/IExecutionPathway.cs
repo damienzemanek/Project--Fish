@@ -1,18 +1,20 @@
-﻿public interface IExecutionPathway { }
+﻿using EMILtools.Systems;
+
+public interface IExecutionPathway { }
 
 public interface UPDATE : IExecutionPathway
 {
-    void OnUpdateTick();
+    void OnUpdateTick<TContext>(TContext ctx);
 }
 
 public interface FIXED_UPDATE : IExecutionPathway
 {
-    void OnFixedTick();
+    void OnFixedTick<TContext>(TContext ctx);
 }
 
 public interface LATE_UPDATE : IExecutionPathway
 {
-    void OnLateTick();
+    void OnLateTick<TContext>(TContext ctx);
 }
 
 public interface ON_SET : IExecutionPathway
