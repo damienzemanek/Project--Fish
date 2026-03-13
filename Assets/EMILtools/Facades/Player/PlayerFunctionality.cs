@@ -17,8 +17,7 @@ public class PlayerFunctionality : Functionalities<
         AddModule(new Jump(facade.Input.Jump, facade));
     }
 
-    public class Jump : BoundSetFunctionality<PlayerController, IPlayerContextView,
-            Jump.Setter>,
+    public class Jump : BoundSetFunctionality<PlayerController, IPlayerContextView, Jump.Setter>,
         FIXED_UPDATE,
         ON_SET
     {
@@ -33,10 +32,7 @@ public class PlayerFunctionality : Functionalities<
             => builder.Add_ShortCircuit(ctx => !SetContext.isActive)
                 .Add_ShortCircuit(ctx => (ctx.jumps <= 0));
 
-        protected override void Awake()
-        {
-            facade.API_Context<PlayerContextData>().jumps = cfg.jump.maxJumps;
-        }
+        protected override void Awake() => facade.API_Context<PlayerContextData>().jumps = cfg.jump.maxJumps;
         
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
@@ -49,23 +45,25 @@ public class PlayerFunctionality : Functionalities<
         {
             if (SetContext.isActive)
             {
+                // Jump Initial Press
                 facade.API_Context<PlayerContextData>().jumps -= 1;
                 bb.jumpCurve.DynamicStart(Operation.Increase);
             }
             else
             {
+                // Jump Let Go
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
                 bb.jumpCurve.Value = 0;
             }
             
-            if(bb.phys.isGrounded) Landed();
-            void Landed() => facade.API_Context<PlayerContextData>().jumps = cfg.jump.maxJumps;
+            // Landed
+            if(bb.phys.isGrounded) facade.API_Context<PlayerContextData>().jumps = cfg.jump.maxJumps;
+            
         }
 
     }
     
-    public class Move : BoundSetFunctionality<PlayerController, IPlayerContextView,
-            Move.Setter>,
+    public class Move : BoundSetFunctionality<PlayerController, IPlayerContextView, Move.Setter>,
         FIXED_UPDATE
     {
         PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>();
