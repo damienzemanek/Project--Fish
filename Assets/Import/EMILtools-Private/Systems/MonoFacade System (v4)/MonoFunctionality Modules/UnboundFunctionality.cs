@@ -1,33 +1,35 @@
-﻿using System;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using static EMILtools.Systems.SubscriberExecutor;
+﻿
 
+using System;
 
 namespace EMILtools.Systems
 {
-    public abstract class UnboundFunctionality<TFacade, TMonoStructure, TContext> : MonoFunctionalityModule<TFacade, TMonoStructure>, 
+    public abstract class UnboundFunctionality<TFacade, TContext> : MonoFunctionalityModule<TFacade>, 
         IInjectablePipeline<TContext>
         where TFacade : class, IFacade
         where TContext : class, IModuleUsabableContext
-        where TMonoStructure : IMonoStructure
     {
         // Variables
         public Pipeline<TContext> ExecutionPipeline { get; set; }
-        protected readonly SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext> subscriber;
+        protected readonly SubResolvableCtx<TContext> subscriber;
         
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
             => subscriber = 
-        new SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext>(ExecuteSubscription);
+        new SubResolvableCtx<TContext>(ExecuteSubscription);
     
         // API Access
-        protected IInjectablePipeline<TContext> injectablePipeline => this;
+        IInjectablePipeline<TContext> injectablePipeline => this;
+        public override ISubscriber Subscriber => subscriber;
     
         // Methods
-        public PipelineStepDelegate<TContext> InjectMainStep() => new(ExecutionImplementation);
-        
-        void ExecuteSubscription(TContext ctx) => PipelineExecutor<TContext>.Execute(ExecutionPipeline, ctx);
+        public Func<TContext, bool> InjectMainStep() => new(ExecutionImplementation);
+
+        bool ExecuteSubscription(TContext ctx)
+        {
+            PipelineExecutor<TContext>.Execute(ExecutionPipeline, ctx).Forget("Pipeline Execution");
+            return false;
+        }
         
         public override void SetupModule()
         {

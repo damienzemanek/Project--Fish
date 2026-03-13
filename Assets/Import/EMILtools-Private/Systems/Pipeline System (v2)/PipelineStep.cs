@@ -1,20 +1,11 @@
-﻿using EMILtools.Core;
+﻿using System;
+using EMILtools.Core;
 using EMILtools.Systems;
 
 
 namespace EMILtools.Systems
 {
-    /// <summary>
-    /// Represents a delegate that defines the execution logic for a step in the pipeline.
-    /// Used to process a specific context within the pipeline's execution flow.
-    /// SRP: Execution logic for pipeline steps.
-    /// </summary>
-    /// <typeparam name="TContext">
-    /// The type of context used in the pipeline.
-    /// Intent: High Throughput, so it's a CLASS
-    /// </typeparam>
-    public delegate bool PipelineStepDelegate<in TContext>(TContext context);
-
+    
 
     /// <summary>
     /// Represents a step in a pipeline,
@@ -26,29 +17,27 @@ namespace EMILtools.Systems
     /// Intent: High Throughput, so it's a CLASS
     /// </typeparam>
     public readonly struct PipelineStep<TContext>
-        where TContext : class, IContextViewImmutable
+        where TContext : class, IPipelineContext
     {
-        const bool ResolveSuccessfull = true;
-
-
+        
         // ------ Variables --------
-        public readonly PipelineStepDelegate<TContext> Execute;
-        public readonly ResolveContainer<IResolvableWithContext> Resolves;
+        public readonly Func<TContext, bool> StepExecute;
+        public readonly ResolveContainer Resolves;
         public readonly StepType StepType;
 
         
         // ------ Ctors ------
-        public PipelineStep(StepType stepType, PipelineStepDelegate<TContext> execute, 
-            ResolveContainer<IResolvableWithContext> resolves = default)
+        public PipelineStep(StepType stepType, Func<TContext, bool> stepExecute, 
+            ResolveContainer resolves = default)
         {
-            Execute = execute;
+            StepExecute = stepExecute;
             Resolves = resolves;
             StepType = stepType;
         }
-        public PipelineStep(PipelineStepDelegate<TContext> mainMethod)
+        public PipelineStep(Func<TContext, bool> mainMethod)
         {
-            Execute = mainMethod;
-            Resolves = new ResolveContainer<IResolvableWithContext>(null, null, null);
+            StepExecute = mainMethod;
+            Resolves = new ResolveContainer(null, null, null);
             StepType = StepType.MainMethod;
         }
     }

@@ -3,11 +3,9 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using static PrimaryInputAuthority;
 using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,PrimaryInputAuthority.Subordinates>;
-using EMILtools.Core;
 
 
 public class PlayerController : MonoFacade<
-    PlayerController,
     PlayerFunctionality,
     PlayerConfig,
     PlayerStructure,

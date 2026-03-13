@@ -1,4 +1,6 @@
 
+using System;
+
 namespace EMILtools.Systems
 {
     public interface IInjectablePipeline<TContext>
@@ -12,7 +14,7 @@ namespace EMILtools.Systems
         public virtual PipelineBuilder<TContext> InjectSteps(PipelineBuilder<TContext> builder)
             => throw new System.NotImplementedException();  
 
-        public virtual PipelineStepDelegate<TContext> InjectMainStep() 
+        public virtual Func<TContext, bool> InjectMainStep() 
             => throw new System.NotImplementedException(); 
     
         public void Setup(bool setupWithFinalStep)

@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 using EMILtools.Core;
 using EMILtools.Timers;
 using UnityEngine.TestTools;
@@ -33,7 +34,7 @@ public class PipelineTests
 
     
     [Test]
-    public void Test2_StepsAllPass_FinalExecutes()
+    public async Task Test2_StepsAllPass_FinalExecutes()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
@@ -46,7 +47,7 @@ public class PipelineTests
 
         
         // Act
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         Debug.Log("------- Act Complete -------");
 
         
@@ -63,7 +64,7 @@ public class PipelineTests
     }
     
     [Test]
-    public void Test3_StepFail_FinalDoesNotExecute()
+    public async Task Test3_StepFail_FinalDoesNotExecute()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
@@ -75,7 +76,7 @@ public class PipelineTests
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
 
         //Act
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         
         // Assert
         Assert.AreEqual(jumpSuccessfull, false);
@@ -83,7 +84,7 @@ public class PipelineTests
     }
     
     [Test]
-    public void Test4_StepFail_Executes_ShortCircuitCallback()
+    public async Task Test4_StepFail_Executes_ShortCircuitCallback()
     {
         // Arrange
         var myctx = new TestContextProvider(2);
@@ -91,13 +92,13 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2,
-                shortCircuited: new IResolvableWithContext[] { new Callback(ShortCircuitCallback) })
+                shortCircuited: new IResolvable[] { new Callback(ShortCircuitCallback) })
             .InjectMainMethod(ctx => Jump(ctx));
         bool Jump(TestContextProvider ctx) => true;
 
         
         // Act
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         
         void ShortCircuitCallback() => failedStepCallbackExecuted = true;
         // Assert
@@ -106,7 +107,7 @@ public class PipelineTests
 
     
     [Test]
-    public void Test5_BeforeAndAfter_AllPass_ResolveContextCalled()
+    public async Task Test5_BeforeAndAfter_AllPass_ResolveContextCalled()
     {
         var myctx = new TestContextProvider(3);
         bool jumpSuccessfull = false;
@@ -115,11 +116,11 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
-                after: new IResolvableWithContext[]{ new Callback(CallAfter) })
+                before: new IResolvable[]{ new Callback(CallBefore) }, 
+                after: new IResolvable[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;
@@ -131,7 +132,7 @@ public class PipelineTests
     }
     
     [Test]
-    public void Test6_BeforeAndAfter_BeforePassesOnly_DueToShortCircuit_ResolveContextCalled()
+    public async Task Test6_BeforeAndAfter_BeforePassesOnly_DueToShortCircuit_ResolveContextCalled()
     {
         var myctx = new TestContextProvider(2);
         var jumpCalled = false;
@@ -140,11 +141,11 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
-                after: new IResolvableWithContext[]{ new Callback(CallAfter) })
+                before: new IResolvable[]{ new Callback(CallBefore) }, 
+                after: new IResolvable[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         
         
         Assert.IsTrue(beforecalled, "Before callback should have been called.");
@@ -171,13 +172,13 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
             .Add_ShortCircuit(ctx => ctx.Value == 1, 
-                before: new IResolvableWithContext[] { new Timed(1) })
+                before: new IResolvable[] { new Timed(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 
         
         // Act
-        TryTo(jump, myctx);
+        TryTo(jump, myctx).Forget("Jump");
         
         // Assert
         Assert.AreEqual(jumpCalled, false, "Jump should not be called immediately.");
@@ -203,7 +204,7 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 0)
             .Add_ShortCircuit(ctx => ctx.Value == 1, 
-                before: new IResolvableWithContext[] { new Wait(1) })
+                before: new IResolvable[] { new Wait(1) })
             .InjectMainMethod(Jump);
         bool Jump(TestContextProvider ctx) => jumpCalled = true;
 
@@ -225,7 +226,7 @@ public class PipelineTests
     
         
     [Test]
-    public void Test9_ShortCircuitCallbackCalled()
+    public async Task Test9_ShortCircuitCallbackCalled()
     {
         var myctx = new TestContextProvider(2);
         bool jumpSuccessfull = false;
@@ -235,12 +236,12 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestContextProvider>()
             .Add_ShortCircuit(ctx => ctx.Value == 1)
             .Add_ShortCircuit(ctx => ctx.Value == 2, 
-                before: new IResolvableWithContext[]{ new Callback(CallBefore) }, 
-                after: new IResolvableWithContext[]{ new Callback(CallAfter) },
-                shortCircuited: new IResolvableWithContext[]{ new Callback(ShortCircuit) })
+                before: new IResolvable[]{ new Callback(CallBefore) }, 
+                after: new IResolvable[]{ new Callback(CallAfter) },
+                shortCircuited: new IResolvable[]{ new Callback(ShortCircuit) })
             .InjectMainMethod(Jump);
         
-        TryTo(jump, myctx);
+        await TryTo(jump, myctx);
         bool Jump(TestContextProvider ctx) { jumpSuccessfull = true; return true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;

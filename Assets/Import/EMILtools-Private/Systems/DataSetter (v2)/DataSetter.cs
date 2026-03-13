@@ -1,9 +1,5 @@
 using System;
 using EMILtools.Core;
-using EMILtools.Systems;
-using UnityEngine;
-using static EMILtools.Systems.SubscriberExecutor;
-
 
 
 namespace EMILtools.Systems
@@ -27,39 +23,44 @@ namespace EMILtools.Systems
     /// Ensure you set aliases for values they are generic storage only
     /// </summary>
     /// <typeparam name="T1"></typeparam>
-    public abstract class SettableTemplate<T1> : 
-        ISettableTemplate<T1>
+    public abstract class DataSetter<T1> : 
+        IDataSetter<T1>
     {
         // Values
-        [field: NonSerialized] T1 ISettableTemplate<T1>.data { get; set; }
+        [field: NonSerialized] T1 IDataSetter<T1>.data { get; set; }
         
         // Template Call 
-        public SubscriberCtx<Action<T1>, ActionResolverCtx<T1>, T1> templateCallSubscriber;
+        readonly SubResolvableCtx<T1> templateCallSubscriber;
         public ISubscriber Subscriber => templateCallSubscriber;
         public PersistentAction OnSet { get; set; } = new();
-        void _TemplateCall(T1 val)
+        bool _TemplateCall(T1 val)
         {
-            ((ISettableTemplate<T1>)this).data = val;
+            ((IDataSetter<T1>)this).data = val;
             Set(val);
             OnSet.Invoke();
+            return false;
         }
         
         // Ctor
-        protected SettableTemplate()
-            => templateCallSubscriber = new SubscriberCtx<Action<T1>, ActionResolverCtx<T1>, T1>(_TemplateCall);
+        protected DataSetter()
+            => templateCallSubscriber = new SubResolvableCtx<T1>(_TemplateCall);
         
         // Action
         [NonSerialized] Publisher<T1> _publisher;
         public IPublisher Publisher
         {
             get => _publisher;
-            set => _publisher = (Publisher<T1>)value;
+            set
+            {
+                if (value is Publisher<T1> typedValue) _publisher = typedValue;
+                else throw new ArgumentException($"Value must be of type Publisher<T1> it is currently ({value.GetType()})");
+            }
         }
 
 
         // Abstract
         protected virtual void Set(T1 val) { }
-        public T1 dataSlot1 => ((ISettableTemplate<T1>)this).data;
+        public T1 dataSlot1 => ((IDataSetter<T1>)this).data;
         
     }
         
@@ -68,35 +69,40 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="T1"></typeparam>
     /// <typeparam name="T2"></typeparam>
-    public abstract class SettableTemplate<T1, T2> : 
-        ISettableTemplate<T1>
+    public abstract class DataSetter<T1, T2> : 
+        IDataSetter<T1>
     {
         
         // Values
-        public T1 data1 { get; set; }
-        public T2 data2 { get; set; }
+        T1 data1 { get; set; }
+        protected T2 data2 { get; set; }
         
         // Template Call
-        public SubscriberCtx<Action<T1, T2>, ActionResolverCtx<T1, T2>, T1, T2> templateCallSubscriber;
+        readonly SubResolvableCtx<(T1, T2)> templateCallSubscriber;
         public ISubscriber Subscriber => templateCallSubscriber;
-        void _TemplateCall(T1 ctx1, T2 ctx2)
+        bool _TemplateCall((T1 ctx1, T2 ctx2) data)
         {
-            data1 = ctx1;
-            data2 = ctx2;
-            Set(ctx1, ctx2);
+            data1 = data.ctx1;
+            data2 = data.ctx2;
+            Set(data.ctx1, data.ctx2);
             OnSet.Invoke();
             //Debug.Log("SETTER TEMPLATE CALL CALLED");
+            return false;
         }
         
         // Ctor
-        public SettableTemplate()
-            => templateCallSubscriber = new SubscriberCtx<Action<T1, T2>, ActionResolverCtx<T1, T2>, T1, T2>(_TemplateCall);
+        protected DataSetter()
+            => templateCallSubscriber = new SubResolvableCtx<(T1, T2)>(_TemplateCall);
         public PersistentAction OnSet { get; set; } = new();
 
         public IPublisher Publisher
         {
-            get => _publisher; 
-            set => _publisher = (Publisher<T1, T2>)value;
+            get => _publisher;
+            set
+            {
+                if (value is Publisher<T1, T2> typedValue) _publisher = typedValue;
+                else throw new ArgumentException($"Value must be of type Publisher<T1, T2> it is currently ({value.GetType()})");
+            }
         }
         
         // Abstract
@@ -109,7 +115,7 @@ namespace EMILtools.Systems
         
         
         // T1 Abstracts
-        T1 ISettableTemplate<T1>.data
+        T1 IDataSetter<T1>.data
         {
             get => data1;
             set => data1 = value;

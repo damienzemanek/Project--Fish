@@ -14,23 +14,15 @@ namespace EMILtools.Systems
     public static class PipelineExecutor<TContext>
         where TContext : class, IPipelineContext
     {
-        static PipelineResolver Resolver = new();
-        class PipelineResolver : ContextResolver<PipelineStepDelegate<TContext>, TContext>
-        {
-            protected override bool Execute(PipelineStepDelegate<TContext> command, in TContext ctx)
-             => command(ctx);
-        }
-
-        public static async Task Execute(Pipeline<TContext> pipeline, TContext ctx)
+        public static async Task<bool> Execute(Pipeline<TContext> pipeline, TContext ctx)
         {
             for (int i = 0; i < pipeline.Size; i++)
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                if(!await Resolver.ResolveContainer(step.Resolves, step.Execute, isShortCircuit, ctx)) return;
-                
+                if(!await Resolver.ResolveContainer(step.Resolves, step.StepExecute, isShortCircuit, ctx)) return false;
             }
-                
+            return true;
         }
         
         

@@ -10,7 +10,7 @@ namespace EMILtools.Systems
     /// <summary>
     /// Represents a callback mechanism that can be invoked before pipeline step execution
     /// </summary>
-    public class Callback : IResolvableWithContext
+    public class Callback : IResolvable
     {
         static readonly bool ContinueResolving = true;
         public readonly Action Action;
@@ -27,12 +27,37 @@ namespace EMILtools.Systems
             return ContinueResolving;
         }
     }
+    
+    /// <summary>
+    /// Represents a callback mechanism that can be invoked before pipeline step execution
+    /// </summary>
+    public class Callback<TContext> : IResolvable
+    {
+        static readonly bool ContinueResolving = true;
+        public readonly Action<TContext> Action;
+    
+        public Callback(Action<TContext> _action)
+        {
+            Action = _action;
+        }
+        public bool resolveBeforeExecution { get; set; }
+    
+        public bool Resolve<API_Context>(in API_Context ctx)
+        {
+            if(ctx is TContext typed) Action?.Invoke(typed);
+            else throw new InvalidCastException("Wrong Context Type given to Callback");
+            return ContinueResolving;
+        }
+    
+        public bool Resolve() => throw new NotImplementedException();
+    }
+    
 
     /// <summary>
     /// Timed resolving context that integrates with a pipeline execution flow.
     /// Will ShortCircuit if the timer is not finished (Only If the StepType is a ShortCircuit)
     /// </summary>
-    public class Timed : IResolvableWithContext, ITimerUser
+    public class Timed : IResolvable, ITimerUser
     {
         // Is not intended to be read as ShortCircuit FALSE, used just for readability in the Resolve()
         bool ShortCircuitIfNotFinished => false; 
@@ -59,7 +84,7 @@ namespace EMILtools.Systems
     /// Provides functionality to wait asynchronously until the timer completes (Stays in UnityTime)
     /// Used when delays are necessary before progressing within the pipeline.
     /// </summary>
-    public class Wait : IResolvableWithContext, ITimerUser, IResolveWaitable
+    public class Wait : IResolvable, ITimerUser, IResolveWaitable
     {
         // --- static ----
         static bool ContinueResolving = true;

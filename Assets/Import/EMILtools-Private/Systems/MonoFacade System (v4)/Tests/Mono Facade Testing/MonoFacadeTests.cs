@@ -23,7 +23,6 @@ public class MonoFacadeTests
     }
     
     public class TestController : MonoFacade<
-        TestController,
         TestFunctionality,
         TestConfig,
         TestStructure,

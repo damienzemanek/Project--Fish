@@ -1,12 +1,17 @@
-﻿using System;
-using Sirenix.OdinInspector;
-using UnityEngine;
-using static EMILtools.Systems.SubscriberExecutor;
+﻿using Sirenix.OdinInspector;
 
 
 namespace EMILtools.Systems
 {
-    public abstract class MonoFunctionalityModule<TFacade, TContext> 
+    public interface IMonoFunctionalityModule
+    {
+        public abstract ISubscriber Subscriber { get; }
+        protected virtual void Awake() { }
+        public abstract void SetupModule();
+    }
+    
+    public abstract class MonoFunctionalityModule<TFacade>
+        : IMonoFunctionalityModule
         where TFacade : class, IFacade
     {
         [Title("$Name"), PropertyOrder(-1)]
@@ -15,14 +20,14 @@ namespace EMILtools.Systems
     
         // ---------- Variables ----------
         public TFacade facade { get; set; }
-        protected readonly SubscriberCtx<Action<TContext>, ActionResolverCtx<TContext>, TContext> subscriber;
 
         // ---------- Ctor ----------
         public MonoFunctionalityModule(TFacade facade) => this.facade = facade;
     
     
         // ---------- Abstracts ----------
-    
+        public abstract ISubscriber Subscriber { get; }
+
         /// <summary>
         /// Set up the module, called from Monobehaviour's Awake
         /// </summary>

@@ -3,12 +3,6 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-    public interface IResolvable
-    {
-        public virtual void Reset() { }
-        public bool Resolve();
-    }
-
     /// <summary>
     /// Context for ResolveContexts, used to pass data and control the flow of the pipeline
     /// Resolve "BEFORE" and "AFTER" the execution of the pipeline step
@@ -16,9 +10,11 @@ namespace EMILtools.Systems
     /// (!) NOTE: "BEFORE" resolves will run even if the pipeline step short circuits
     /// (!) NOTE: The main method will NOT run if ANY pipeline step short circuits
     /// </summary>
-    public interface IResolvableWithContext : IResolvable
+    public interface IResolvable
     {
+        public virtual void Reset() { }
         public bool Resolve<TContext>(in TContext ctx);
+        public bool Resolve();
     }
 
     /// <summary>

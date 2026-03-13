@@ -1,19 +1,18 @@
-using System;
 using System.Threading.Tasks;
 using EMILtools.Systems;
 using NUnit.Framework;
 using UnityEngine;
-using static EMILtools.Systems.SubscriberExecutor;
 
 public class SubsctiberTests : MonoBehaviour
 {
 
-    public class TestFailResolvable : IResolvableWithContext
+    public class TestFailResolvable : IResolvable
     {
+
         public bool Resolve() => false;
         public bool Resolve<TContext>(in TContext ctx) => Resolve();
     }
-    public class TestResolvable : IResolvableWithContext
+    public class TestResolvable : IResolvable
     {
         public bool wasCalled;
         public bool Resolve() => wasCalled = true;
@@ -26,9 +25,9 @@ public class SubsctiberTests : MonoBehaviour
     {
         bool executed = false;
 
-        var sub = new Subscriber<Action, ActionResolver>(
+        var sub = new SubResolvable(
             () => executed = true,
-            new ResolveContainer<IResolvableWithContext>(null, null, null)
+            new ResolveContainer(null, null, null)
         );
 
         await sub.Execute();
@@ -41,12 +40,12 @@ public class SubsctiberTests : MonoBehaviour
     {
         var before = new TestResolvable();
 
-        var container = new ResolveContainer<IResolvableWithContext>(
-            beforeExecution: new IResolvableWithContext[] { before }
+        var container = new ResolveContainer(
+            beforeExecution: new IResolvable[] { before }
         );
 
-        var sub = new Subscriber<Action, ActionResolver>(
-            () => { },
+        var sub = new SubResolvable(
+            () => false,
             container
         );
 
@@ -60,12 +59,12 @@ public class SubsctiberTests : MonoBehaviour
     {
         var after = new TestResolvable();
 
-        var container = new ResolveContainer<IResolvableWithContext>(
-            afterExecution: new IResolvableWithContext[] { after }
+        var container = new ResolveContainer(
+            afterExecution: new IResolvable[] { after }
         );
 
-        var sub = new Subscriber<Action, ActionResolver>(
-            () => { },
+        var sub = new SubResolvable(
+            () => false,
             container
         );
 
@@ -81,11 +80,11 @@ public class SubsctiberTests : MonoBehaviour
 
         var beforeFail = new TestFailResolvable();
 
-        var container = new ResolveContainer<IResolvableWithContext>(
-            beforeExecution: new IResolvableWithContext[] { beforeFail }
+        var container = new ResolveContainer(
+            beforeExecution: new IResolvable[] { beforeFail }
         );
 
-        var sub = new Subscriber<Action, ActionResolver>(
+        var sub = new SubResolvable(
             () => executed = true,
             container,
             canShortCircuit: true
@@ -104,11 +103,11 @@ public class SubsctiberTests : MonoBehaviour
         var failed = new TestResolvable();
         bool shouldStop = true;
 
-        var container = new ResolveContainer<IResolvableWithContext>(
-            failedExecution: new IResolvableWithContext[] { failed }
+        var container = new ResolveContainer(
+            failedExecution: new IResolvable[] { failed }
         );
 
-        var sub = new Subscriber<Func<bool>, PredicateResolver>(
+        var sub = new SubResolvable(
             () => shouldStop,
             container,
             canShortCircuit: true
@@ -127,13 +126,13 @@ public class SubsctiberTests : MonoBehaviour
         var failPointBefore = new TestFailResolvable();
         var after = new TestResolvable();
 
-        var container = new ResolveContainer<IResolvableWithContext>(
-            beforeExecution: new IResolvableWithContext[] { failPointBefore },
-            afterExecution: new IResolvableWithContext[] { after }
+        var container = new ResolveContainer(
+            beforeExecution: new IResolvable[] { failPointBefore },
+            afterExecution: new IResolvable[] { after }
         );
 
-        var sub = new Subscriber<Action, ActionResolver>(
-            () => { },
+        var sub = new SubResolvable(
+            () => false,
             container,
             canShortCircuit: true
         );

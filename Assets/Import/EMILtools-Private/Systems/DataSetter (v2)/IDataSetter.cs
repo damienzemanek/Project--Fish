@@ -7,7 +7,7 @@ namespace EMILtools.Systems
     /// Settables manage generic state using Template Method Pattern
     /// </summary>
     /// <typeparam name="T1"></typeparam>
-    public interface ISettableTemplate<T1>
+    public interface IDataSetter<T1>
     {
         public IPublisher Publisher { get; set;  }
         public ISubscriber Subscriber { get; }

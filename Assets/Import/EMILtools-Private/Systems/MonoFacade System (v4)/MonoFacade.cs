@@ -7,7 +7,7 @@ namespace EMILtools.Systems
 {
         
     [Serializable]
-    public abstract class MonoFacade<TMonoFacade, 
+    public abstract class MonoFacade<
             TFunctionality,  // Systems and functionality
             TConfig,         // Immutable Configuration
             TMonoStructure,  // References + CQRS Context
@@ -15,10 +15,9 @@ namespace EMILtools.Systems
         
         : MonoBehaviour, IFacade
 
-        where TMonoFacade    : class, IFacade   
         where TConfig        : Config        
-        where TMonoStructure : IMonoStructure, new()
-        where TFunctionality : Functionalities<TMonoFacade>, new()
+        where TMonoStructure : class, IMonoStructure, new()
+        where TFunctionality : class, IFunctionality, new()
         where TActionMap     : class, IActionMap, new()
     {
         
@@ -36,7 +35,7 @@ namespace EMILtools.Systems
         
         public T GetFunctionality<T>() where T : class, IAPI_Module
         {
-            if (Functionality.APIs().TryGetValue(typeof(T), out var module)) return module as T;
+            if (Functionality.APIs.TryGetValue(typeof(T), out var module)) return module as T;
             if(module == null) Debug.LogWarning("Did not find module of type " + typeof(T));
             return null;
         }
@@ -78,8 +77,16 @@ namespace EMILtools.Systems
             Functionality.LateTick();
         }
         
+        
+        public TMonoStructureType API_Structure<TMonoStructureType>() where TMonoStructureType : IMonoStructure
+        {
+            if (structure is TMonoStructureType monoStructure) return monoStructure; throw new InvalidCastException();
+        }
 
-        public TMonoStructure API_Structure() => structure;
+        public TContextType API_Context<TContextType>() where TContextType : IContext
+        {
+            if (structure.API_ContextData is TContextType context) return context; throw new InvalidCastException();
+        }
 
         public TBlackboardType API_Blackboard<TBlackboardType>() where TBlackboardType : IBlackboard
         {

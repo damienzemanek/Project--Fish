@@ -6,10 +6,10 @@ using UnityEngine.TestTools;
 using EMILtools.Systems;
 using EMILtools.Core;
 
-public class SettableTemplateTests
+public class DataSetterTests
 {
     // Test implementation of SettableTemplate
-    class TestSettable : SettableTemplate<int>
+    class TestSettable : DataSetter<int>
     {
         public int setCallCount = 0;
         public int lastValue;

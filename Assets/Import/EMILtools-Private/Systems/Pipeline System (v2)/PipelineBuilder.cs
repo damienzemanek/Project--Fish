@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EMILtools.Core;
 
 namespace EMILtools.Systems
@@ -23,8 +24,8 @@ namespace EMILtools.Systems
         // ------ Methods ---------
         PipelineBuilder<TContext> AddStep(
             StepType stepType,
-            PipelineStepDelegate<TContext> @if,
-            in ResolveContainer<IResolvableWithContext> resolves)
+            Func<TContext, bool> @if,
+            in ResolveContainer resolves)
         {
             steps.Add(new PipelineStep<TContext>(stepType, @if, resolves));
             return this;
@@ -33,21 +34,21 @@ namespace EMILtools.Systems
     
         // ------ API Methods ---------
         public PipelineBuilder<TContext> Add_ShortCircuit(
-            PipelineStepDelegate<TContext> @if,
-            IResolvableWithContext[] before = null, IResolvableWithContext[] after = null, IResolvableWithContext[] shortCircuited = null)
+            Func<TContext, bool> @if,
+            IResolvable[] before = null, IResolvable[] after = null, IResolvable[] shortCircuited = null)
         {
-            var NewResolves = new ResolveContainer<IResolvableWithContext>(before, after, shortCircuited);
+            var NewResolves = new ResolveContainer(before, after, shortCircuited);
             return AddStep(StepType.ShortCircuit, @if, NewResolves);
         }
-        public PipelineBuilder<TContext> Add_Middleware(PipelineStepDelegate<TContext> method, 
-            IResolvableWithContext[] before = null, IResolvableWithContext[] after = null)
+        public PipelineBuilder<TContext> Add_Middleware(Func<TContext, bool> method, 
+            IResolvable[] before = null, IResolvable[] after = null)
         {
-            var NewResolves = new ResolveContainer<IResolvableWithContext>(before, after);
+            var NewResolves = new ResolveContainer(before, after);
             return AddStep(StepType.Middleware, method, NewResolves);
         }
         
         
-        public Pipeline<TContext> InjectMainMethod(PipelineStepDelegate<TContext> mainMethod) 
+        public Pipeline<TContext> InjectMainMethod(Func<TContext, bool> mainMethod) 
         {
             steps.Add(new PipelineStep<TContext>(mainMethod));
             return new Pipeline<TContext>(steps.ToArray());

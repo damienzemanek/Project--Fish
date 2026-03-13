@@ -5,20 +5,21 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-        
+
     /// <summary>
     /// Context used in MonoFacade Functionalities
     /// </summary>
-    public interface IModuleUsabableContext : IPipelineContext { }
+    public interface IModuleUsabableContext : IPipelineContext
+    {
+        
+    }
      
     public interface IBindable
     {
         public void Bind();
         public void Unbind();
     }
-
-    public interface ISettableImplementer { }
-
+    
     /// <summary>
     /// Binds a functionality to a PersistentAction
     /// - Only to be used with PersistentAction (No Args)
@@ -26,14 +27,13 @@ namespace EMILtools.Systems
     /// </summary>
     /// <typeparam name="TFacade"></typeparam>
     /// <typeparam name="TContext"></typeparam>
-    public abstract class BoundFunctionality<TFacade, TMonoStructure, TContext> : 
-            UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
+    public abstract class BoundFunctionality<TFacade, TContext> : 
+            UnboundFunctionality<TFacade, TContext>, 
             IBindable
         where TFacade : class, IFacade
         where TContext : class, IModuleUsabableContext
-        where TMonoStructure : IMonoStructure
     {
-        [NonSerialized] Publisher<TContext> publisher; // Lazy (Injected)
+        [NonSerialized] readonly Publisher<TContext> publisher; // Lazy (Injected)
         protected BoundFunctionality(Publisher<TContext> publisher, TFacade facade) : base(facade)
             => this.publisher = publisher;
         
@@ -56,23 +56,20 @@ namespace EMILtools.Systems
     /// <typeparam name="SettableTemplate"></typeparam>
     public abstract class BoundSetFunctionality<
             TFacade,
-            TMonoStructure,
             TContext,
             SettableTemplate> 
-            : UnboundFunctionality<TFacade, TMonoStructure, TContext>, 
-        IBindable,
-        ISettableImplementer
+            : UnboundFunctionality<TFacade, TContext>, 
+        IBindable
         where TFacade : class, IFacade
-        where TMonoStructure : IMonoStructure   
         where TContext : class, IModuleUsabableContext
-        where SettableTemplate : class, ISettableTemplate<bool>, new()
+        where SettableTemplate : class, IDataSetter<bool>, new()
     {
         /// <summary>
         /// Alias for Settable.unnamedStoredValue1
         /// </summary>
         [ShowInInspector] protected bool isActive => Settable.data;
         protected SettableTemplate SetContext => Settable;
-        [NonSerialized] [ShowInInspector] SettableTemplate Settable;
+        [NonSerialized] [ShowInInspector] readonly SettableTemplate Settable;
         protected BoundSetFunctionality(IPublisher publisher, TFacade facade) : base(facade)
         {
             Settable = new SettableTemplate();
