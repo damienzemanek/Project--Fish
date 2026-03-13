@@ -1,22 +1,24 @@
 ﻿using System;
 using JetBrains.Annotations;
+using UnityEngine;
 using static EMILtools.Systems.ResolverSystem;
 
 namespace EMILtools.Systems
 {
     public static class SubscriberExecutor
     {
-        public class ActionResolver : Resolver<Action, VoidCtx>
+        public class ActionResolver : BaseResolver<Action>
         {
-            protected override bool Execute(Action command, [CanBeNull] VoidCtx ctx)
+            protected override bool Execute(Action command)
             {
                 command();
                 return true;
             }
         }
-        public class ActionContextResolver<T> : Resolver<Action<T>, T>
+        public class ActionContextResolver<T> : ContextResolver<Action<T>, T>
         {
-            protected override bool Execute(Action<T> command, [CanBeNull] T ctx)
+
+            protected override bool Execute(Action<T> command, in T ctx)
             {
                 command(ctx);
                 return true;
@@ -24,25 +26,29 @@ namespace EMILtools.Systems
         }
         
         
-        public class PredicateResolver : Resolver<Func<bool>, VoidCtx>
+        public class PredicateResolver : BaseResolver<Func<bool>>
         {
-            protected override bool Execute(Func<bool> command, [CanBeNull] VoidCtx ctx)
-                => command();
+            protected override bool Execute(Func<bool> command)
+            {
+                return command();
+            }
         }
 
-        public class FuncResolver<TResult> : Resolver<Func<TResult>, VoidCtx>
+        public class FuncResolver<TResult> : BaseResolver<Func<TResult>>
         {
-            protected override bool Execute(Func<TResult> command, [CanBeNull] VoidCtx ctx)
+            protected override bool Execute(Func<TResult> command)
             {
                 command();
                 return true;
             }
         }
         
-        public class PredicateContextResolver<T> : Resolver<Func<T, bool>, T>
+        public class PredicateContextResolver<T> : ContextResolver<Func<T, bool>, T>
         {
-            protected override bool Execute(Func<T, bool> command, [CanBeNull] T ctx)
-                => command(ctx);
+            protected override bool Execute(Func<T, bool> command, in T ctx)
+            {
+                return command(ctx);
+            }
         }
     }
 }

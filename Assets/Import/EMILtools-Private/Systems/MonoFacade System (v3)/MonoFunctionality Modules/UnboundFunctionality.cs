@@ -14,12 +14,12 @@ namespace EMILtools.Systems
     {
         // Variables
         public Pipeline<TContext> executionPipeline { get; set; }
-        public Subscriber<Action<TContext>, ActionContextResolver<TContext>, TContext> subscriber { get; set; }
+        public SubscriberCtx<Action<TContext>, ActionContextResolver<TContext>, TContext> subscriber { get; set; }
         
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
             => subscriber = 
-        new Subscriber<Action<TContext>, ActionContextResolver<TContext>, TContext>(ExecuteSubscription);
+        new SubscriberCtx<Action<TContext>, ActionContextResolver<TContext>, TContext>(ExecuteSubscription);
     
         // API Access
         protected IInjectablePipeline<TContext> injectablePipeline => this;

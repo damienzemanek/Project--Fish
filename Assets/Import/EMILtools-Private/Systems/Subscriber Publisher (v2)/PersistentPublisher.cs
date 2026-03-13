@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-    public interface IPublisher<TSubType> : IDelegatorAbstract<ISubscriber>
-        where TSubType : ISubscriber
+    public interface IPublisher : IDelegatorAbstract<ISubscriber>
     {
-        List<TSubType> Subs { get; set; }
-        public Task PublishImplementation(TSubType sub);
+        IReadOnlyList<ISubscriber> Subs { get;}
+        public Task PublishImplementation(ISubscriber sub);
         public async Task PublishCore()
         {
             for (int i = 0; i < Subs.Count; i++)
@@ -21,57 +20,83 @@ namespace EMILtools.Systems
                 if (!sub.isActive)
                     continue;
 
-                 await PublishImplementation((TSubType)sub);
+                 await PublishImplementation(sub);
             }
         }
     }
     
+    public class Publisher :
+        IPublisher
+    {
+        public IReadOnlyList<ISubscriber> Subs => subs;
+
+        readonly List<ISubscriber> subs = new();
+
+        // ---------- Typed Generic --------------
+        public ISubscriber Add(ISubscriber cb) { subs.Add(cb); return cb; }
+        public ISubscriber Remove(ISubscriber cb) { subs.Remove(cb); return cb; }
+
+        public Task Publish() => ((IPublisher)this).PublishCore();
+        
+        public Task PublishImplementation(ISubscriber sub)
+        {
+            var subTyped = sub;
+            return subTyped.Execute();
+        }        
+    }
+
+    
     public class Publisher<TContext> :
         IDelegatorAbstract<ISubscriber<TContext>>,
-        IPublisher<ISubscriber<TContext>>
+        IPublisher
     {
-        public List<ISubscriber<TContext>> Subs { get; set; } = new();
+        public IReadOnlyList<ISubscriber> Subs => subs;
+
+        readonly List<ISubscriber<TContext>> subs = new();
 
         TContext cachedContext;
 
-        // ---------- Generic --------------
-        public ISubscriber<TContext> Add(ISubscriber<TContext> cb) 
-        { ((IPublisher<ISubscriber<TContext>>)this).Subs.Add(cb); return cb; }
-
-        public ISubscriber<TContext> Remove(ISubscriber<TContext> cb)
-        { ((IPublisher<ISubscriber<TContext>>)this).Subs.Remove(cb); return cb; }
+        // ---------- Typed Generic --------------
+        public ISubscriber<TContext> Add(ISubscriber<TContext> cb) { subs.Add(cb); return cb; }
+        public ISubscriber<TContext> Remove(ISubscriber<TContext> cb) { subs.Remove(cb); return cb; }
 
         public ISubscriber Add(ISubscriber cb) => ((IDelegatorAbstract<ISubscriber<TContext>>)this).Add((ISubscriber<TContext>)cb);
         public ISubscriber Remove(ISubscriber cb) => ((IDelegatorAbstract<ISubscriber<TContext>>)this).Remove((ISubscriber<TContext>)cb);
-        public Task PublishImplementation(ISubscriber<TContext> sub) => sub.Execute(cachedContext);
+        public Task PublishImplementation(ISubscriber sub)
+        {
+            var subTyped = sub as ISubscriber<TContext>;
+            return subTyped.Execute(cachedContext);
+        }        
         public Task Publish(TContext ctx)
         {
             cachedContext = ctx;
-            return ((IPublisher<ISubscriber<TContext>>)this).PublishCore();
+            return ((IPublisher)this).PublishCore();
         }
         
         public Task Publish()
         {
             if(typeof(TContext) != typeof(VoidCtx)) throw new InvalidOperationException("Cannot publish with VoidCtx");
             cachedContext = default;
-            return ((IPublisher<ISubscriber<TContext>>)this).PublishCore();
+            return ((IPublisher)this).PublishCore();
         }
+        
     }
     
     public class Publisher<T1, T2> : 
         IDelegatorAbstract<ISubscriber<T1, T2>>,
-        IPublisher<ISubscriber<T1, T2>>
+        IPublisher
     {
-        public List<ISubscriber<T1, T2>> Subs { get; set; } = new();
+        IReadOnlyList<ISubscriber> IPublisher.Subs => subs;
+        readonly List<ISubscriber<T1, T2>> subs = new();
         
         T1 cachedContext1;
         T2 cachedContext2;
         
         public ISubscriber<T1, T2> Add(ISubscriber<T1, T2> cb)
-        { ((IPublisher<ISubscriber<T1, T2>>)this).Subs.Add(cb); return cb; }
+        { subs.Add(cb); return cb; }
 
         public ISubscriber<T1, T2> Remove(ISubscriber<T1, T2> cb)
-        { ((IPublisher<ISubscriber<T1, T2>>)this).Subs.Remove(cb); return cb; }
+        { subs.Remove(cb); return cb; }
         
         public ISubscriber Add(ISubscriber cb) =>
             ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Add((ISubscriber<T1, T2>)cb);
@@ -79,13 +104,17 @@ namespace EMILtools.Systems
         public ISubscriber Remove(ISubscriber cb) =>
             ((IDelegatorAbstract<ISubscriber<T1, T2>>)this).Remove((ISubscriber<T1, T2>)cb);
         
-        public Task PublishImplementation(ISubscriber<T1, T2> sub)
-        => sub.Execute(cachedContext1, cachedContext2);
+        public Task PublishImplementation(ISubscriber sub)
+        {
+            var subTyped = sub as ISubscriber<T1, T2>;
+            return subTyped.Execute(cachedContext1, cachedContext2);
+        }
         public Task Publish(T1 ctx1, T2 ctx2)
         {
             cachedContext1 = ctx1;
             cachedContext2 = ctx2;
-            return ((IPublisher<ISubscriber<T1, T2>>)this).PublishCore();
+            return ((IPublisher)this).PublishCore();
         }
+
     }
 }

@@ -26,7 +26,7 @@ public class SubsctiberTests : MonoBehaviour
     {
         bool executed = false;
 
-        var sub = new Subscriber<Action, ActionResolver, VoidCtx>(
+        var sub = new Subscriber<Action, ActionResolver>(
             () => executed = true,
             new ResolveContainer<IResolvableWithContext>(null, null, null)
         );
@@ -45,7 +45,7 @@ public class SubsctiberTests : MonoBehaviour
             beforeExecution: new IResolvableWithContext[] { before }
         );
 
-        var sub = new Subscriber<Action, ActionResolver, VoidCtx>(
+        var sub = new Subscriber<Action, ActionResolver>(
             () => { },
             container
         );
@@ -64,7 +64,7 @@ public class SubsctiberTests : MonoBehaviour
             afterExecution: new IResolvableWithContext[] { after }
         );
 
-        var sub = new Subscriber<Action, ActionResolver, VoidCtx>(
+        var sub = new Subscriber<Action, ActionResolver>(
             () => { },
             container
         );
@@ -85,7 +85,7 @@ public class SubsctiberTests : MonoBehaviour
             beforeExecution: new IResolvableWithContext[] { beforeFail }
         );
 
-        var sub = new Subscriber<Action, ActionResolver, VoidCtx>(
+        var sub = new Subscriber<Action, ActionResolver>(
             () => executed = true,
             container,
             canShortCircuit: true
@@ -108,7 +108,7 @@ public class SubsctiberTests : MonoBehaviour
             failedExecution: new IResolvableWithContext[] { failed }
         );
 
-        var sub = new Subscriber<Func<bool>, PredicateResolver, VoidCtx>(
+        var sub = new Subscriber<Func<bool>, PredicateResolver>(
             () => shouldStop,
             container,
             canShortCircuit: true
@@ -132,7 +132,7 @@ public class SubsctiberTests : MonoBehaviour
             afterExecution: new IResolvableWithContext[] { after }
         );
 
-        var sub = new Subscriber<Action, ActionResolver, VoidCtx>(
+        var sub = new Subscriber<Action, ActionResolver>(
             () => { },
             container,
             canShortCircuit: true

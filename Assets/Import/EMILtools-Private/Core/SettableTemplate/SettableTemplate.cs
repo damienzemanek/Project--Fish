@@ -32,7 +32,7 @@ public abstract class SettableTemplate<T1> :
     [field: NonSerialized] T1 ISettableTemplate<T1>.data { get; set; }
     
     // Template Call 
-    public Subscriber<Action<T1>, ActionContextResolver<T1>, T1> templateCallSubscriber;
+    public SubscriberCtx<Action<T1>, ActionContextResolver<T1>, T1> templateCallSubscriber;
     public ISubscriber Subscriber => templateCallSubscriber;
     public PersistentAction OnSet { get; set; } = new();
     void _TemplateCall(T1 val)
@@ -44,7 +44,7 @@ public abstract class SettableTemplate<T1> :
     
     // Ctor
     protected SettableTemplate()
-        => templateCallSubscriber = new Subscriber<Action<T1>, ActionContextResolver<T1>, T1>(_TemplateCall);
+        => templateCallSubscriber = new SubscriberCtx<Action<T1>, ActionContextResolver<T1>, T1>(_TemplateCall);
     
     // Action
     [NonSerialized] Publisher<T1> _publisher;
@@ -83,7 +83,7 @@ public abstract class SettableTemplate<T1, T2> :
     public Values data { get; set; }
     
     // Template Call
-    public Subscriber<Action<Values>, ActionContextResolver<Values>, Values> templateCallSubscriber;
+    public SubscriberCtx<Action<Values>, ActionContextResolver<Values>, Values> templateCallSubscriber;
     public ISubscriber Subscriber => templateCallSubscriber;
     void _TemplateCall(Values values)
     {
@@ -95,7 +95,7 @@ public abstract class SettableTemplate<T1, T2> :
     
     // Ctor
     public SettableTemplate()
-        => templateCallSubscriber = new Subscriber<Action<Values>, ActionContextResolver<Values>, Values>(_TemplateCall);
+        => templateCallSubscriber = new SubscriberCtx<Action<Values>, ActionContextResolver<Values>, Values>(_TemplateCall);
     public PersistentAction OnSet { get; set; } = new();
 
     public IDelegatorAbstract<ISubscriber> Publisher

@@ -73,7 +73,7 @@ namespace EMILtools.Systems
         [ShowInInspector] protected bool isActive => Settable.data;
         protected SettableTemplate SetContext => Settable;
         [NonSerialized] [ShowInInspector] SettableTemplate Settable;
-        protected BoundSetFunctionality(IDelegatorAbstract<ISubscriber> publisher, TFacade facade) : base(facade)
+        protected BoundSetFunctionality(IPublisher publisher, TFacade facade) : base(facade)
         {
             Settable = new SettableTemplate();
             Settable.Publisher = publisher;

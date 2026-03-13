@@ -15,10 +15,10 @@ namespace EMILtools.Systems
         where TContext : class, IPipelineContext
     {
         static PipelineResolver Resolver = new();
-        class PipelineResolver : Resolver<PipelineStepDelegate<TContext>, IPipelineContext>
+        class PipelineResolver : ContextResolver<PipelineStepDelegate<TContext>, TContext>
         {
-            protected override bool Execute(PipelineStepDelegate<TContext> command, IPipelineContext ctx)
-                => command((TContext)ctx); // failes loudly instead of Invoke
+            protected override bool Execute(PipelineStepDelegate<TContext> command, in TContext ctx)
+             => command(ctx);
         }
 
         public static async Task Execute(Pipeline<TContext> pipeline, TContext ctx)

@@ -30,7 +30,7 @@ public class PlayerFunctionality : Functionalities<
             [ShowInInspector] public Vector2 move { get => data.dataSlot2; set => data.SetSlot2(value); }
         }
 
-        public Move(IDelegatorAbstract<ISubscriber> publisher, PlayerController facade) : base(publisher, facade) { }
+        public Move(IPublisher publisher, PlayerController facade) : base(publisher, facade) { }
 
         public override PipelineBuilder<PlayerContextData> InjectSteps(
             PipelineBuilder<PlayerContextData> builder)
