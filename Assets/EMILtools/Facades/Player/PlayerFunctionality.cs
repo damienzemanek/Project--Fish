@@ -33,6 +33,8 @@ public class PlayerFunctionality : Functionalities<
         {
             facade.API_Context<PlayerContextData>().isGrounded.Value = isGrounded();
             if(!ctx.IsGrounded) bb.rb.AddForce(-facade.transform.up * cfg.fall.scalar, ForceMode2D.Force);
+            facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst 
+                = !ctx.IsGrounded && !ctx.jumpInProgress && ctx.didJumpCoyoteInput;
             return false;
         }
         
@@ -95,11 +97,9 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => didCoyoteInput, cfg.jump.coyoteInputWindow);
+            UseBuffer(() => ctx.didJumpCoyoteInput && !ctx.fallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
             SetContext.OnSetEvent.Add(ResetBuffer);
         }
-
-        [ShowInInspector, ReadOnly] bool didCoyoteInput = false;
         
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
@@ -120,7 +120,7 @@ public class PlayerFunctionality : Functionalities<
             }
             else
             { 
-                if(ctx.jumpInProgress) didCoyoteInput = false;
+                if(ctx.jumpInProgress) facade.API_Context<PlayerContextData>().didJumpCoyoteInput = false;
                 facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
                 bb.jumpCurve.Value = 0;
@@ -132,9 +132,9 @@ public class PlayerFunctionality : Functionalities<
         void Grounded(bool v)
         {
             if (v) {
-                facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 bb.jumpCurve.Value = 0; 
-                didCoyoteInput = true;
+                facade.API_Context<PlayerContextData>().jumpInProgress = false;
+                facade.API_Context<PlayerContextData>().didJumpCoyoteInput = true;
                 facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst = false;
             }
         }

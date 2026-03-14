@@ -12,6 +12,7 @@ public interface IPlayerContextView : IModuleUsabableContext
     public int jumps { get; }
     public bool fallingWithoutJumpingFirst { get; }
     public bool jumpInProgress { get; }
+    public bool didJumpCoyoteInput { get; }
 }
 
 [InlineProperty]
@@ -23,6 +24,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public int jumps { get; set; }
     [ShowInInspector] public bool fallingWithoutJumpingFirst { get; set; }
     [ShowInInspector] public bool jumpInProgress { get; set; }
+    [ShowInInspector] public bool didJumpCoyoteInput { get; set; }
 
     
     
