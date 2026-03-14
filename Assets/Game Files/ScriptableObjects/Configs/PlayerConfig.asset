@@ -24,7 +24,7 @@ MonoBehaviour:
     forceMode: 1
     scalar: 6
     coyoteInputWindow:
-      val: 0.1
+      val: 0.2
   friction:
     <frictionScalar>k__BackingField: 0.8
   fall:

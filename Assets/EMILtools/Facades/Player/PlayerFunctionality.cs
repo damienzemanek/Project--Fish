@@ -95,39 +95,35 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => didCoyoteInput, cfg.jump.coyoteInputWindow, () => enableBufferHandle);
+            UseBuffer(() => didCoyoteInput, cfg.jump.coyoteInputWindow);
             SetContext.OnSetEvent.Add(ResetBuffer);
         }
 
-        [ShowInInspector, ReadOnly] bool jumpInProgress = false;
         [ShowInInspector, ReadOnly] bool didCoyoteInput = false;
-
-        [ShowInInspector] bool enableBufferHandle => true;
         
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
             ctx.JumpCurve.Value += cfg.jump.jumpCurveRate;
             var mult = ctx.JumpCurve.Evaluate;
             bb.rb.AddForce(new Vector2(0, cfg.jump.scalar) * mult, cfg.jump.forceMode);
-            Debug.Log("Jumping");
+            facade.API_Context<PlayerContextData>().jumpInProgress = true;
+            
             return false;
         }
 
-        public void MutateUsingNewSetValues()
+        public void MutateUsingNewSetValues()   
         {
             if (SetContext.isActive)
             {
-                if (!ctx.isGrounded) return;
-                jumpInProgress = true;
                 bb.jumpCurve.DynamicStart(Operation.Increase);
                 Debug.Log("jump started");
             }
             else
             { 
-                if(jumpInProgress) didCoyoteInput = false;
-                jumpInProgress = false;
+                if(ctx.jumpInProgress) didCoyoteInput = false;
+                facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
-                //bb.jumpCurve.Value = 0;
+                bb.jumpCurve.Value = 0;
             }
             
         }
@@ -136,9 +132,10 @@ public class PlayerFunctionality : Functionalities<
         void Grounded(bool v)
         {
             if (v) {
-                jumpInProgress = false;
+                facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 bb.jumpCurve.Value = 0; 
                 didCoyoteInput = true;
+                facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst = false;
             }
         }
         

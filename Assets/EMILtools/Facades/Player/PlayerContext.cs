@@ -10,6 +10,8 @@ public interface IPlayerContextView : IModuleUsabableContext
     public ICurveValue JumpCurve { get; }
     public bool IsGrounded { get; }
     public int jumps { get; }
+    public bool fallingWithoutJumpingFirst { get; }
+    public bool jumpInProgress { get; }
 }
 
 [InlineProperty]
@@ -19,6 +21,9 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
     [ShowInInspector] public ReactiveIntercept<bool> isGrounded = new ReactiveIntercept<bool>();
     [ShowInInspector] public int jumps { get; set; }
+    [ShowInInspector] public bool fallingWithoutJumpingFirst { get; set; }
+    [ShowInInspector] public bool jumpInProgress { get; set; }
+
     
     
     // API Distinct

@@ -164,7 +164,6 @@ namespace EMILtools.Systems
             Debug.Log("Will Consume? (" + willConsume + 
                       ") enabled? (" + enableHandle() + ") predicate: (" + bufferPredicate() + ")");
             if (willConsume) Consume();
-            else timer.Reset();
         }
 
         void Consume()

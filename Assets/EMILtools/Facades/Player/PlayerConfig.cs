@@ -36,12 +36,6 @@ public class PlayerConfig : Config
         [field: SerializeField] public ForceMode2D forceMode;
         [field: SerializeField] public float scalar;
         [field: SerializeField] public Ref<float> coyoteInputWindow;
-        
-        [Button]
-        void InitRefs()
-        {
-            coyoteInputWindow = new Ref<float>(1);
-        }
     }
     
     [Serializable]
