@@ -3,8 +3,10 @@
 namespace EMILtools.Core
 {
 
+
+    public interface IDelegator { }
     
-    public interface IDelegatorAbstract<TAbstractedDelegate> 
+    public interface IDelegatorAbstract<TAbstractedDelegate> : IDelegator
     {
         TAbstractedDelegate Add(TAbstractedDelegate cb);
         TAbstractedDelegate Remove(TAbstractedDelegate cb);
@@ -18,15 +20,6 @@ namespace EMILtools.Core
         Delegate Add(Delegate cb);
         Delegate Remove(Delegate cb);
     }
-    
-    /// <summary>
-    /// Persistent Action with no type constraints on the Delegate
-    /// </summary>
-    public interface IDelegator : ISystemDelegator
-    {
-        int Count { get; }
-        void PrintInvokeListNames();
-    }
 
     /// <summary>
     /// Generic Constrained TDelegate
@@ -38,6 +31,8 @@ namespace EMILtools.Core
     {
         void Add(TDelegate cb);
         void Remove(TDelegate cb);
+        int Count { get; }
+        void PrintInvokeListNames();
     }
 
     /// <summary>

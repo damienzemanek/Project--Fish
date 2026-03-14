@@ -10,16 +10,14 @@ namespace EMILtools.Timers
 {
         public static class TimerUtility
         {
-            public static bool GlobalTickerInitialized = false;
             
             [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
             public static void InitializeGlobalTicker()
             {
-                if(GameObject.FindAnyObjectByType(typeof(GlobalTicker))) return;
-                GlobalTicker ticker = new GameObject("GlobalTicker").AddComponent<GlobalTicker>();
+                if(Object.FindAnyObjectByType(typeof(GlobalTicker))) return;
+                var ticker = new GameObject("GlobalTicker").AddComponent<GlobalTicker>();
                 Object.DontDestroyOnLoad(ticker.gameObject);
                 ticker.gameObject.hideFlags = HideFlags.DontSave;
-                GlobalTickerInitialized = true;
             }
         
 
@@ -118,19 +116,13 @@ namespace EMILtools.Timers
             public static void TickAllUpdates(float dt)
             {
                 // Using a for loop is safer if a timer is removed during its own tick
-                for (int i = updateBuffer.Count - 1; i >= 0; i--)
-                {
-                    updateBuffer[i].TryTick(dt);
-                }
+                for (int i = updateBuffer.Count - 1; i >= 0; i--) updateBuffer[i].TryTick(dt);
             }
 
             public static void TickAllFixed(float dt)
             {
-
                 // Using a for loop is safer if a timer is removed during its own tick
-                for (int i = fixedBuffer.Count - 1; i >= 0; i--)
-                    fixedBuffer[i].TryTick(dt);
-
+                for (int i = fixedBuffer.Count - 1; i >= 0; i--) fixedBuffer[i].TryTick(dt);
             }
 
 

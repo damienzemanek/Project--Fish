@@ -89,9 +89,9 @@ namespace EMILtools.Systems
 
         public bool Resolve()
         {
-            if(!timer.isRunning && !timer.isFinished()) timer.Start();
-            Debug.Log($"Timer called, isRunning: {timer.isRunning}, isFinished: {timer.isFinished()}");
-            return timer.isFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
+            if(!timer.isRunning && !timer.IsFinished()) timer.Start();
+            Debug.Log($"Timer called, isRunning: {timer.isRunning}, isFinished: {timer.IsFinished()}");
+            return timer.IsFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
         }
     }
 
@@ -145,7 +145,7 @@ namespace EMILtools.Systems
 
         public bool Resolve()
         {
-            if (!timer.isRunning && !timer.isFinished())
+            if (!timer.isRunning && !timer.IsFinished())
             {
                 timer.Start();
                 Debug.Log("Started Wait Timer");

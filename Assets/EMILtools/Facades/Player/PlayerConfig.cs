@@ -7,6 +7,13 @@ public class PlayerConfig : Config
 {
     [SerializeField] public Move move;
     [SerializeField] public Jump jump;
+    [SerializeField] public Friction friction;
+
+    [Serializable]
+    public struct Friction
+    {
+        [field: SerializeField] public float frictionScalar { get; private set; }
+    }
 
     [Serializable]
     public struct Jump

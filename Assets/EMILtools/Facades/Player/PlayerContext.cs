@@ -5,6 +5,7 @@ using UnityEngine;
 
 public interface IPlayerContextView : IModuleUsabableContext
 {
+    public ICountdownTimer CoyoteTimer { get; }
     public ICurveValue JumpCurve { get; }
     public bool isGrounded { get; }
     public int jumps { get; }
@@ -13,8 +14,12 @@ public interface IPlayerContextView : IModuleUsabableContext
 [InlineProperty]
 public class PlayerContextData : ContextData, IPlayerContextView
 {
+    [ShowInInspector] CountdownTimer coyoteTimer;
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
     [ShowInInspector] public bool isGrounded => API_Blackboard<PlayerBlackboard>().phys.isGrounded;
     [ShowInInspector] public int jumps { get; set; }
     
+    
+    // API Distinct
+    public ICountdownTimer CoyoteTimer => coyoteTimer;
 }

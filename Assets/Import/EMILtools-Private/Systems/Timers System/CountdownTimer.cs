@@ -3,8 +3,16 @@ using Sirenix.OdinInspector;
 
 namespace EMILtools.Timers
 {
+    public interface ICountdownTimer
+    {
+        public bool IsFinished();
+        public void Reset();
+        public void Restart();
+        public void Reset(float newInitialTime);
+    }
+    
     [Serializable]
-    public class CountdownTimer : Timer
+    public class CountdownTimer : Timer, ICountdownTimer
     { 
         public CountdownTimer(float _initialTime) : base(_initialTime) { }
         public CountdownTimer(Ref<float> _initialTime) : base(_initialTime) { }
@@ -20,7 +28,7 @@ namespace EMILtools.Timers
             if (Time <= 0) { Time = 0; Stop(); }
         }
         
-        public bool isFinished() => Time <= 0;
+        public bool IsFinished() => Time <= 0;
         public void Reset() => Time = initialTime;
         public void Restart() { Reset(); Start(); }
         public void Reset(float newInitialTime) => Time = newInitialTime;

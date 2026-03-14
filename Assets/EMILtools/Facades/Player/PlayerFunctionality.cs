@@ -1,3 +1,4 @@
+using System;
 using EMILtools.Core;
 using EMILtools.Extensions;
 using EMILtools.Systems;
@@ -15,9 +16,29 @@ public class PlayerFunctionality : Functionalities<
         // AddModule(new ExampleModule());
         AddModule(new Move(facade.Input.Move, facade));
         AddModule(new Jump(facade.Input.Jump, facade));
+        AddModule(new Friction(facade));
+    }
+    
+
+    class Friction : UnboundFunctionality<PlayerController, IPlayerContextView>,
+        FIXED_UPDATE
+    {
+        PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>();
+        public Friction(PlayerController facade) : base(facade) { }
+
+        public override PipelineBuilder<IPlayerContextView> InjectSteps(PipelineBuilder<IPlayerContextView> builder)
+            => builder.Add_ShortCircuit(ctx => !ctx.isGrounded);
+
+        public override bool ExecutionImplementation(IPlayerContextView ctx)
+        {
+            float amount = Mathf.Min(Mathf.Abs(bb.rb.linearVelocityX), cfg.friction.frictionScalar);
+            amount *= Mathf.Sign(bb.rb.linearVelocityX);
+            bb.rb.AddForce(Vector2.right * -amount, ForceMode2D.Impulse);
+            return false;
+        }
     }
 
-    public class Jump : BoundSetFunctionality<PlayerController, IPlayerContextView, Jump.Setter>,
+    class Jump : BoundSetFunctionality<PlayerController, IPlayerContextView, Jump.Setter>,
         FIXED_UPDATE,
         ON_SET
     {
@@ -58,12 +79,10 @@ public class PlayerFunctionality : Functionalities<
             
             // Landed
             if(bb.phys.isGrounded) facade.API_Context<PlayerContextData>().jumps = cfg.jump.maxJumps;
-            
         }
-
     }
     
-    public class Move : BoundSetFunctionality<PlayerController, IPlayerContextView, Move.Setter>,
+    class Move : BoundSetFunctionality<PlayerController, IPlayerContextView, Move.Setter>,
         FIXED_UPDATE
     {
         PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>();
