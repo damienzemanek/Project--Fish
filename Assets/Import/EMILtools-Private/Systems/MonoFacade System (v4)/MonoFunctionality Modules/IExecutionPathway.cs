@@ -10,5 +10,5 @@ public interface LATE_UPDATE : IExecutionPathway { }
 
 public interface ON_SET : IExecutionPathway
 {
-    abstract void OnSet();
+    abstract void MutateUsingNewSetValues();
 }

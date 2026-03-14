@@ -73,14 +73,14 @@ namespace EMILtools.Systems
         {
             Debug.Log("Trying to Bind (" + GetType().Name + ")");
             Settable.Publisher.Add(Settable.Subscriber);
-            if(this is ON_SET onSet) Settable.EventOnSet.Add(onSet.OnSet);
+            if(this is ON_SET onSet) Settable.OnSetEvent.Add(onSet.MutateUsingNewSetValues);
             Debug.Log("Bound(" + GetType().Name + ")");
         }
 
         public void Unbind()
         {
             Settable.Publisher.Remove(Settable.Subscriber);
-            if(this is ON_SET onSet) Settable.EventOnSet.Remove(onSet.OnSet);
+            if(this is ON_SET onSet) Settable.OnSetEvent.Remove(onSet.MutateUsingNewSetValues);
         }
 
     }

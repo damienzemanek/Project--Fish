@@ -23,10 +23,8 @@ MonoBehaviour:
     <maxJumps>k__BackingField: 1
     forceMode: 1
     scalar: 6
-    cooldown:
-      val: 0
-    inputMaxDuration:
-      val: 1
+    coyoteInputWindow:
+      val: 0.1
   friction:
     <frictionScalar>k__BackingField: 0.8
   fall:

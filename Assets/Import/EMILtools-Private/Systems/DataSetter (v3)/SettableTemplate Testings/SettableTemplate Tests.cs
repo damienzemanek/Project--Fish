@@ -30,7 +30,7 @@ public class DataSetterTests
 
         Assert.NotNull(settable);
         Assert.NotNull(settable.Subscriber);
-        Assert.NotNull(settable.EventOnSet);
+        Assert.NotNull(settable.OnSetEvent);
     }
 
     // -----------------------------------------------------
@@ -71,7 +71,7 @@ public class DataSetterTests
         var publisher = new Publisher<int>();
         bool called = false;
 
-        settable.EventOnSet.Add(() => called = true);
+        settable.OnSetEvent.Add(() => called = true);
 
         publisher.Add(settable.Subscriber);
         publisher.Publish(7).Wait();

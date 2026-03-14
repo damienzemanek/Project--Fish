@@ -15,6 +15,8 @@ namespace EMILtools.Systems
         protected readonly SubResolvableCtx<TViewCtx> subscriber;
         [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;
         
+        protected void ResetBuffer() => consumeBuffer?.Reset();
+        
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
         {
@@ -40,7 +42,7 @@ namespace EMILtools.Systems
             Awake();
         }
 
-        public void UseBuffer(Func<bool> bufferPredicate, float bufferTime, Func<bool> enableHandle = null)
+        public void UseBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
         {
             consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, subscriber, bufferTime, enableHandle);
         }

@@ -171,7 +171,7 @@ namespace EMILtools.Signals
             this.InitTimers((timer, false));
             this.Sub(timer.OnTimerStop, RemoveModifier);
             
-            OnAdd += timer.Start;
+            OnAdd += timer.StartAndReset;
             OnRemove += this.ShutdownTimers;
             
             if(OnDecorAddCBs != null && OnDecorAddCBs.Length > 0)

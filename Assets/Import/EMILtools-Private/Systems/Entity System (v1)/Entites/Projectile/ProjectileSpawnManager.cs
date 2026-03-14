@@ -39,7 +39,7 @@ public class ProjectileSpawnManager : EntitySpawnManager, ITimerUser
     protected override void SpawnImplementation()
     {
         if (fireTimer.isRunning) return;
-        fireTimer.Start();
+        fireTimer.StartAndReset();
         Projectile proj = projSpawner.Spawn().Initalize(data[0]);
         Vector3 launchDir = proj.transform.forward;
         if(targetSetDirection) launchDir = proj.transform.TransformDirection(direction.normalized);

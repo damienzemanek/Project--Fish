@@ -13,7 +13,7 @@ namespace EMILtools.Systems
     {
         public IPublisher Publisher { get; set;  }
         public ISubscriber Subscriber { get; }
-        public PersistentAction EventOnSet { get; }
+        public PersistentAction OnSetEvent { get; }
     }
     
 

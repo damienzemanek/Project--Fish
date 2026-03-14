@@ -35,7 +35,7 @@ namespace EMILtools.Systems
 
         void StateChanged()
         {
-            bufferTime.Start();
+            bufferTime.StartAndReset();
         }
 
         void BufferEndsThenReset()

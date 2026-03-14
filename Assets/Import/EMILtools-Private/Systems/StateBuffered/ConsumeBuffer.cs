@@ -26,7 +26,7 @@ namespace EMILtools.Systems
         public virtual void Invoke(TPublisherArgs args)
         {
             cachedArgValues = args;
-            timer.Start();
+            timer.StartAndReset();
         }
 
         protected virtual void TryConsume()
@@ -83,7 +83,7 @@ namespace EMILtools.Systems
 
         bool Invoke()
         {
-            timer.Start();
+            timer.StartAndReset();
             return false; // False is: does NOT short circuit (what I want for execution resolving)
         }
         
@@ -114,8 +114,8 @@ namespace EMILtools.Systems
     public class ConsumeBufferSub<TContext> : ITimerUser
     {
         readonly Func<bool> enableHandle = () => true;
-        
-        TContext cachedCtx;
+
+        TContext cachedCtx; 
         readonly ISubEditable<Func<TContext, bool>> subscriber;
         readonly Func<bool> bufferPredicate;
         [ShowInInspector] readonly CountdownTimer timer;
@@ -126,7 +126,7 @@ namespace EMILtools.Systems
         public ConsumeBufferSub(
             Func<bool> bufferPredicate, 
             ISubEditable<Func<TContext, bool>> subscriber,
-            float _bufferTime, 
+            Ref<float> _bufferTime, 
             Func<bool> enableHandle = null)
         {
             this.bufferPredicate = bufferPredicate;
@@ -147,19 +147,24 @@ namespace EMILtools.Systems
 
             if (enableHandle != null) this.enableHandle = enableHandle;
         }
+        
+        [Button] public void Reset() => timer.Reset();
 
         bool Invoke(TContext ctx)
         {
+            Debug.Log("startng input buffer timer");
             cachedCtx = ctx;
-            timer.Start();
+            timer.StartNoReset();
             return false; // False is: does NOT short circuit (what I want for execution resolving)
         }
         
         void TryConsume()
         {
             bool willConsume = bufferPredicate() && enableHandle();
-            Debug.Log("Trying to consume buffer " + willConsume);
+            Debug.Log("Will Consume? (" + willConsume + 
+                      ") enabled? (" + enableHandle() + ") predicate: (" + bufferPredicate() + ")");
             if (willConsume) Consume();
+            else timer.Reset();
         }
 
         void Consume()

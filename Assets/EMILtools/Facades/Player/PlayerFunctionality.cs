@@ -95,15 +95,17 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => SetContext.isActive && !jumpInProgress, 1f, () => enableBufferHandle);
+            UseBuffer(() => didCoyoteInput, cfg.jump.coyoteInputWindow, () => enableBufferHandle);
+            SetContext.OnSetEvent.Add(ResetBuffer);
         }
 
         [ShowInInspector, ReadOnly] bool jumpInProgress = false;
+        [ShowInInspector, ReadOnly] bool didCoyoteInput = false;
+
         [ShowInInspector] bool enableBufferHandle => true;
         
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
-            if (!jumpInProgress) return false;
             ctx.JumpCurve.Value += cfg.jump.jumpCurveRate;
             var mult = ctx.JumpCurve.Evaluate;
             bb.rb.AddForce(new Vector2(0, cfg.jump.scalar) * mult, cfg.jump.forceMode);
@@ -111,7 +113,7 @@ public class PlayerFunctionality : Functionalities<
             return false;
         }
 
-        public void OnSet()
+        public void MutateUsingNewSetValues()
         {
             if (SetContext.isActive)
             {
@@ -122,17 +124,22 @@ public class PlayerFunctionality : Functionalities<
             }
             else
             { 
+                if(jumpInProgress) didCoyoteInput = false;
                 jumpInProgress = false;
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
                 //bb.jumpCurve.Value = 0;
             }
+            
         }
+        
 
         void Grounded(bool v)
         {
             if (v) {
                 jumpInProgress = false;
-                bb.jumpCurve.Value = 0; }
+                bb.jumpCurve.Value = 0; 
+                didCoyoteInput = true;
+            }
         }
         
         

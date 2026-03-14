@@ -71,14 +71,14 @@ namespace EMILtools.Timers
 
         public override void InitializeTime() => Time = operation == Operation.Increase ? 0f : initialTime;
 
-        public override void Start() =>
+        public override void StartAndReset() =>
             throw new SystemException("Start() is not intended to be used in CurveValue, uss Start(Operation)");
 
         public void Start(Operation _operation)
         {
             operation = _operation;
             pauseProgress = NO_PAUSE;
-            base.Start();
+            base.StartAndReset();
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace EMILtools.Timers
             if (initialTime == null) initialTime = new Ref<float>(1f);
             operation = _operation;
             pauseProgress = NO_PAUSE;
-            StartCore();
+            StartNoReset();
         }
         
         /// <summary>
@@ -102,14 +102,14 @@ namespace EMILtools.Timers
             if (initialTime == null) initialTime = new Ref<float>(1f);
             operation = _operation;
             this.pauseProgress = pauseProgress;
-            StartCore();
+            StartNoReset();
         }
         
         public void StartAndPauseAt(Operation _operation, float pauseProgress)
         {
             operation = _operation;
             this.pauseProgress = pauseProgress;
-            base.Start();
+            base.StartAndReset();
         }
 
 

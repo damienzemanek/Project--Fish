@@ -30,11 +30,11 @@ namespace EMILtools.Timers
         public void ResetToFullNewInitial(float newInitialTime) => Time = newInitialTime;
         public void ResetToFullyDecayed() => Time = 0;
         
-        public override void Start()
+        public override void StartAndReset()
         {
             Debug.Log("Starting Decay");
             ResetToFullyDecayed();
-            StartCore();
+            StartNoReset();
         }
     }
 }

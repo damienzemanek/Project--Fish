@@ -50,14 +50,14 @@ namespace EMILtools.Timers
 
         public virtual void InitializeTime() => Time = initialTime;
 
-        public virtual void Start()
+        public virtual void StartAndReset()
         {
             InitializeTime();
             if (initialTime <= 0) this.Warn("Please set an initial time for this timer");
-            StartCore();
+            StartNoReset();
         }
 
-        protected void StartCore()
+        public void StartNoReset()
         {          
             if (!isRunning)
             {
@@ -66,6 +66,7 @@ namespace EMILtools.Timers
                 //this.Log("Started Timer");
             }
         }
+        
 
         public void Stop()
         {

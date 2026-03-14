@@ -2,6 +2,7 @@ using System;
 using EMILtools.Extensions;
 using UnityEngine;
 using EMILtools.Systems;
+using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "PlayerConfig", menuName = "EMILtools/ScriptableObjects/Configs/Player")]
 public class PlayerConfig : Config
@@ -34,8 +35,13 @@ public class PlayerConfig : Config
         [field: SerializeField] public int maxJumps { get; private set; }
         [field: SerializeField] public ForceMode2D forceMode;
         [field: SerializeField] public float scalar;
-        [field: SerializeField] public Ref<float> cooldown;
-        [field: SerializeField] public Ref<float> inputMaxDuration;
+        [field: SerializeField] public Ref<float> coyoteInputWindow;
+        
+        [Button]
+        void InitRefs()
+        {
+            coyoteInputWindow = new Ref<float>(1);
+        }
     }
     
     [Serializable]

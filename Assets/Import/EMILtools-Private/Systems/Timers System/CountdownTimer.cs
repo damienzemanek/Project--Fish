@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace EMILtools.Timers
 {
@@ -24,17 +25,22 @@ namespace EMILtools.Timers
         
         public override void TickImplementation(float deltaTime)
         {
-            if (Time > 0) Time -= deltaTime;
+
+            if (Time > 0)
+            {
+                Time -= deltaTime;
+                Debug.Log("tick countdown timer, now at " + Time + "");
+            }
             if (Time <= 0) { Time = 0; Stop(); }
         }
         
         public bool IsFinished() => Time <= 0;
         public void Reset() => Time = initialTime;
-        public void Restart() { Reset(); Start(); }
+        public void Restart() { Reset(); StartAndReset(); }
         public void Reset(float newInitialTime) => Time = newInitialTime;
         
         [Button] void SetTimeTo(float val) => Time = val;
-        [Button] void StartAgain() => Start();
+        [Button] void StartAgain() => StartAndReset();
 
     }
 }
