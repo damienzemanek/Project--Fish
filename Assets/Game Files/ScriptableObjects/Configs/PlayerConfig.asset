@@ -16,10 +16,23 @@ MonoBehaviour:
     <speedScalar>k__BackingField: 15
     <forceMode2d>k__BackingField: 0
     <maxVelocity>k__BackingField: 13
-    <acceleration>k__BackingField: 0.9
-    <deceleration>k__BackingField: 20
+    <acceleration>k__BackingField: 1
+    <deceleration>k__BackingField: 25
   jump:
     <jumpCurveRate>k__BackingField: 0.05
     <maxJumps>k__BackingField: 1
+    forceMode: 1
+    scalar: 6
+    cooldown:
+      val: 0
+    inputMaxDuration:
+      val: 1
   friction:
-    <frictionScalar>k__BackingField: 0.7
+    <frictionScalar>k__BackingField: 0.8
+  fall:
+    checkDist: 0.06
+    mask:
+      serializedVersion: 2
+      m_Bits: 8
+    forceMode: 0
+    scalar: 50

@@ -1,5 +1,6 @@
 using System;
 using EMILtools.Timers;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using static EMILtools.Timers.TimerUtility;
 
@@ -42,6 +43,7 @@ namespace EMILtools.Systems
         }
 
     }
+    
     
     /// <summary>
     /// Because the publisher will execute the subscriber's callback via the Resolver
@@ -111,15 +113,21 @@ namespace EMILtools.Systems
     /// <typeparam name="TDelegate"></typeparam>
     public class ConsumeBufferSub<TContext> : ITimerUser
     {
+        readonly Func<bool> enableHandle = () => true;
+        
         TContext cachedCtx;
         readonly ISubEditable<Func<TContext, bool>> subscriber;
         readonly Func<bool> bufferPredicate;
-        readonly CountdownTimer timer;
-        bool isBuffered => timer.isRunning;
+        [ShowInInspector] readonly CountdownTimer timer;
+        [ShowInInspector] bool isBuffered => timer.isRunning;
         
         readonly Func<TContext, bool> originalCallback;
 
-        public ConsumeBufferSub(Func<bool> bufferPredicate, ISubEditable<Func<TContext, bool>> subscriber, float _bufferTime)
+        public ConsumeBufferSub(
+            Func<bool> bufferPredicate, 
+            ISubEditable<Func<TContext, bool>> subscriber,
+            float _bufferTime, 
+            Func<bool> enableHandle = null)
         {
             this.bufferPredicate = bufferPredicate;
             this.subscriber = subscriber;
@@ -135,6 +143,9 @@ namespace EMILtools.Systems
             
             // REPLACE old predicate position with new predicate
             subscriber.ReplaceCallback(replacementExecution);
+
+
+            if (enableHandle != null) this.enableHandle = enableHandle;
         }
 
         bool Invoke(TContext ctx)
@@ -146,7 +157,9 @@ namespace EMILtools.Systems
         
         void TryConsume()
         {
-            if (bufferPredicate()) Consume();
+            bool willConsume = bufferPredicate() && enableHandle();
+            Debug.Log("Trying to consume buffer " + willConsume);
+            if (willConsume) Consume();
         }
 
         void Consume()
@@ -156,6 +169,7 @@ namespace EMILtools.Systems
             subscriber.Execute();
             originalCallback.Invoke(cachedCtx);
             cachedCtx = default;
+            Debug.Log("Consumed buffered sub");
         }
 
     }

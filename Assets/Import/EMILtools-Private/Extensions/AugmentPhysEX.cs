@@ -7,8 +7,6 @@ using static EMILtools.Extensions.PhysEX;
 [Serializable]
 public class AugmentPhysEX : MonoBehaviour
 {
-    public JumpSettings2D jumpSettings;
-    public GroundedSettings groundedSettings;
     public FallSettings2D fallSettings;
 
     public bool fallFaster = true;
@@ -18,7 +16,6 @@ public class AugmentPhysEX : MonoBehaviour
 
     void FixedUpdate()
     {
-        isGrounded.Value = transform.IsGrounded2D(ref groundedSettings);
         if(!isGrounded && fallFaster) rb.FallFaster2D(fallSettings);
     }
 }

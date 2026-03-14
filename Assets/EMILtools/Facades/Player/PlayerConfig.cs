@@ -1,4 +1,5 @@
 using System;
+using EMILtools.Extensions;
 using UnityEngine;
 using EMILtools.Systems;
 
@@ -8,7 +9,18 @@ public class PlayerConfig : Config
     [SerializeField] public Move move;
     [SerializeField] public Jump jump;
     [SerializeField] public Friction friction;
+    [SerializeField] public Fall fall;
 
+    [Serializable]
+    public struct Fall
+    {
+        [field: SerializeField] public float checkDist;
+        [field: SerializeField] public LayerMask mask;
+        
+        [field: SerializeField] public ForceMode2D forceMode;
+        [field: SerializeField] public float scalar;
+    }
+    
     [Serializable]
     public struct Friction
     {
@@ -20,7 +32,10 @@ public class PlayerConfig : Config
     {
         [field: SerializeField] public float jumpCurveRate { get; private set; }
         [field: SerializeField] public int maxJumps { get; private set; }
-
+        [field: SerializeField] public ForceMode2D forceMode;
+        [field: SerializeField] public float scalar;
+        [field: SerializeField] public Ref<float> cooldown;
+        [field: SerializeField] public Ref<float> inputMaxDuration;
     }
     
     [Serializable]

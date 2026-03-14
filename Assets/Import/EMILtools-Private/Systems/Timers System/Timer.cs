@@ -10,29 +10,29 @@ namespace EMILtools.Timers
     [Serializable]
     public abstract class Timer
     {
-        [ShowInInspector] protected Ref<float> initialTime;
-        [ShowInInspector] [ReadOnly] public float Time { get; set; } = 1f;
         [field: ShowInInspector] [field: ReadOnly] public bool isRunning { get; protected set; } = false;
-        public float Progress => Mathf.Clamp01(Time / initialTime);
+        [ShowInInspector] [Range(0, 1)] public float Progress => Mathf.Clamp01(Time / initialTime);
+        [FoldoutGroup("Timer")] [ShowInInspector] protected Ref<float> initialTime;
+        [FoldoutGroup("Timer")] [ShowInInspector] [ReadOnly] public float Time { get; set; } = 1f;
         public float Duration => initialTime;
         
         [HideInInspector] public PersistentAction OnTimerStart = new();
         [HideInInspector] public PersistentAction OnTimerStop = new();
         [HideInInspector] public PersistentAction OnTimerTick = new();
 
-        public Timer(float _initialTime)
+        protected Timer(float _initialTime)
         {
             Debug.Log($"Creating Timer with initial time {_initialTime}");
             initialTime = _initialTime;
         }
-        
-        public Timer(Ref<float> _initialTime) 
+
+        protected Timer(Ref<float> _initialTime) 
         {
             Debug.Log($"Creating Timer with initial time {_initialTime.val}");
             initialTime = _initialTime;
         }
 
-        public Timer(float _initialTime,
+        protected Timer(float _initialTime,
                 Action[] OnTimerStartCbs = null,
                 Action[] OnTimerTickCbs = null,
                 Action[] OnTimerStopCbs = null)

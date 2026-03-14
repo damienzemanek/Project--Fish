@@ -8,6 +8,6 @@ using UnityEngine;
 public class PlayerBlackboard : Blackboard
 {
     [field: SerializeField] [field:Required] public Rigidbody2D rb { get; private set;}
-    [field: SerializeField] [field:Required] public AugmentPhysEX phys { get; private set;}
     [field: SerializeField] public CurveValue jumpCurve { get; set; } = new();
+    [field:SerializeField] public Transform feetPoint { get; set; }
 }

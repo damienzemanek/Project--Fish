@@ -1,6 +1,7 @@
 ﻿
 
 using System;
+using Sirenix.OdinInspector;
 
 namespace EMILtools.Systems
 {
@@ -12,12 +13,14 @@ namespace EMILtools.Systems
         // Variables
         public Pipeline<TViewCtx> ExecutionPipeline { get; set; }
         protected readonly SubResolvableCtx<TViewCtx> subscriber;
+        [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;
         
         // Ctor
         protected UnboundFunctionality(TFacade facade) : base(facade)
-            => subscriber = 
-        new SubResolvableCtx<TViewCtx>(ExecuteSubscription);
-    
+        {
+            subscriber = new SubResolvableCtx<TViewCtx>(ExecuteSubscription);
+        }
+
         // API Access
         IInjectablePipeline<TViewCtx> injectablePipeline => this;
         public override ISubscriber Subscriber => subscriber;
@@ -35,6 +38,11 @@ namespace EMILtools.Systems
         {
             injectablePipeline.Setup(setupWithFinalStep: false);
             Awake();
+        }
+
+        public void UseBuffer(Func<bool> bufferPredicate, float bufferTime, Func<bool> enableHandle = null)
+        {
+            consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, subscriber, bufferTime, enableHandle);
         }
     
         // Abstract    

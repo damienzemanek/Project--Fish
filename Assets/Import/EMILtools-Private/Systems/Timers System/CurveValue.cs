@@ -27,13 +27,11 @@ namespace EMILtools.Timers
             set => Time = value;
         }
         
-        public AnimationCurve curve;
-        [SerializeField] [Range(0.01f, 5)] public float operationScalar = 1f;
-
-        
-        [ReadOnly] public Operation operation;
-        [ReadOnly] public float pauseProgress = NO_PAUSE;
-        [ShowInInspector, ReadOnly] public virtual float Evaluate => curve?.Evaluate(Progress) ?? 0;
+        [FoldoutGroup("Curve")] [ShowInInspector, ReadOnly] public virtual float Evaluate => curve?.Evaluate(Progress) ?? 0;
+        [FoldoutGroup("Curve")] [ReadOnly] public Operation operation;
+        [FoldoutGroup("Curve")] public AnimationCurve curve;
+        [FoldoutGroup("Curve")] [SerializeField] [Range(0.01f, 5)] public float operationScalar = 1f;
+        [HideInInspector] [ReadOnly] public float pauseProgress = NO_PAUSE;
 
         public CurveValue() : base(new Ref<float>(1f))
         {
