@@ -34,3 +34,5 @@ MonoBehaviour:
       m_Bits: 8
     forceMode: 0
     scalar: 50
+    fallingBufferWindow:
+      val: 0.1

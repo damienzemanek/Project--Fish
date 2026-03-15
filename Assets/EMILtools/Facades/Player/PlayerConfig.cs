@@ -20,6 +20,7 @@ public class PlayerConfig : Config
         
         [field: SerializeField] public ForceMode2D forceMode;
         [field: SerializeField] public float scalar;
+        [field: SerializeField] public Ref<float> fallingBufferWindow;
     }
     
     [Serializable]

@@ -10,7 +10,7 @@ public interface IPlayerContextView : IModuleUsabableContext
     public ICurveValue JumpCurve { get; }
     public bool IsGrounded { get; }
     public int jumps { get; }
-    public bool fallingWithoutJumpingFirst { get; }
+    public bool FallingWithoutJumpingFirst { get; }
     public bool jumpInProgress { get; }
     public bool didJumpCoyoteInput { get; }
 }
@@ -22,13 +22,12 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
     [ShowInInspector] public ReactiveIntercept<bool> isGrounded = new ReactiveIntercept<bool>();
     [ShowInInspector] public int jumps { get; set; }
-    [ShowInInspector] public bool fallingWithoutJumpingFirst { get; set; }
+    [ShowInInspector] public DelayBuffer<bool> fallingWithoutJumpingFirst { get; set; }
     [ShowInInspector] public bool jumpInProgress { get; set; }
     [ShowInInspector] public bool didJumpCoyoteInput { get; set; }
-
-    
     
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;
     public bool IsGrounded => isGrounded;
+    public bool FallingWithoutJumpingFirst => fallingWithoutJumpingFirst;
 }

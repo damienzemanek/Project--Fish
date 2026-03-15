@@ -8,7 +8,7 @@ namespace EMILtools.Systems
 {
     public class DelayBuffer<TVal> : ITimerUser
     {
-        [ShowInInspector] public TVal Value
+        [ShowInInspector] TVal Value
         {
             get => isBuffered ? bufferVal : actualVal;
             set
@@ -19,8 +19,8 @@ namespace EMILtools.Systems
             }
         }
 
-        TVal actualVal;
-        TVal bufferVal;
+        [ShowInInspector, ReadOnly] TVal actualVal;
+        [ShowInInspector, ReadOnly] TVal bufferVal;
     
         bool isBuffered => bufferTime.isRunning;
         readonly CountdownTimer bufferTime;
@@ -42,6 +42,9 @@ namespace EMILtools.Systems
         {
             bufferVal = actualVal;
         }
+        
+        public void SetNotBuffered(TVal val) => actualVal = bufferVal = val;
+        public void SetBuffered(TVal val) => Value = val;
 
 
         public static implicit operator TVal(DelayBuffer<TVal> delayBuffer) => delayBuffer.Value;

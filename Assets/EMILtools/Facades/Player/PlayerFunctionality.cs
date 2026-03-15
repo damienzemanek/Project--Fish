@@ -29,12 +29,18 @@ public class PlayerFunctionality : Functionalities<
         public Fall(PlayerController facade) : base(facade) { }
 
         public override PipelineBuilder<IPlayerContextView> InjectSteps(PipelineBuilder<IPlayerContextView> builder) => builder;
+
+        protected override void Awake()
+        {
+            facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst = new DelayBuffer<bool>(false, cfg.fall.fallingBufferWindow);
+        }
+
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
             facade.API_Context<PlayerContextData>().isGrounded.Value = isGrounded();
             if(!ctx.IsGrounded) bb.rb.AddForce(-facade.transform.up * cfg.fall.scalar, ForceMode2D.Force);
-            facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst 
-                = !ctx.IsGrounded && !ctx.jumpInProgress && ctx.didJumpCoyoteInput;
+            facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst
+                .SetBuffered(!ctx.IsGrounded && !ctx.jumpInProgress && ctx.didJumpCoyoteInput);
             return false;
         }
         
@@ -97,7 +103,7 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => ctx.didJumpCoyoteInput && !ctx.fallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
+            UseBuffer(() => ctx.didJumpCoyoteInput && !ctx.FallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
             SetContext.OnSetEvent.Add(ResetBuffer);
         }
         
@@ -135,7 +141,7 @@ public class PlayerFunctionality : Functionalities<
                 bb.jumpCurve.Value = 0; 
                 facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 facade.API_Context<PlayerContextData>().didJumpCoyoteInput = true;
-                facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst = false;
+                facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst.SetNotBuffered(false); 
             }
         }
         
