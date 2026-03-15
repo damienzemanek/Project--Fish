@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
 using EMILtools.Core;
 using EMILtools.Extensions;
 using EMILtools.Systems;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using static EMILtools.Timers.CurveValue;
+using static EMILtools.Core.RectEX<PlayerConfig.MouseZones>;
 
 public class PlayerFunctionality : Functionalities<
     PlayerController,
@@ -19,8 +18,29 @@ public class PlayerFunctionality : Functionalities<
         AddModule(new Jump(facade.Input.Jump, facade));
         AddModule(new Friction(facade));
         AddModule(new Fall(facade));
+        AddModule(new Look(facade.Input.Look, facade));
     }
 
+
+    class Look : BoundSetFunctionality<PlayerController, IPlayerContextView, Look.Setter>,
+        UPDATE
+    {
+        PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>(); PlayerContextData ctx => facade.API_Context<PlayerContextData>();
+        public class Setter : DataSetter<Vector2>
+        {
+            [ShowInInspector] public Vector2 mousePos => Get;
+        }
+        public Look(IPublisher publisher, PlayerController facade) : base(publisher, facade) { }
+        public override PipelineBuilder<IPlayerContextView> InjectSteps(PipelineBuilder<IPlayerContextView> builder) => builder;
+
+        public override bool ExecutionImplementation(IPlayerContextView ctx)
+        {
+            var dir = CheckIfAnyContains(cfg.facing.callbackZones, SetContext.mousePos);
+            if(dir == PlayerConfig.MouseZones.LeftScreen) bb.facingBody.rotation = Quaternion.Euler(0, 0, 0);
+            else if(dir == PlayerConfig.MouseZones.RightScreen) bb.facingBody.rotation = Quaternion.Euler(0, 180, 0);
+            return false;
+        }
+    }
 
     class Fall : UnboundFunctionality<PlayerController, IPlayerContextView>,
         FIXED_UPDATE
@@ -38,9 +58,9 @@ public class PlayerFunctionality : Functionalities<
         public override bool ExecutionImplementation(IPlayerContextView ctx)
         {
             facade.API_Context<PlayerContextData>().isGrounded.Value = isGrounded();
-            if(!ctx.IsGrounded) bb.rb.AddForce(-facade.transform.up * cfg.fall.scalar, ForceMode2D.Force);
+            if(!ctx.IsGrounded) bb.rb.AddForce(-facade.transform.up * cfg.fall.scalar, cfg.fall.forceMode);
             facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst
-                .SetBuffered(!ctx.IsGrounded && !ctx.jumpInProgress && ctx.jumpAvaliableCoyote);
+                .SetBuffered(!ctx.IsGrounded && !ctx.isJumping && ctx.canJumpCoyote);
             return false;
         }
         
@@ -52,7 +72,7 @@ public class PlayerFunctionality : Functionalities<
     class Friction : UnboundFunctionality<PlayerController, IPlayerContextView>,
         FIXED_UPDATE
     {
-        PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>();
+        PlayerConfig cfg => facade.Config; PlayerBlackboard bb => facade.API_Blackboard<PlayerBlackboard>(); PlayerContextData ctx => facade.API_Context<PlayerContextData>();
         public Friction(PlayerController facade) : base(facade) { }
 
         public override PipelineBuilder<IPlayerContextView> InjectSteps(PipelineBuilder<IPlayerContextView> builder)
@@ -84,7 +104,7 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => ctx.jumpAvaliableCoyote && !ctx.FallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
+            UseBuffer(() => ctx.canJumpCoyote && !ctx.FallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
             SetContext.OnSetEvent.Add(ResetBuffer);
         }
         
@@ -93,25 +113,25 @@ public class PlayerFunctionality : Functionalities<
             ctx.JumpCurve.Value += cfg.jump.jumpCurveRate;
             var mult = ctx.JumpCurve.Evaluate;
             bb.rb.AddForce(new Vector2(0, cfg.jump.scalar) * mult, cfg.jump.forceMode);
-            facade.API_Context<PlayerContextData>().jumpInProgress = true;
+            facade.API_Context<PlayerContextData>().isJumping = true;
             
             return false;
         }
 
         public void MutateUsingNewSetValues()   
         {
-            if (SetContext.isActive) {
+            if (SetContext.isActive)
+            {
                 if (bb.rb.linearVelocityY < 0f)
                 {
-                    if (!ctx.FallingWithoutJumpingFirst && !ctx.jumpInProgress && ctx.jumpAvaliableCoyote) 
+                    if (!ctx.FallingWithoutJumpingFirst && !ctx.isJumping && ctx.canJumpCoyote) 
                         bb.rb.linearVelocityY = 0;
                 }    
                 bb.jumpCurve.DynamicStart(Operation.Increase);
-                Debug.Log("jump started");
             }
             else { 
-                if(ctx.jumpInProgress) facade.API_Context<PlayerContextData>().jumpAvaliableCoyote = false;
-                facade.API_Context<PlayerContextData>().jumpInProgress = false;
+                if(ctx.isJumping) facade.API_Context<PlayerContextData>().canJumpCoyote = false;
+                facade.API_Context<PlayerContextData>().isJumping = false;
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
                 bb.jumpCurve.Value = 0;
             }
@@ -123,8 +143,8 @@ public class PlayerFunctionality : Functionalities<
         {
             if (v) {
                 bb.jumpCurve.Value = 0; 
-                facade.API_Context<PlayerContextData>().jumpInProgress = false;
-                facade.API_Context<PlayerContextData>().jumpAvaliableCoyote = true;
+                facade.API_Context<PlayerContextData>().isJumping = false;
+                facade.API_Context<PlayerContextData>().canJumpCoyote = true;
                 facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst.SetNotBuffered(false); 
             }
         }

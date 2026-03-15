@@ -152,7 +152,7 @@ namespace EMILtools.Systems
 
         bool Invoke(TContext ctx)
         {
-            Debug.Log("startng input buffer timer");
+            //Debug.Log("startng input buffer timer");
             cachedCtx = ctx;
             timer.StartNoReset();
             return false; // False is: does NOT short circuit (what I want for execution resolving)
@@ -161,8 +161,7 @@ namespace EMILtools.Systems
         void TryConsume()
         {
             bool willConsume = bufferPredicate() && enableHandle();
-            Debug.Log("Will Consume? (" + willConsume + 
-                      ") enabled? (" + enableHandle() + ") predicate: (" + bufferPredicate() + ")");
+           // Debug.Log("Will Consume? (" + willConsume + ") enabled? (" + enableHandle() + ") predicate: (" + bufferPredicate() + ")");
             if (willConsume) Consume();
         }
 
@@ -173,7 +172,7 @@ namespace EMILtools.Systems
             subscriber.Execute();
             originalCallback.Invoke(cachedCtx);
             cachedCtx = default;
-            Debug.Log("Consumed buffered sub");
+            //Debug.Log("Consumed buffered sub");
         }
 
     }

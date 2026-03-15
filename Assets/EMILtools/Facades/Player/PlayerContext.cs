@@ -11,8 +11,9 @@ public interface IPlayerContextView : IModuleUsabableContext
     public bool IsGrounded { get; }
     public int jumps { get; }
     public bool FallingWithoutJumpingFirst { get; }
-    public bool jumpInProgress { get; }
-    public bool jumpAvaliableCoyote { get; }
+    public bool isJumping { get; }
+    public bool canJumpCoyote { get; }
+    public PlayerConfig.FaceDirection facingDirection { get; }
 }
 
 [InlineProperty]
@@ -23,8 +24,9 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public ReactiveIntercept<bool> isGrounded = new ReactiveIntercept<bool>();
     [ShowInInspector] public int jumps { get; set; }
     [ShowInInspector] public DelayBuffer<bool> fallingWithoutJumpingFirst { get; set; }
-    [ShowInInspector] public bool jumpInProgress { get; set; }
-    [ShowInInspector] public bool jumpAvaliableCoyote { get; set; }
+    [ShowInInspector] public bool isJumping { get; set; }
+    [ShowInInspector] public bool canJumpCoyote { get; set; }
+    [ShowInInspector] public PlayerConfig.FaceDirection facingDirection { get; set; }
     
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;

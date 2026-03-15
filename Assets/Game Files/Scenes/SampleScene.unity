@@ -621,8 +621,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1881229042}
+  m_Children:
+  - {fileID: 1797689981}
+  m_Father: {fileID: 1206560638}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &392042223
 GameObject:
@@ -1290,6 +1291,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1206560637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1206560638}
+  m_Layer: 0
+  m_Name: Facing Body
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1206560638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206560637}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 389884462}
+  m_Father: {fileID: 1881229042}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1237382218
 GameObject:
   m_ObjectHideFlags: 0
@@ -1639,11 +1672,11 @@ Transform:
   m_GameObject: {fileID: 1797689980}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.21360004, y: 0.35760003, z: 0}
-  m_LocalScale: {x: 0.350742, y: 0.350742, z: 0.350742}
+  m_LocalPosition: {x: -0.38, y: 0.64, z: 0}
+  m_LocalScale: {x: 0.58457, y: 0.42381325, z: 0.58457}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1881229042}
+  m_Father: {fileID: 389884462}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1797689982
 SpriteRenderer:
@@ -1777,6 +1810,7 @@ MonoBehaviour:
         operationScalar: 1
         pauseProgress: -1
       <feetPoint>k__BackingField: {fileID: 392042224}
+      <facingBody>k__BackingField: {fileID: 1206560638}
   <inputSubordinateContext>k__BackingField:
     Subordinate:
       underlyingValue: {fileID: 1881229041}
@@ -1796,9 +1830,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1206560638}
   - {fileID: 519420032}
-  - {fileID: 389884462}
-  - {fileID: 1797689981}
   - {fileID: 392042224}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

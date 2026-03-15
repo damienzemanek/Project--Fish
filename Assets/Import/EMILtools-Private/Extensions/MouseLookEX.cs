@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using static MouseCallbackZones;
 
 namespace EMILtools.Extensions
 {
@@ -57,34 +56,7 @@ namespace EMILtools.Extensions
                 head.transform.localRotation = Quaternion.Euler(rot.y, rot.x, 0);
             }
         }
-
         
-        /// <summary>
-        /// Add all zones needed in the beginning
-        /// </summary>
-        /// <param name="zones"></param>
-        /// <param name="zonesToAdd"></param>
-        public static void AddInitalZones(this MouseCallbackZones zones, params (Rect rect, Action method)[] zonesToAdd)
-        {
-            if (zones.callbackZones == null) zones.callbackZones = new List<CallbackZone>();
-            
-            for(int i = 0; i < zonesToAdd.Length; i++)
-                zones.callbackZones.AddGet(new CallbackZone(zonesToAdd[i].rect))
-                    .callback.Add(zonesToAdd[i].method);
-
-        }
-        
-         /// <summary>
-         /// Add a zone to the list of zones, can be used at runtime
-         /// </summary>
-         /// <param name="zones"></param>
-         /// <param name="rect"></param>
-         /// <param name="method"></param>
-        public static void AddZone(this MouseCallbackZones zones, Rect rect, Action method)
-        {
-            if (zones.callbackZones == null) zones.callbackZones = new List<CallbackZone>();
-            zones.callbackZones.AddGet(new CallbackZone(rect)).callback.Add(method);
-        }
 
          
         [Serializable]

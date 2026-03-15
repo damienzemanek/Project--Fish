@@ -14,12 +14,14 @@ public class PlayerController : MonoFacade<
 {
     public class ActionMap : IActionMap
     {
+        
     }
 
     public class PlayerInputMap : InputMap
     {
         public readonly Publisher<(bool, float)> Move = new();
         public readonly Publisher<bool> Jump = new();
+        public readonly Publisher<Vector2> Look = new();
     }
 
     public PlayerInputMap Input { get; set; }

@@ -13,16 +13,16 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
   move:
-    <speedScalar>k__BackingField: 15
+    <speedScalar>k__BackingField: 13
     <forceMode2d>k__BackingField: 0
-    <maxVelocity>k__BackingField: 13
+    <maxVelocity>k__BackingField: 11
     <acceleration>k__BackingField: 1
     <deceleration>k__BackingField: 25
   jump:
     <jumpCurveRate>k__BackingField: 0.05
     <maxJumps>k__BackingField: 1
     forceMode: 1
-    scalar: 6
+    scalar: 5.3
     coyoteInputWindow:
       val: 0.2
   friction:
@@ -33,6 +33,23 @@ MonoBehaviour:
       serializedVersion: 2
       m_Bits: 8
     forceMode: 0
-    scalar: 50
+    scalar: 56
     fallingBufferWindow:
       val: 0.1
+  facing:
+    <faceDirection>k__BackingField: 0
+    <callbackZones>k__BackingField:
+    - label: 0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 960
+        height: 1080
+    - label: 1
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 960
+        height: 1080

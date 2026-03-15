@@ -1,9 +1,14 @@
 using EMILtools.Extensions;
 using EMILtools.Systems;
+using UnityEngine;
 using UnityEngine.InputSystem;
 using static IA_Player;
 using static PrimaryInputAuthority;
 using static PlayerController;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class PlayerInputReader :
     IPlayerActions,
@@ -47,7 +52,11 @@ public class PlayerInputReader :
 
     public void OnLook(InputAction.CallbackContext context)
     {
-        
+        Vector2 pixelPos = Mouse.current.position.ReadValue();
+#if UNITY_EDITOR
+        pixelPos /= EditorGUIUtility.pixelsPerPoint;
+#endif
+        Input.Look.Publish(pixelPos);
     }
 
     public void OnAttack(InputAction.CallbackContext context)

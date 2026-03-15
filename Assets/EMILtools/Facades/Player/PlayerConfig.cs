@@ -1,17 +1,29 @@
 using System;
-using EMILtools.Extensions;
+using System.Collections.Generic;
+using EMILtools.Core;
 using UnityEngine;
 using EMILtools.Systems;
-using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "PlayerConfig", menuName = "EMILtools/ScriptableObjects/Configs/Player")]
 public class PlayerConfig : Config
 {
+    public enum FaceDirection { Left, Right }
+    public enum MouseZones { LeftScreen, RightScreen }
+    
     [SerializeField] public Move move;
     [SerializeField] public Jump jump;
     [SerializeField] public Friction friction;
     [SerializeField] public Fall fall;
+    [SerializeField] public Facing facing;
 
+
+    [Serializable]
+    public struct Facing
+    {
+        [field: SerializeField] public FaceDirection faceDirection { get; private set; }
+        [field: SerializeField] public RectLabeled<MouseZones>[] callbackZones { get; private set; }
+    }
+    
     [Serializable]
     public struct Fall
     {

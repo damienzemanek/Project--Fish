@@ -5,41 +5,94 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 
-public class MouseCallbackZones
-{ 
-    public int w = 1920;
-    public int h = 1080;
-            
+namespace EMILtools.Core
+{
+
     [Serializable]
-    public class CallbackZone
+    public struct RectLabeled<TEnum>
+        where TEnum : struct, Enum
     {
-        public Rect zone;
+        public TEnum label;
+        public Rect rect;
+    }
+
+    public static class RectEX<TEnum> where TEnum : struct, Enum
+    {
+        public static TEnum CheckIfAnyContains(RectLabeled<TEnum>[] zones, Vector2 mousePos)
+        {
+            foreach (var zone in zones) { if (zone.rect.Contains(mousePos)) return zone.label; }
+            Debug.LogWarning("No zone contains mouse position");
+            return default;
+        }
+    }
+    
+    
+    
+    
+    [Serializable]
+    public class MousePosCallbackZone<TEnum>
+        where TEnum : struct, Enum
+    {
+        readonly RectLabeled<TEnum> zone;
         [ShowInInspector, ReadOnly] bool wasInside;
-        [NonSerialized] public PersistentAction callback;
-            
-        void EnsureInit() => callback ??= new PersistentAction();
-            
+        [NonSerialized] PersistentAction callback;
+    
         public void CheckZone(Vector2 mousePos)
         {
-            EnsureInit();
-            bool inside = zone.Contains(mousePos);
+            var inside = zone.rect.Contains(mousePos);
             if (inside && !wasInside) callback.Invoke();
             wasInside = inside;
         }
 
-        public CallbackZone(Rect zone)
-        {
+        public MousePosCallbackZone(RectLabeled<TEnum> zone, PersistentAction callback)
+        { 
             this.zone = zone;
             wasInside = false;
-            callback = new PersistentAction();
+            this.callback = callback;
         }
     }
 
-    public void CheckAllZones(Vector2 mousePos)
+    public static class MouseCallbackZoneExtensions<TEnum>
+        where TEnum : struct, Enum
     {
-        if(callbackZones == null) Debug.LogError("No callback zones found, make sure to add some with AddInitialZones or AddZone");
-        foreach (var zone in callbackZones) zone.CheckZone(mousePos);
+
+        
+        public static void CheckAllZones(MousePosCallbackZone<TEnum>[] zones, Vector2 mousePos) 
+        {
+            foreach (var zone in zones) zone.CheckZone(mousePos);
+        }
+
+        public static MousePosCallbackZone<TEnum>[] RetrieveAndInitZones(
+            RectLabeled<TEnum>[] zones,
+            params (PersistentAction cb, TEnum label)[] callbacks)
+        {
+            if (zones.Length != callbacks.Length)
+                Debug.LogError("Zones length does not match callback length");
+
+            // Build lookup from callbacks
+            var map = new Dictionary<TEnum, PersistentAction>(callbacks.Length);
+            for (int i = 0; i < callbacks.Length; i++)
+            {
+                if (map.ContainsKey(callbacks[i].label)) { Debug.LogError($"Duplicate callback label: {callbacks[i].label}");
+                    continue; }
+
+                map.Add(callbacks[i].label, callbacks[i].cb);
+            }
+
+            var result = new MousePosCallbackZone<TEnum>[zones.Length];
+
+            // Init Zones
+            for (int i = 0; i < zones.Length; i++)
+            {
+                var label = zones[i].label;
+
+                if (!map.TryGetValue(label, out var cb)) { Debug.LogError($"Missing callback for zone label: {label}");
+                    continue; }
+
+                result[i] = new MousePosCallbackZone<TEnum>(zones[i], cb);
+            }
+
+            return result;
+        }
     }
-            
-    [BoxGroup("References")] public List<CallbackZone> callbackZones;
 }
