@@ -40,32 +40,13 @@ public class PlayerFunctionality : Functionalities<
             facade.API_Context<PlayerContextData>().isGrounded.Value = isGrounded();
             if(!ctx.IsGrounded) bb.rb.AddForce(-facade.transform.up * cfg.fall.scalar, ForceMode2D.Force);
             facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst
-                .SetBuffered(!ctx.IsGrounded && !ctx.jumpInProgress && ctx.didJumpCoyoteInput);
+                .SetBuffered(!ctx.IsGrounded && !ctx.jumpInProgress && ctx.jumpAvaliableCoyote);
             return false;
         }
         
         
-        bool isGrounded()
-        {
-            var transform = facade.transform;
-            var fall = cfg.fall;
-            
-            if (!bb.feetPoint)
-            {
-                var newFeetPoint = new GameObject("Feet Point Auto-Generated");
-                newFeetPoint.transform.parent = transform;
-                newFeetPoint.transform.localPosition = transform.position.With(y: transform.position.y + 0.02f);
-                bb.feetPoint = newFeetPoint.transform;
-            }
-
-            if (fall.checkDist == 0) fall.checkDist = 0.08f;
-            
-            return Physics2D.Raycast(
-                bb.feetPoint.position,
-                -facade.transform.up,
-                cfg.fall.checkDist,
-                cfg.fall.mask);
-        }
+        bool isGrounded() => Physics2D.Raycast
+            ( bb.feetPoint.position, -facade.transform.up, cfg.fall.checkDist, cfg.fall.mask);
     }
 
     class Friction : UnboundFunctionality<PlayerController, IPlayerContextView>,
@@ -103,7 +84,7 @@ public class PlayerFunctionality : Functionalities<
         protected override void Awake()
         {
             facade.API_Context<PlayerContextData>().isGrounded.Reactions.Add(Grounded);
-            UseBuffer(() => ctx.didJumpCoyoteInput && !ctx.FallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
+            UseBuffer(() => ctx.jumpAvaliableCoyote && !ctx.FallingWithoutJumpingFirst, cfg.jump.coyoteInputWindow);
             SetContext.OnSetEvent.Add(ResetBuffer);
         }
         
@@ -119,14 +100,17 @@ public class PlayerFunctionality : Functionalities<
 
         public void MutateUsingNewSetValues()   
         {
-            if (SetContext.isActive)
-            {
+            if (SetContext.isActive) {
+                if (bb.rb.linearVelocityY < 0f)
+                {
+                    if (!ctx.FallingWithoutJumpingFirst && !ctx.jumpInProgress && ctx.jumpAvaliableCoyote) 
+                        bb.rb.linearVelocityY = 0;
+                }    
                 bb.jumpCurve.DynamicStart(Operation.Increase);
                 Debug.Log("jump started");
             }
-            else
-            { 
-                if(ctx.jumpInProgress) facade.API_Context<PlayerContextData>().didJumpCoyoteInput = false;
+            else { 
+                if(ctx.jumpInProgress) facade.API_Context<PlayerContextData>().jumpAvaliableCoyote = false;
                 facade.API_Context<PlayerContextData>().jumpInProgress = false;
                 bb.jumpCurve.DynamicStart(Operation.Decrease);
                 bb.jumpCurve.Value = 0;
@@ -140,7 +124,7 @@ public class PlayerFunctionality : Functionalities<
             if (v) {
                 bb.jumpCurve.Value = 0; 
                 facade.API_Context<PlayerContextData>().jumpInProgress = false;
-                facade.API_Context<PlayerContextData>().didJumpCoyoteInput = true;
+                facade.API_Context<PlayerContextData>().jumpAvaliableCoyote = true;
                 facade.API_Context<PlayerContextData>().fallingWithoutJumpingFirst.SetNotBuffered(false); 
             }
         }
