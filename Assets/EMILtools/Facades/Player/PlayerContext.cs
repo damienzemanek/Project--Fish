@@ -16,6 +16,7 @@ public interface IPlayerContextView : IModuleUsabableContext
     public PlayerConfig.FaceDirection facingDirection { get; }
     public PlayerBlackboard.AttackDir attackDir { get; }
     public bool landing { get; }
+    public bool isAttacking { get; }
 }
 
 [InlineProperty]
@@ -31,6 +32,8 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public bool canJumpCoyote { get; set; }
     [ShowInInspector] public PlayerConfig.FaceDirection facingDirection { get; set; }
     [ShowInInspector] public PlayerBlackboard.AttackDir attackDir { get; set; }
+    [ShowInInspector] public bool isAttacking { get; set; }
+
     
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;

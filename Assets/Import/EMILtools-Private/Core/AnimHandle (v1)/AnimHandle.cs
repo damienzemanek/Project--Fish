@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -127,33 +128,76 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
     
     public bool PlayThenOnEnd(
         Animator animator,
-        TAnimEnum animEnum, 
+        TAnimEnum animEnum,
         Action onEnd,
-        int layer = 0, 
+        int layer = 0,
         float normalizedTime = NegativeInfinity)
     {
-        if(!Play(animator, animEnum, layer, normalizedTime)) return false;
-        PlayThenOnEndAsync(animator, animEnum, onEnd, layer);
+        if (!Play(animator, animEnum, layer, normalizedTime))
+            return false;
+
+        PlayThenOnEndAsync(animator, animEnum, onEnd, layer).Forget("AnimHandle: PlayThenOnEnd");
         return true;
-        
-        
-        // Compositional Funcion
-        async void PlayThenOnEndAsync(
-            Animator animator,
-            TAnimEnum animEnum, 
-            Action onEnd,
-            int layer)
+
+        async Task PlayThenOnEndAsync(
+            Animator a,
+            TAnimEnum e,
+            Action end,
+            int l)
         {
-            int hash = GetHash(animEnum);
-            if (hash == -1) { Debug.LogWarning($"AnimHandle: No hash mapped for enum {animEnum} (layer {layer})."); return; }
-        
-            while (animator.GetCurrentAnimatorStateInfo(layer).fullPathHash != hash)
+            int hash = GetHash(e);
+            if (hash == -1 || a == null || l < 0 || l >= a.layerCount)
+                return;
+
+            const float timeoutSeconds = 3f;
+            float start = Time.time;
+
+            // 1) Wait until the requested state is actually active
+            while (true)
+            {
+                if (a == null) return;
+
+                var s = a.GetCurrentAnimatorStateInfo(l);
+                bool inTarget = s.shortNameHash == hash || s.fullPathHash == hash;
+
+                if (!a.IsInTransition(l) && inTarget)
+                    break;
+
+                if (Time.time - start > timeoutSeconds)
+                {
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to ENTER {e} on layer {l}.");
+                    return;
+                }
+
                 await Awaitable.NextFrameAsync();
-        
-            while(animator.GetCurrentAnimatorStateInfo(layer).normalizedTime < 1f)
+            }
+
+            // 2) Wait until target state finishes (for non-loop clips)
+            while (true)
+            {
+                if (a == null) return;
+
+                var s = a.GetCurrentAnimatorStateInfo(l);
+                bool stillTarget = s.shortNameHash == hash || s.fullPathHash == hash;
+
+                // If we already left target state, treat as ended
+                if (!stillTarget)
+                    break;
+
+                // End condition for non-looping state
+                if (!s.loop && !a.IsInTransition(l) && s.normalizedTime >= 1f)
+                    break;
+
+                if (Time.time - start > timeoutSeconds)
+                {
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to FINISH {e} on layer {l}.");
+                    return;
+                }
+
                 await Awaitable.NextFrameAsync();
-        
-            onEnd?.Invoke();
+            }
+
+            end?.Invoke();
         }
     }
     

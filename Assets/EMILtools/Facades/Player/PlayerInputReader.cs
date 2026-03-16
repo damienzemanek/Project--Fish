@@ -40,12 +40,8 @@ public class PlayerInputReader :
     {
         switch (context.phase)
         {
-            case InputActionPhase.Performed:
-                Input.Jump.Publish(true);
-                break;
-            case InputActionPhase.Canceled:
-                Input.Jump.Publish(false);
-                break;
+            case InputActionPhase.Performed: Input.Jump.Publish(true); break;
+            case InputActionPhase.Canceled: Input.Jump.Publish(false); break;
         }
 
     }
@@ -61,6 +57,11 @@ public class PlayerInputReader :
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed: Input.Attack.Publish(true); break;
+            case InputActionPhase.Canceled: Input.Attack.Publish(false); break;
+        }
         
     }
 
