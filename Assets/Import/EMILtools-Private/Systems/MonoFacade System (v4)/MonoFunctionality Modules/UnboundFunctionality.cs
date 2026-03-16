@@ -53,14 +53,13 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public abstract PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder);
-
-
+        public virtual PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder) => builder;
+        
         /// <summary>
         /// Execute the functionality's purpose
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public abstract bool ExecutionImplementation(TViewCtx ctx);
+        protected abstract bool ExecutionImplementation(TViewCtx ctx);
     }
 }

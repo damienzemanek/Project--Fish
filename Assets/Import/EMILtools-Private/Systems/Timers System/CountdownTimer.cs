@@ -26,11 +26,7 @@ namespace EMILtools.Timers
         public override void TickImplementation(float deltaTime)
         {
 
-            if (Time > 0)
-            {
-                Time -= deltaTime;
-                Debug.Log("tick countdown timer, now at " + Time + "");
-            }
+            if (Time > 0) { Time -= deltaTime; }
             if (Time <= 0) { Time = 0; Stop(); }
         }
         

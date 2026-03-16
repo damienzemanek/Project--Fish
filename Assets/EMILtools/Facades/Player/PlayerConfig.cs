@@ -10,12 +10,16 @@ public class PlayerConfig : Config
     public enum FaceDirection { Left, Right }
     public enum MouseZones { LeftScreen, RightScreen }
     
+    public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, Attack1 }
+    public enum PlayerBlendVars { }
+
+    
     [SerializeField] public Move move;
     [SerializeField] public Jump jump;
     [SerializeField] public Friction friction;
     [SerializeField] public Fall fall;
     [SerializeField] public Facing facing;
-
+    [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
 
     [Serializable]
     public struct Facing

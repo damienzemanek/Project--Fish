@@ -13,19 +13,19 @@ public class LivingEntity : Entity,
 {
     const float RestartAnimation = ZeroF;
     const float FromBeginning = ZeroF;
+    
+    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
+    [FoldoutGroup("ReadOnly")] [ShowInInspector] ReactiveIntercept<float> health;
+    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
+    
     public float maxHealth;
-
+    [SerializeField] int deathLayer = 3;
+    [SerializeField] int hitLayer = 2; 
     public bool destroyOnDeath = false;
     public List<Behaviour> behaviours = new();
-    public List<Collider> colliders = new();
-    public Collider deathFloorCollider;
+    public List<Collider2D> colliders = new();
+    public Collider2D deathFloorCollider;
     public List<GameObject> enableOnDeathAndUnparents = new();
-    
-    [ShowInInspector, ReadOnly] public bool isDead = false;
-    [ShowInInspector, ReadOnly] ReactiveIntercept<float> health;
-    [ShowInInspector, ReadOnly] int hitLayer = 2;
-    [ShowInInspector, ReadOnly] int deathLayer = 3;
-    [ShowInInspector, ReadOnly] public DeathType deathStatus;
 
     public Animator animator;
     public AnimHandle<DeathType, NoBlends> deathAnimHandle;
@@ -57,7 +57,7 @@ public class LivingEntity : Entity,
         else Die();
     }
 
-    public void LocationalDamageReaction() 
+    void LocationalDamageReaction() 
         => damageLocationAnimHandle.PlayWeightSet(
             animator,
             DamageLocation.Body,
