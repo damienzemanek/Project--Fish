@@ -16,7 +16,7 @@ public class MonoFacadeTests
         public float SomeInt { get; }
     }
 
-    public class TestContextData : ContextData<TestContextData>, ITestContextView
+    public class TestContextData : ContextData, ITestContextView
     {
         // Mutable state
         public float SomeInt { get; set; }

@@ -8,7 +8,7 @@ public interface ITestContextDataImmutable : IContextViewImmutable
     int SomeInt { get; }
 }
 
-public class TestContextData : ContextData<TestContextData>, ITestContextDataImmutable
+public class TestContextData : ContextData, ITestContextDataImmutable
 {
     public int SomeInt { get; set; }
 }

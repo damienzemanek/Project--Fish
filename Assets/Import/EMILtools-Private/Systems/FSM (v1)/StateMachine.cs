@@ -8,6 +8,8 @@ using UnityEngine;
 
 public interface IFSM
 {
+    public IState CurrentStateIState { get; }
+    public Type CurrentStateType { get; }
     public void AddTransition(IState from, IState to, IPredicate condition, string condName, Resolves Resolves = default);
     public void AddAnyTransition(IState to, IPredicate condition, string condName, Resolves Resolves = default);
     public Task PollTransitionsAsync();
@@ -21,6 +23,9 @@ public class StateMachine<TViewCtx> : IFSM
     [ShowInInspector] List<ITransition> AnyTransitions;
     Dictionary<Type, StateNode> Nodes;
 
+    public IState CurrentStateIState => CurrentNode?.State;
+    public Type CurrentStateType => CurrentNode?.State?.GetType();
+    
     readonly TViewCtx Context;
     [ShowInInspector, ReadOnly] List<string> states;
     
@@ -110,7 +115,6 @@ public class StateMachine<TViewCtx> : IFSM
     public void AddAnyTransition<TTo>(IPredicate condition, string condName, Resolves Resolves = default)
         where TTo : IState
         => AddAnyTransition(State<TTo>(), condition, condName, Resolves);
-    
     
     public void AddTransition(IState from, IState to, IPredicate condition, string condName, Resolves Resolves = default) 
         => GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition, condName, Resolves);

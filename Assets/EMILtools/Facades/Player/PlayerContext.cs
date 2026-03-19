@@ -21,7 +21,7 @@ public interface IPlayerContextView : IContextViewImmutable
 }
 
 [InlineProperty]
-public class PlayerContextData : ContextData<PlayerContextData>, IPlayerContextView
+public class PlayerContextData : ContextData, IPlayerContextView
 {
     [ShowInInspector] CountdownTimer coyoteTimer;
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
@@ -31,7 +31,6 @@ public class PlayerContextData : ContextData<PlayerContextData>, IPlayerContextV
     [ShowInInspector] public DelayBuffer<bool> fallingWithoutJumpingFirst { get; set; }
     [ShowInInspector] public PlayerConfig.FaceDirection facingDirection { get; set; }
     [ShowInInspector] public PlayerBlackboard.AttackDir attackDir { get; set; }
-
     [ShowInInspector] public bool landing { get; set; }
     [ShowInInspector] public bool isJumping { get; set; }
     [ShowInInspector] public bool canJumpCoyote { get; set; }
