@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 public class StateMachine
 {
-    StateNode CurrentNode;
+    [ShowInInspector] StateNode CurrentNode;
+    [ShowInInspector] List<ITransition> AnyTransitions;
     Dictionary<Type, StateNode> Nodes;
-    List<ITransition> AnyTransitions;
     
     public StateMachine(IState initialState)
     {
@@ -78,8 +79,9 @@ public class StateMachine
         CurrentNode = Nodes[transition.To.GetType()];
     }
     
-    class StateNode
+    public class StateNode
     {
+        [ShowInInspector] readonly string name;
         public IState State;
         public List<ITransition> Transitions;
         
@@ -87,6 +89,7 @@ public class StateMachine
         {
             State = state;
             Transitions = new List<ITransition>();
+            name = state.GetType().Name;
         }
         
         public void AddTransition(IState to, IPredicate condition) => Transitions.Add(new Transition(to, condition));

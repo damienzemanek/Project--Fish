@@ -6,14 +6,18 @@ using Sirenix.OdinInspector;
 namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
-        IInjectablePipeline<TViewCtx>
+        IInjectablePipeline<TViewCtx>,
+        FSM_AVALIABLE
         where TFacade : class, IFacade
         where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
-        // Variables
-        public Pipeline<TViewCtx> ExecutionPipeline { get; set; }
-        protected readonly SubResolvableCtx<TViewCtx> subscriber;
-        [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;
+        // ------------ Variables -----------
+        
+
+        public Pipeline<TViewCtx> ExecutionPipeline { get; set; }    // PIPELINE SYSTEM
+        protected readonly SubResolvableCtx<TViewCtx> subscriber;    // PUB / SUB SYSTEM
+        [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;  // INPUT BUFFER SYSTEM
+        
         
         protected void ResetBuffer() => consumeBuffer?.Reset();
         
