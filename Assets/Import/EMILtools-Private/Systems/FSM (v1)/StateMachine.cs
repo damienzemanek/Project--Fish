@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using EMILtools.Systems;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,9 +8,9 @@ using UnityEngine;
 
 public interface IFSM
 {
-    public void AddTransition(IState from, IState to, IPredicate condition);
-    public void AddAnyTransition(IState to, IPredicate condition);
-    public void PollTransitions();
+    public void AddTransition(IState from, IState to, IPredicate condition, string condName, Resolves Resolves = default);
+    public void AddAnyTransition(IState to, IPredicate condition, string condName, Resolves Resolves = default);
+    public Task PollTransitionsAsync();
     public IState State<TState>() where TState : IState;
 }
 
@@ -32,10 +33,22 @@ public class StateMachine<TViewCtx> : IFSM
         AnyTransitions = new List<ITransition>();
     }
 
-    public void PollTransitions()
+    bool isPollingTransitions = false;
+    
+    public async Task PollTransitionsAsync()
     {
-        var transition = GetTransition(out var hasTransition);
-        if(hasTransition) ChangeState(transition);
+        if (isPollingTransitions) return;
+        isPollingTransitions = true;
+
+        try
+        {
+            var transition = await TryResolveAndGetTransition();
+            if(transition != null) ChangeState(transition);
+        }
+        finally
+        {
+            isPollingTransitions = false;
+        }
     }
 
     /// <summary>
@@ -51,41 +64,59 @@ public class StateMachine<TViewCtx> : IFSM
         return node.State;
     }
 
-    public void SetState(IState state)
+    async Task<ITransition> TryResolveAndGetTransition()
     {
-        if(state == null) return;
-        CurrentNode = GetOrAddNode(state);
-        CurrentNode.State?.OnExitState(Context);
-    }
-
-    ITransition GetTransition(out bool hasTransition)
-    {
-        hasTransition = false;
         
         for(int i = 0; i < AnyTransitions.Count; i++)
-            if (AnyTransitions[i].Condition.Evaluate())
+            if (await Resolver.ResolveContainer(
+                    AnyTransitions[i].Resolves,
+                    AnyTransitions[i].Condition,
+                    canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false
+                    Context))
             {
-                hasTransition = true;
                 return AnyTransitions[i];
             }
         
         for(int i = 0; i < CurrentNode.Transitions.Count; i++)
-            if(CurrentNode.Transitions[i].Condition.Evaluate())
+            if(await Resolver.ResolveContainer(
+                   CurrentNode.Transitions[i].Resolves,
+                   CurrentNode.Transitions[i].Condition,
+                   canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false
+                   Context))
             {
-                hasTransition = true;
                 return CurrentNode.Transitions[i];
             }
 
         return null;
     }
-
     
     
-    public void AddTransition(IState from, IState to, IPredicate condition) 
-        => GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition);
+    /// <summary>
+    /// Only use if you know the state has been added
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <typeparam name="TFrom"></typeparam>
+    /// <typeparam name="TTo"></typeparam>
+    public void AddTransition<TFrom, TTo>(IPredicate condition, string condName, Resolves Resolves = default)
+        where TFrom : IState
+        where TTo : IState
+        => AddTransition(State<TFrom>(), State<TTo>(), condition, condName, Resolves);
     
-    public void AddAnyTransition(IState to, IPredicate condition)
-        => AnyTransitions.Add(new Transition(GetOrAddNode(to).State, condition));
+    /// <summary>
+    /// Only use if you know the state has been added
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <typeparam name="TTo"></typeparam>
+    public void AddAnyTransition<TTo>(IPredicate condition, string condName, Resolves Resolves = default)
+        where TTo : IState
+        => AddAnyTransition(State<TTo>(), condition, condName, Resolves);
+    
+    
+    public void AddTransition(IState from, IState to, IPredicate condition, string condName, Resolves Resolves = default) 
+        => GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition, condName, Resolves);
+    
+    public void AddAnyTransition(IState to, IPredicate condition, string condName, Resolves Resolves = default)
+        => AnyTransitions.Add(new Transition(GetOrAddNode(to).State, condition, Resolves, condName));
 
     public void AddNode(IState state) => GetOrAddNode(state);
 
@@ -129,7 +160,8 @@ public class StateMachine<TViewCtx> : IFSM
             name = state.GetType().Name;
         }
         
-        public void AddTransition(IState to, IPredicate condition) => Transitions.Add(new Transition(to, condition));
+        public void AddTransition(IState to, IPredicate condition, string condName, Resolves Resolves = default)
+            => Transitions.Add(new Transition(to, condition, Resolves, condName));
         
     }
 }

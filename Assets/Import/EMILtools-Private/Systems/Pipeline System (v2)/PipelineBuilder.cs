@@ -23,7 +23,7 @@ namespace EMILtools.Systems
             IPredicate @if,
             IResolvable[] before = null, IResolvable[] after = null, IResolvable[] shortCircuited = null)
         {
-            var NewResolves = new ResolveContainer(before, after, shortCircuited);
+            var NewResolves = new Resolves(true, before, after, shortCircuited);
             steps.Add(new PipelineStep<TViewCtx>(@if, NewResolves));
             return this;
         }
@@ -31,7 +31,7 @@ namespace EMILtools.Systems
             Action<TViewCtx> method, 
             IResolvable[] before = null, IResolvable[] after = null)
         {
-            var NewResolves = new ResolveContainer(before, after);
+            var NewResolves = new Resolves(true, before, after);
             steps.Add(new PipelineStep<TViewCtx>(method, NewResolves));
             return this;
         }

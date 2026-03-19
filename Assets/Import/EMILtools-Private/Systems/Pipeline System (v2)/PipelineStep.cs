@@ -24,26 +24,32 @@ namespace EMILtools.Systems
         public class ActionCtxResolvable : IResolvable
         {
             readonly Action<TViewCtx> action;
+            public bool consumed => false;
+
+            public void ResetWait()
+            {
+                // No op
+            }
+
             public bool Resolve(object ctx)
             {
-                action((TViewCtx)ctx); return false; // Direct cast, no check
+                action((TViewCtx)ctx); return true; // Direct cast, no check
             }
             public ActionCtxResolvable(Action<TViewCtx> _action) => action = _action;
-
         }
         
         // ------ Variables --------
-        public readonly IPredicate Condition;
+        public readonly NotPredicate Condition;
         public readonly ActionCtxResolvable CallbackSlot;
-        public readonly ResolveContainer Resolves;
+        public readonly Resolves Resolves;
         public readonly StepType StepType;
 
         
         // ------ Ctors ------
         public PipelineStep(IPredicate condition, 
-            ResolveContainer resolves = default)
+            Resolves resolves = default)
         {
-            Condition = condition;
+            Condition = new NotPredicate(condition);
             CallbackSlot = null;
             Resolves = resolves;
             StepType = StepType.ShortCircuit;
@@ -52,11 +58,11 @@ namespace EMILtools.Systems
         {
             Condition = null;
             CallbackSlot = new ActionCtxResolvable(mainMethod);
-            Resolves = new ResolveContainer(null, null, null);
+            Resolves = new Resolves(true);
             StepType = StepType.MainMethod;
         }
         
-        public PipelineStep(Action<TViewCtx> middlewareMethod, ResolveContainer resolves)
+        public PipelineStep(Action<TViewCtx> middlewareMethod, Resolves resolves)
         {
             Condition = null;
             CallbackSlot = new ActionCtxResolvable(middlewareMethod);

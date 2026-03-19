@@ -75,7 +75,7 @@ public class PublisherTests
         bool mainCalled = false;
 
         var before = new Callback(() => beforeResolved = true);
-        var container = new ResolveContainer(beforeExecution: new IResolvable[] { before });
+        var container = new Resolves(true, beforeExe: new IResolvable[] { before });
 
         bool MainCall() => mainCalled = true;
 
@@ -108,8 +108,9 @@ public class PublisherTests
         void Action2Call(MyContext c) => action2Called = true;
         var sub = new SubResolvableCtx<MyContext>(
             Call,
-            new ResolveContainer(beforeExecution: new IResolvable[] { new Callback(ActionCall) },
-                afterExecution: new IResolvable[] { new Callback<MyContext>(Action2Call) })
+            new Resolves(true,
+                beforeExe: new IResolvable[] { new Callback(ActionCall) },
+                afterExe: new IResolvable[] { new Callback<MyContext>(Action2Call) })
             
         );
 
@@ -189,14 +190,14 @@ public class PublisherTests
     {
         bool afterCalled = false;
 
-        bool Predicate() => true; // triggers short circuit
+        bool ShortCircuitPredicate() => false; // triggers short circuit
         void After() => afterCalled = true;
 
-        var container = new ResolveContainer(
-            afterExecution: new IResolvable[] { new Callback(After) }
+        var container = new Resolves(true,
+            afterExe: new IResolvable[] { new Callback(After) }
         );
 
-        var sub = new SubResolvable(Predicate, container, canShortCircuit: true);
+        var sub = new SubResolvable(ShortCircuitPredicate, container, canShortCircuit: true);
         var publisher = new Publisher();
         publisher.Add(sub);
 
@@ -218,8 +219,8 @@ public class PublisherTests
         void Before() => beforeCalled = true;
         bool Predicate() => true; // short circuit
 
-        var container = new ResolveContainer(
-            beforeExecution: new IResolvable[] { new Callback(Before) }
+        var container = new Resolves(true,
+            beforeExe: new IResolvable[] { new Callback(Before) }
         );
 
         var sub = new SubResolvable(Predicate, container, canShortCircuit: true);
@@ -248,8 +249,8 @@ public class PublisherTests
             return false;
         }
 
-        var container = new ResolveContainer(
-            beforeExecution: new IResolvable[] { wait }
+        var container = new Resolves(true,
+            beforeExe: new IResolvable[] { wait }
         );
 
         var sub = new SubResolvable(Main, container);

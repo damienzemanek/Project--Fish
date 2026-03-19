@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using EMILtools.Core;
 using UnityEngine;
-using static EMILtools.Systems.ResolverSystem;
+using static EMILtools.Systems.Resolver;
 
 namespace EMILtools.Systems
 {

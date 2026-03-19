@@ -17,11 +17,11 @@ public interface IPlayerContextView : IContextViewImmutable
     public PlayerBlackboard.AttackDir attackDir { get; }
     public bool landing { get; }
     public bool isAttacking { get; }
-    public bool isMoving { get; }
+    public bool isMoving { get; }   
 }
 
 [InlineProperty]
-public class PlayerContextData : ContextData, IPlayerContextView
+public class PlayerContextData : ContextData<PlayerContextData>, IPlayerContextView
 {
     [ShowInInspector] CountdownTimer coyoteTimer;
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;

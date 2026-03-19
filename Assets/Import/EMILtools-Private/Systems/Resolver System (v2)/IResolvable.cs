@@ -12,15 +12,11 @@ namespace EMILtools.Systems
     /// </summary>
     public interface IResolvable
     {
+        public bool consumed { get; }
+        public virtual void ResetWait() { }
         public bool Resolve(object ctx);
     }
-
-    public interface IResolvableVT<TContext> : IResolvable
-        where TContext : struct
-    {
-        public bool Resolve(TContext ctx);
-    }
-
+    
     /// <summary>
     /// Represents an interface for waitable resolve operations in the pipeline.
     /// This interface enables components to await asynchronous resolution
@@ -35,6 +31,6 @@ namespace EMILtools.Systems
             if (reenacting) waiting = true;
             return cachedWaitTask;
         }
-        public Task cachedWaitTask { get; set; }
+        public Task cachedWaitTask { get; }
     }
 }

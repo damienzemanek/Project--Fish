@@ -15,7 +15,7 @@ namespace EMILtools.Systems
     [Serializable]
     public abstract class MonoStructure<TBlackboard, TContextData, TContextViewImmutable> : IMonoStructure
         where TBlackboard : class, IBlackboard
-        where TContextData : ContextData, TContextViewImmutable, new()
+        where TContextData : ContextData<TContextData>, TContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
         [Title("Blackboard")] [SerializeField] [HideLabel]

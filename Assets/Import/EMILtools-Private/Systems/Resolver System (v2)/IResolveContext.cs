@@ -7,42 +7,51 @@ using static EMILtools.Timers.TimerUtility;
 
 namespace EMILtools.Systems
 {
+
+    public abstract class Resolvable : IResolvable
+    {
+        public readonly bool executeOnce;
+        public bool consumed { get; set; }
+        protected Resolvable(bool executeOnce = false) => this.executeOnce = executeOnce;
+        public virtual void ResetWait()
+        {
+            consumed = false;
+        }
+        public abstract bool Resolve(object ctx);
+    }
+    
+    
+    
     /// <summary>
     /// Represents a callback mechanism that can be invoked before pipeline step execution
     /// </summary>
-    public class Callback : IResolvable
+    public class Callback : Resolvable
     {
-        static readonly bool ContinueResolving = true;
-        public readonly Action Action;
+        readonly bool ContinueResolving = true;
+        readonly Action Action;
 
-        public Callback(Action _action)
-        {
-            Action = _action;
-        }
-        public bool resolveBeforeExecution { get; set; }
+        public Callback(Action _action, bool executeOnce = false) : base(executeOnce)
+            => Action = _action;
 
-        public bool Resolve(object ctx)
+        public override bool Resolve(object ctx)
         {
             Action?.Invoke();
             return ContinueResolving;
-            
         }
     }
     
     /// <summary>
     /// Represents a callback mechanism that can be invoked before pipeline step execution
     /// </summary>
-    public class Callback<TCtx> : IResolvable
+    public class Callback<TCtx> : Resolvable
     {
-        static readonly bool ContinueResolving = true;
-        public readonly Action<TCtx> Action;
-    
-        public Callback(Action<TCtx> _action)
-        {
-            Action = _action;
-        }
-        public bool resolveBeforeExecution { get; set; }
+        readonly bool ContinueResolving = true;
+        readonly Action<TCtx> Action;
         [NonSerialized] TCtx cached;
+        
+        public Callback(Action<TCtx> _action, bool executeOnce = false) : base(executeOnce)
+            => Action = _action;
+
         
         public bool Resolve<TContext1>(TContext1 ctx)
         {
@@ -52,7 +61,7 @@ namespace EMILtools.Systems
             return ContinueResolving;
         }
 
-        public bool Resolve(object ctx)
+        public override bool Resolve(object ctx)
         {
             cached = (TCtx)ctx;
             Action?.Invoke(cached);
@@ -62,78 +71,83 @@ namespace EMILtools.Systems
     
 
     /// <summary>
-    /// Timed resolving context that integrates with a pipeline execution flow.
-    /// Will ShortCircuit if the timer is not finished (Only If the StepType is a ShortCircuit)
+    /// Short Circuits if time is not finished
+    /// Re-accesses the timer to check if it is finished
+    /// If its finished it will continue
     /// </summary>
-    public class Timed : IResolvable, ITimerUser
+    public class TimedGate : Resolvable, ITimerUser
     {
         // Is not intended to be read as ShortCircuit FALSE, used just for readability in the Resolve()
-        bool ShortCircuitIfNotFinished => false; 
-        bool ContinueResolving => true;
-        public CountdownTimer Timer => timer;
-        CountdownTimer timer;
-        public Timed(float sec)
+        readonly bool ShortCircuitIfNotFinished = false; 
+        readonly bool ContinueResolving = true;
+        readonly bool resetWhenAccessedAndDone;
+        readonly CountdownTimer timer;
+
+        bool open => timer.IsFinished();
+        
+        public TimedGate(float sec, bool resetWhenAccessedAndDone, out Action resetHandle, bool executeOnce = false) : base(executeOnce)
         {
             timer = new CountdownTimer(sec);
             this.InitTimer(timer, isFixed: true); 
+            this.resetWhenAccessedAndDone = resetWhenAccessedAndDone;
+            resetHandle = () => timer.StartAndReset();
         }
         
-        public bool Resolve(object ctx)
+        public override bool Resolve(object ctx)
         {
             if(!timer.isRunning && !timer.IsFinished()) timer.StartAndReset();
-            Debug.Log($"Timer called, isRunning: {timer.isRunning}, isFinished: {timer.IsFinished()}");
-            return timer.IsFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
+            var _open = open;
+            if(open && resetWhenAccessedAndDone) timer.Reset();
+            return _open ? ContinueResolving : ShortCircuitIfNotFinished;
         }
     }
 
     /// <summary>
-    /// Represents a waitable component used in the pipeline that incorporates a countdown timer.
-    /// Provides functionality to wait asynchronously until the timer completes (Stays in UnityTime)
-    /// Used when delays are necessary before progressing within the pipeline.
+    /// Blocks until complete
     /// </summary>
-    public class Wait : IResolvable, ITimerUser, IResolveWaitable
+    public class Wait : Resolvable, ITimerUser, IResolveWaitable
     {
         // --- static ----
-        static bool ContinueResolving = true;
+        readonly bool ContinueResolving = true;
         
         // --- Privates ----
-        CountdownTimer timer;
-        TaskCompletionSource<bool> tcs;
+        readonly CountdownTimer timer;
+        TaskCompletionSource<bool> blockingTcs;
         
         // --- API ----
         public bool waiting { get; set; } = false;
         public Task cachedWaitTask { get; set; }
-        public CountdownTimer Timer => timer;
-        public bool resolveBeforeExecution { get; set; }
+
         // --- Ctor ----
-        public Wait(float sec)
+        public Wait(float sec, bool executeOnce = false) : base(executeOnce)
         {
             timer = new CountdownTimer(sec);
             this.InitTimer(timer, isFixed: true);
-            tcs = new();
-            cachedWaitTask = tcs.Task;
+            blockingTcs = new();
+            cachedWaitTask = blockingTcs.Task;
             timer.OnTimerStop.Add(TimerStopped);
-            Debug.Log("Wait Timer Initialized");
         }
         
         void TimerStopped()
         {
-            tcs.TrySetResult(true);
+            blockingTcs.TrySetResult(true);
             waiting = false;
             Debug.Log("Wait Timer Finished");
+            ResetWait();
         }
 
 
-        public void Reset()
+        public override void ResetWait()
         {
-            tcs = new();
-            cachedWaitTask = tcs.Task;
+            blockingTcs = new();
+            cachedWaitTask = blockingTcs.Task;
             timer.Reset();
         }
         
 
-        public bool Resolve(object ctx)
+        public override bool Resolve(object ctx)
         {
+            Debug.Log("Wait Timer Called");
             if (!timer.isRunning && !timer.IsFinished())
             {
                 timer.StartAndReset();
@@ -143,6 +157,7 @@ namespace EMILtools.Systems
             
         }
     }
+    
 }
 
 

@@ -177,7 +177,7 @@ public class PipelineTests
         var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
-                before: new IResolvable[] { new Timed(1) })
+                before: new IResolvable[] { new TimedGate(1, false, out var resetHandle) })
             .InjectMainMethod(Jump);
         void Jump(TestCtx ctx) { jumpCalled = true; }
 

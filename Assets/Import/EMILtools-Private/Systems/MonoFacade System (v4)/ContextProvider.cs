@@ -8,13 +8,15 @@ namespace EMILtools.Systems
     /// Override this to add data to the context
     /// </summary>
     /// <typeparam name="TBlackboard"></typeparam>
-    public abstract class ContextData : IViewableCtx
+    public abstract class ContextData<CRTP_Child> : IContextViewImmutable
+        where CRTP_Child : IContextViewImmutable
     {
         internal IBlackboard Blackboard;
+        internal StateMachine<CRTP_Child> FSM;
+        
         public TBlackboard API_Blackboard<TBlackboard>()
             where TBlackboard : IBlackboard
         => (TBlackboard)Blackboard;
-        
         protected ContextData() { }
     }
 
@@ -29,7 +31,7 @@ namespace EMILtools.Systems
     /// <typeparam name="TContextViewImmutable"></typeparam>
     [HideLabel]
     public class ContextProvider<TContextData, TContextViewImmutable>
-        where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
+        where TContextData : ContextData<TContextData>, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
         

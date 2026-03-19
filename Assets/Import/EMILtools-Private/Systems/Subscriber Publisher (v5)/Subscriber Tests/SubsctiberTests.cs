@@ -9,11 +9,23 @@ public class SubsctiberTests : MonoBehaviour
     public class TestFailResolvable : IResolvable
     {
         public bool Resolve<TContext>(TContext ctx) => false;
+        public bool consumed { get; }
+        public void ResetWait()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool Resolve(object ctx) => false;
     }
     public class TestResolvable : IResolvable
     {
         public bool wasCalled;
+        public bool consumed { get; }
+        public void ResetWait()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool Resolve(object ctx) => wasCalled = true;
     }
     
@@ -24,7 +36,7 @@ public class SubsctiberTests : MonoBehaviour
 
         var sub = new SubResolvable(
             () => executed = true,
-            new ResolveContainer(null, null, null)
+            new Resolves(true)
         );
 
         await sub.Execute();
@@ -37,8 +49,8 @@ public class SubsctiberTests : MonoBehaviour
     {
         var before = new TestResolvable();
 
-        var container = new ResolveContainer(
-            beforeExecution: new IResolvable[] { before }
+        var container = new Resolves(true,
+            beforeExe: new IResolvable[] { before }
         );
 
         var sub = new SubResolvable(
@@ -56,8 +68,8 @@ public class SubsctiberTests : MonoBehaviour
     {
         var after = new TestResolvable();
 
-        var container = new ResolveContainer(
-            afterExecution: new IResolvable[] { after }
+        var container = new Resolves(true,
+            afterExe: new IResolvable[] { after }
         );
 
         var sub = new SubResolvable(
@@ -77,8 +89,8 @@ public class SubsctiberTests : MonoBehaviour
 
         var beforeFail = new TestFailResolvable();
 
-        var container = new ResolveContainer(
-            beforeExecution: new IResolvable[] { beforeFail }
+        var container = new Resolves(true,
+            beforeExe: new IResolvable[] { beforeFail }
         );
 
         var sub = new SubResolvable(
@@ -98,14 +110,14 @@ public class SubsctiberTests : MonoBehaviour
         bool failedResolved = false;
 
         var failed = new TestResolvable();
-        bool shouldStop = true;
+        bool DoesContinue = false;
 
-        var container = new ResolveContainer(
-            failedExecution: new IResolvable[] { failed }
+        var container = new Resolves(true,
+            failExe: new IResolvable[] { failed }
         );
 
         var sub = new SubResolvable(
-            () => shouldStop,
+            () => DoesContinue,
             container,
             canShortCircuit: true
         );
@@ -114,7 +126,7 @@ public class SubsctiberTests : MonoBehaviour
 
         failedResolved = failed.wasCalled;
 
-        Assert.IsTrue(failedResolved);
+        Assert.IsTrue(failedResolved, "Failed execution should have been called.");
     }
     
     [Test]
@@ -123,9 +135,9 @@ public class SubsctiberTests : MonoBehaviour
         var failPointBefore = new TestFailResolvable();
         var after = new TestResolvable();
 
-        var container = new ResolveContainer(
-            beforeExecution: new IResolvable[] { failPointBefore },
-            afterExecution: new IResolvable[] { after }
+        var container = new Resolves(true,
+            beforeExe: new IResolvable[] { failPointBefore },
+            afterExe: new IResolvable[] { after }
         );
 
         var sub = new SubResolvable(

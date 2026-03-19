@@ -91,7 +91,7 @@ namespace EMILtools.Systems
         public void UpdateTick()
         {
             updateTick.Publish(facade.API_Context<TViewCtx>()).Forget("UpdateTick");
-            if(usingFSM) stateMachine.PollTransitions();
+            if(usingFSM) stateMachine.PollTransitionsAsync().Forget("FSM Poll");
         }
         public void FixedTick() => fixedTick.Publish(facade.API_Context<TViewCtx>()).Forget("FixedTick");
         public void LateTick() => lateTick.Publish(facade.API_Context<TViewCtx>()).Forget("LateTick");

@@ -1,13 +1,12 @@
 using System;
 using System.Threading.Tasks;
-using static EMILtools.Systems.ResolverSystem;
 
 
 namespace EMILtools.Systems
 {
     public abstract class ResolveSubscriberBase : ISubscriber
     {
-        protected readonly ResolveContainer ResolveContainer;
+        protected readonly Resolves ResolveContainer;
         
         // Mutations
         public bool canShortCircuit { get; set; }
@@ -18,10 +17,10 @@ namespace EMILtools.Systems
         {
             this.canShortCircuit = canShortCircuit;
             this.isActive = isActive;
-            ResolveContainer = new ResolveContainer(null, null, null);
+            ResolveContainer = new Resolves(true);
         }
 
-        protected ResolveSubscriberBase( ResolveContainer resolveContainer, bool isActive = true, bool canShortCircuit = false)
+        protected ResolveSubscriberBase( Resolves resolveContainer, bool isActive = true, bool canShortCircuit = false)
         {
             ResolveContainer = resolveContainer;
             this.canShortCircuit = canShortCircuit;
@@ -30,7 +29,7 @@ namespace EMILtools.Systems
             if (ResolveContainer.afterExecution == null 
                 && ResolveContainer.beforeExecution == null
                 && ResolveContainer.failedExecution == null)
-                ResolveContainer = new ResolveContainer(null, null, null);
+                ResolveContainer = new Resolves(true);
         }
     }
 
@@ -62,7 +61,7 @@ namespace EMILtools.Systems
             Cb = new FuncPredicate(callback);
         }
 
-        public SubResolvable(Func<bool> callback, ResolveContainer resolveContainer, bool isActive = true,
+        public SubResolvable(Func<bool> callback, Resolves resolveContainer, bool isActive = true,
             bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
         {
             Callback = callback;
@@ -105,7 +104,7 @@ namespace EMILtools.Systems
             Cb = new FuncCtxPredicate<TContext>(callback);
         }
 
-        public SubResolvableCtx(Func<TContext, bool> callback, ResolveContainer resolveContainer, bool isActive = true,
+        public SubResolvableCtx(Func<TContext, bool> callback, Resolves resolveContainer, bool isActive = true,
             bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
         {
             Callback = callback;
