@@ -8,70 +8,52 @@ namespace EMILtools.Systems
 { 
     public static class ResolverSystem
     {
-        
-        
+        static bool _debug = false;
+        static void Log(string msg)
+        {
+            if (_debug) Debug.Log($"[ResolverSystem] {msg}");
+        }
+
         public static class Resolver
         {
             public static async Task<bool> ResolveContainer<TContext>(
                 ResolveContainer resolves,
-                Func<TContext, bool> execute,
+                IResolvable resolveable,
                 bool canShortCircuit,
                 TContext ctx)
             {
-                if (!await ResolveArray(resolves.beforeExecution, canShortCircuit, ctx)) return false;
+                Log("=== ResolveContainer START ===");
 
-                if (execute(ctx) && canShortCircuit)
+                if (!await ResolveArray(resolves.beforeExecution, canShortCircuit, ctx))
                 {
-                    await ResolveArray(resolves.failedExecution, true, ctx); return false;
+                    Log("beforeExecution FAILED (short-circuit)");
+                    return false;
                 }
 
-                if (!await ResolveArray(resolves.afterExecution, canShortCircuit, ctx)) return false;
+                Log($"Main Resolve: {resolveable.GetType().Name}");
+                bool mainResult = resolveable.Resolve(ctx);
+                Log($"Main Result: {mainResult}");
 
-                return true;
-            }
-
-            public static async Task<bool> ResolveContainer(
-                ResolveContainer resolves,
-                Func<bool> execute,
-                bool canShortCircuit)
-            {
-                if (!await ResolveArray(resolves.beforeExecution, canShortCircuit))
-                    return false;
-
-                if (execute() && canShortCircuit)
+                if (mainResult && canShortCircuit)
                 {
-                    await ResolveArray(resolves.failedExecution, true); return false;
+                    Log("Short-circuit triggered by MAIN resolve");
+
+                    await ResolveArray(resolves.failedExecution, true, ctx);
+
+                    Log("=== ResolveContainer END (FAILED via short-circuit) ===");
+                    return false;
                 }
 
-                if (!await ResolveArray(resolves.afterExecution, canShortCircuit))
+                if (!await ResolveArray(resolves.afterExecution, canShortCircuit, ctx))
+                {
+                    Log("afterExecution FAILED (short-circuit)");
                     return false;
+                }
 
+                Log("=== ResolveContainer END (SUCCESS) ===");
                 return true;
             }
             
-            static async Task<bool> ResolveArray(
-                IResolvable[] resolvables,
-                bool isShortCircuit)
-            {
-                if (resolvables == null || resolvables.Length == 0)
-                    return true;
-
-                for (int i = 0; i < resolvables.Length; i++)
-                {
-                    var resolve = resolvables[i];
-
-                    if (!resolve.Resolve() && isShortCircuit)
-                        return false;
-
-                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
-                    {
-                        waitable.waiting = true;
-                        await waitable.WaitUntilResolved();
-                    }
-                }
-
-                return true;
-            }
             
             static async Task<bool> ResolveArray<TContext>(
                 IResolvable[] resolvables,
@@ -79,35 +61,50 @@ namespace EMILtools.Systems
                 TContext ctx)
             {
                 if (resolvables == null || resolvables.Length == 0)
+                {
+                    Log("ResolveArray skipped (null or empty)");
                     return true;
+                }
+
+                Log($"ResolveArray START (Count: {resolvables.Length}, ShortCircuit: {isShortCircuit})");
 
                 for (int i = 0; i < resolvables.Length; i++)
                 {
                     var resolve = resolvables[i];
-                    
-                    bool result = resolve switch
-                    {
-                        IResolvable r when r is IContextViewImmutable ctxView => r.Resolve(ctxView),
-                        IResolvable r => r.Resolve(ctx),
-                        _ => resolve.Resolve()
-                    };
-                    
+
+                    Log($"Resolving [{i}] -> {resolve.GetType().Name}");
+
+                    var result = resolve.Resolve(ctx);
+
+                    Log($"Result [{i}] -> {result}");
 
                     if (!result && isShortCircuit)
-                        return false;
-
-                    if (resolve is IResolveWaitable waitable && !waitable.waiting)
                     {
-                        waitable.waiting = true;
-                        await waitable.WaitUntilResolved();
+                        Log($"Short-circuit EXIT at index {i}");
+                        return false;
+                    }
+
+                    if (resolve is IResolveWaitable waitable)
+                    {
+                        if (!waitable.waiting)
+                        {
+                            Log($"Wait START [{i}] -> {resolve.GetType().Name}");
+
+                            waitable.waiting = true;
+                            await waitable.WaitUntilResolved();
+
+                            Log($"Wait END [{i}] -> {resolve.GetType().Name}");
+                        }
+                        else
+                        {
+                            Log($"Skipped wait (already waiting) [{i}]");
+                        }
                     }
                 }
 
+                Log("ResolveArray END");
                 return true;
             }
         }
-        
-        
     }
 }
-

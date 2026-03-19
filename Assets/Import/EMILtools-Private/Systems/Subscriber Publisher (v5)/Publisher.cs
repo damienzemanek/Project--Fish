@@ -78,8 +78,8 @@ namespace EMILtools.Systems
 
         public Task PublishImplementation(ISubscriber sub)
         {
-            if (sub is ISubscriber<TContext> typed)
-                return typed.Execute(cachedContext);
+            if (sub is ISubscriber<TContext> subTyped)
+                return subTyped.Execute(cachedContext);
 
             throw SubscriberTypeError(sub, "published");
         }

@@ -53,14 +53,25 @@ namespace EMILtools.Systems
     public sealed class SubResolvable : ResolveSubscriberBase, ISubscriber, ISubEditable<Func<bool>>
     {
         Func<bool> Callback;
-        public SubResolvable(Func<bool> callback, bool isActive = true, bool canShortCircuit = false) : base(isActive, canShortCircuit) 
-            => Callback = callback;
-        public SubResolvable(Func<bool> callback, ResolveContainer resolveContainer, bool isActive = true, bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
-            => Callback = callback;
+        IPredicate Cb;
+
+        public SubResolvable(Func<bool> callback, bool isActive = true, bool canShortCircuit = false) : base(isActive,
+            canShortCircuit)
+        {
+            Callback = callback;
+            Cb = new FuncPredicate(callback);
+        }
+
+        public SubResolvable(Func<bool> callback, ResolveContainer resolveContainer, bool isActive = true,
+            bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
+        {
+            Callback = callback;
+            Cb = new FuncPredicate(callback);
+        }
         public override Task Execute()
         {
             if (!isActive) return Task.CompletedTask;
-            return Resolver.ResolveContainer(ResolveContainer, Callback, canShortCircuit);
+            return Resolver.ResolveContainer<object>(ResolveContainer, Cb, canShortCircuit, null);
         }
         void ISubEditable<Func<bool>>.ReplaceCallback(Func<bool> newCb) => Callback = newCb;
         Func<bool> ISubEditable<Func<bool>>.RetrieveCallback() => Callback;
@@ -77,10 +88,21 @@ namespace EMILtools.Systems
     public sealed class SubResolvableCtx<TContext> : ResolveSubscriberBase, ISubscriber<TContext>, ISubEditable<Func<TContext, bool>>
     {
         Func<TContext, bool> Callback;
-        public SubResolvableCtx(Func<TContext, bool> callback, bool isActive = true, bool canShortCircuit = false) : base(isActive, canShortCircuit)
-            => Callback = callback;
-        public SubResolvableCtx(Func<TContext, bool> callback, ResolveContainer resolveContainer, bool isActive = true, bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
-            => Callback = callback;
+        IPredicate Cb;
+
+        public SubResolvableCtx(Func<TContext, bool> callback, bool isActive = true, bool canShortCircuit = false) :
+            base(isActive, canShortCircuit)
+        {
+            Callback = callback;
+            Cb = new FuncCtxPredicate<TContext>(callback);
+        }
+
+        public SubResolvableCtx(Func<TContext, bool> callback, ResolveContainer resolveContainer, bool isActive = true,
+            bool canShortCircuit = false) : base(resolveContainer, isActive, canShortCircuit)
+        {
+            Callback = callback;
+            Cb = new FuncCtxPredicate<TContext>(callback);
+        }
 
         public TContext cachedCtx { get; set; }
 
@@ -92,11 +114,12 @@ namespace EMILtools.Systems
         }
         
         public override Task Execute()
-            => Resolver.ResolveContainer(ResolveContainer, Callback, canShortCircuit, cachedCtx);
+            => Resolver.ResolveContainer(ResolveContainer, Cb, canShortCircuit, cachedCtx);
         
         
         void ISubEditable<Func<TContext, bool>>.ReplaceCallback(Func<TContext, bool> newCb) => Callback = newCb;
         Func<TContext, bool> ISubEditable<Func<TContext, bool>>.RetrieveCallback() => Callback;
+
 
     }
     

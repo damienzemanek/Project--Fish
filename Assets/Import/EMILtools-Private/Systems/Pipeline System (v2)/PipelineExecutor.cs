@@ -14,13 +14,18 @@ namespace EMILtools.Systems
     public static class PipelineExecutor<TContext>
         where TContext : class, IPipelineContext
     {
-        public static async Task<bool> Execute(Pipeline<TContext> pipeline, TContext ctx)
+        public static async Task<bool> Execute(Pipeline pipeline, TContext ctx)
         {
             for (int i = 0; i < pipeline.Size; i++)
             {
                 var step = pipeline[i];
                 var isShortCircuit = step.StepType == StepType.ShortCircuit;
-                if(!await Resolver.ResolveContainer(step.Resolves, step.StepExecute, isShortCircuit, ctx)) return false;
+                IResolvable resolve;
+                
+                if (step.Condition != null) resolve = step.Condition;
+                else resolve = step.CallbackSlot;
+                
+                if(!await Resolver.ResolveContainer(step.Resolves, resolve, isShortCircuit, ctx)) return false;
             }
             return true;
         }
@@ -42,8 +47,8 @@ namespace EMILtools.Systems
         /// <param name="ctx"></param>
         /// <typeparam name="TContext"></typeparam>
         /// <returns></returns>
-        public static Task TryTo(Pipeline<TContext> pipeline, in TContext ctx)
-        => Execute(pipeline, ctx);
+        public static Task TryTo(Pipeline pipeline, in TContext ctx)
+            => Execute(pipeline, ctx);
 
         
         

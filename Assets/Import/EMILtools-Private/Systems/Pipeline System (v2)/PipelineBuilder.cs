@@ -12,46 +12,58 @@ namespace EMILtools.Systems
     /// The type of the context associated with the pipeline.
     /// TContext must be a structure and implement the IPipelineContext interface.
     /// </typeparam>
-    public class PipelineBuilder<TContext>
-        where TContext : class, IPipelineContext
+    public class PipelineBuilder
     {
         // ------ Variables ---------
-        List<PipelineStep<TContext>> steps;
+        List<PipelineStep> steps;
     
         // ------ Ctor ---------
-        public PipelineBuilder() => steps = new List<PipelineStep<TContext>>();
-    
-        // ------ Methods ---------
-        PipelineBuilder<TContext> AddStep(
-            StepType stepType,
-            Func<TContext, bool> @if,
-            in ResolveContainer resolves)
-        {
-            steps.Add(new PipelineStep<TContext>(stepType, @if, resolves));
-            return this;
-        }
-
+        public PipelineBuilder() => steps = new List<PipelineStep>();
     
         // ------ API Methods ---------
-        public PipelineBuilder<TContext> Add_ShortCircuit(
-            Func<TContext, bool> @if,
+        public PipelineBuilder Add_ShortCircuit(
+            IPredicate @if,
             IResolvable[] before = null, IResolvable[] after = null, IResolvable[] shortCircuited = null)
         {
             var NewResolves = new ResolveContainer(before, after, shortCircuited);
-            return AddStep(StepType.ShortCircuit, @if, NewResolves);
+            steps.Add(new PipelineStep(@if, NewResolves));
+            return this;
         }
-        public PipelineBuilder<TContext> Add_Middleware(Func<TContext, bool> method, 
+        public PipelineBuilder Add_Middleware<TViewCtx>(
+            Action<TViewCtx> method, 
             IResolvable[] before = null, IResolvable[] after = null)
+        where TViewCtx : IContextViewImmutable
         {
             var NewResolves = new ResolveContainer(before, after);
-            return AddStep(StepType.Middleware, method, NewResolves);
+
+            Action<TViewCtx> typed = method;
+            Action<object> objAction = obj =>
+            {
+                if (obj is TViewCtx ctx) typed(ctx);
+                else throw new ArgumentException(
+                        $"The method {method.Method.Name} was passed an object of type {obj.GetType().Name} " +
+                        $"instead of {typeof(TViewCtx).Name}.", nameof(method) );
+            };
+            
+            steps.Add(new PipelineStep(objAction, NewResolves));
+            return this;
         }
         
         
-        public Pipeline<TContext> InjectMainMethod(Func<TContext, bool> mainMethod) 
+        public Pipeline InjectMainMethod<TViewCtx>(Action<TViewCtx> mainMethod) 
+            where TViewCtx : IContextViewImmutable
         {
-            steps.Add(new PipelineStep<TContext>(mainMethod));
-            return new Pipeline<TContext>(steps.ToArray());
+            Action<TViewCtx> typed = mainMethod;
+            Action<object> objAction = obj =>
+            {
+                if (obj is TViewCtx ctx) typed(ctx);
+                else throw new ArgumentException(
+                        $"The method {mainMethod.Method.Name} was passed an object of type {obj.GetType().Name} " +
+                        $"instead of {typeof(TViewCtx).Name}.", nameof(mainMethod) );
+            };
+            
+            steps.Add(new PipelineStep(objAction));
+            return new Pipeline(steps.ToArray());
         }
     }
 }

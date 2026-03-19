@@ -4,14 +4,14 @@ using Sirenix.OdinInspector;
 namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
-        IInjectablePipeline<TViewCtx>
+        IInjectablePipeline
         where TFacade : class, IFacade
         where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
         // ------------ Variables -----------
         
 
-        public Pipeline<TViewCtx> ExecutionPipeline { get; set; }    // PIPELINE SYSTEM
+        public Pipeline ExecutionPipeline { get; set; }    // PIPELINE SYSTEM
         protected readonly SubResolvableCtx<TViewCtx> subscriber;    // PUB / SUB SYSTEM
         [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;  // INPUT BUFFER SYSTEM
         
@@ -24,11 +24,12 @@ namespace EMILtools.Systems
         }
 
         // API Access
-        IInjectablePipeline<TViewCtx> injectablePipeline => this;
+        IInjectablePipeline injectablePipeline => this;
         public override ISubscriber Subscriber => subscriber;
     
         // Methods
-        public Func<TViewCtx, bool> InjectMainStep() => new(ExecutionImplementation);
+        public Action<APICtx> InjectMainStep<APICtx>() where APICtx : IContextViewImmutable
+            => ctx => ExecutionImplementation(ctx as TViewCtx);
 
         bool ExecuteSubscription(TViewCtx ctx)
         {
@@ -38,7 +39,7 @@ namespace EMILtools.Systems
         
         public override void SetupModule()
         {
-            injectablePipeline.Setup(setupWithFinalStep: false);
+            injectablePipeline.Setup<TViewCtx>(setupWithFinalStep: false);
             Awake();
         }
 
@@ -55,13 +56,13 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public virtual PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder) => builder;
+        public virtual PipelineBuilder InjectSteps(PipelineBuilder builder) => builder;
         
         /// <summary>
         /// Execute the functionality's purpose
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        protected abstract bool ExecutionImplementation(TViewCtx ctx);
+        protected abstract void ExecutionImplementation(TViewCtx iContextViewImmutable);
     }
 }

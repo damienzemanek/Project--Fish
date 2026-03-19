@@ -20,10 +20,8 @@ namespace EMILtools.Systems
             Action = _action;
         }
         public bool resolveBeforeExecution { get; set; }
-        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable => Resolve();
-        public bool Resolve<TContext>(TContext ctx)=> Resolve();
 
-        public bool Resolve()
+        public bool Resolve<TContext>(TContext ctx) 
         {
             Action?.Invoke();
             return ContinueResolving;
@@ -45,22 +43,10 @@ namespace EMILtools.Systems
         public bool resolveBeforeExecution { get; set; }
         [NonSerialized] TContext cached;
         
-        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable
-        {
-            if (ctx is TContext typed) cached = typed;
-            else throw new InvalidCastException("Wrong Context Type given to Callback");
-            return Resolve();
-        }
-
         public bool Resolve<TContext1>(TContext1 ctx)
         {
             if (ctx is TContext typed) cached = typed;
             else throw new InvalidCastException("Wrong Context Type given to Callback");
-            return Resolve();
-        }
-
-        public bool Resolve()
-        {
             Action?.Invoke(cached);
             return ContinueResolving;
         }
@@ -84,14 +70,12 @@ namespace EMILtools.Systems
             this.InitTimer(timer, isFixed: true); 
         }
 
-        public bool Resolve<TContext>(in TContext ctx) where TContext : IContextViewImmutable => Resolve();
-        public bool Resolve<TContext>(TContext ctx) => Resolve();
-
-        public bool Resolve()
+        public bool Resolve<TContext>(TContext ctx)
         {
             if(!timer.isRunning && !timer.IsFinished()) timer.StartAndReset();
             Debug.Log($"Timer called, isRunning: {timer.isRunning}, isFinished: {timer.IsFinished()}");
             return timer.IsFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
+            
         }
     }
 
@@ -139,11 +123,9 @@ namespace EMILtools.Systems
             cachedWaitTask = tcs.Task;
             timer.Reset();
         }
+        
 
-        public bool Resolve<TCtxView>(in TCtxView ctx) where TCtxView : IContextViewImmutable => Resolve();
-        public bool Resolve<TContext>(TContext ctx) => Resolve();
-
-        public bool Resolve()
+        public bool Resolve<TContext>(TContext ctx) 
         {
             if (!timer.isRunning && !timer.IsFinished())
             {
@@ -153,8 +135,7 @@ namespace EMILtools.Systems
             return ContinueResolving;
             
         }
-
-}
+    }
 }
 
 

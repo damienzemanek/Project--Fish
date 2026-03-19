@@ -6,6 +6,8 @@ using EMILtools.Systems;
 namespace EMILtools.Systems
 {
     
+    
+    
 
     /// <summary>
     /// Represents a step in a pipeline,
@@ -16,30 +18,51 @@ namespace EMILtools.Systems
     /// The type of context used in the pipeline.
     /// Intent: High Throughput, so it's a CLASS
     /// </typeparam>
-    public readonly struct PipelineStep<TContext>
-        where TContext : class, IPipelineContext
+    public readonly struct PipelineStep
     {
+        public class ActionResolvable : IResolvable
+        {
+            readonly Action<object> action;
+            public bool Resolve<TContext>(TContext ctx)
+            {
+                action(ctx);
+                return false;
+            }
+            public ActionResolvable(Action<object> _action) => action = _action;
+        }
         
         // ------ Variables --------
-        public readonly Func<TContext, bool> StepExecute;
+        public readonly IPredicate Condition;
+        public readonly ActionResolvable CallbackSlot;
         public readonly ResolveContainer Resolves;
         public readonly StepType StepType;
 
         
         // ------ Ctors ------
-        public PipelineStep(StepType stepType, Func<TContext, bool> stepExecute, 
+        public PipelineStep(IPredicate condition, 
             ResolveContainer resolves = default)
         {
-            StepExecute = stepExecute;
+            Condition = condition;
+            CallbackSlot = null;
             Resolves = resolves;
-            StepType = stepType;
+            StepType = StepType.ShortCircuit;
         }
-        public PipelineStep(Func<TContext, bool> mainMethod)
+        public PipelineStep(Action<object> mainMethod)
         {
-            StepExecute = mainMethod;
+            Condition = null;
+            CallbackSlot = new ActionResolvable(mainMethod);
             Resolves = new ResolveContainer(null, null, null);
             StepType = StepType.MainMethod;
         }
+        
+        public PipelineStep(Action<object> middlewareMethod, ResolveContainer resolves)
+        {
+            Condition = null;
+            CallbackSlot = new ActionResolvable(middlewareMethod);
+            Resolves = resolves;
+            StepType = StepType.Middleware;
+        }
+        
     }
 
 
