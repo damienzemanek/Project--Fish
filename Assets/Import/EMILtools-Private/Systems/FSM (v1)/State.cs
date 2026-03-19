@@ -1,22 +1,14 @@
+using EMILtools.Systems;
+
 public abstract class State : IState
 {
     
-    public virtual void OnEnter()
+    public virtual void OnEnterState(IContextViewImmutable ctx)
     {
         
     }
 
-    public virtual void OnExit()
-    {
-        
-    }
-
-    public virtual void OnUpdate()
-    {
-        
-    }
-
-    public virtual void OnFixedUpdate()
+    public virtual void OnExitState(IContextViewImmutable ctx)
     {
         
     }

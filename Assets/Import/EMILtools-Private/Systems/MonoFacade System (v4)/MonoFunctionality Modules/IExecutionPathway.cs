@@ -15,18 +15,19 @@ public interface ON_SET : IExecutionPathway
 }
 
 
+public interface FSM_AVALIABLE : IState { }
 
-public interface FSM_AVALIABLE
+public interface FSM_STATE_ENTER<TViewCtx> : IExecutionPathway, FSM_AVALIABLE
+    where TViewCtx : IContextViewImmutable
 {
-    
+    abstract void OnEnterState(TViewCtx ctx);
+    void IState.OnEnterState(IContextViewImmutable ctx) => OnEnterState((TViewCtx)ctx);
 }
 
-public interface FSM_STATE_ENTER : IExecutionPathway, FSM_AVALIABLE
-{
-    abstract void OnEnterState(IContextViewImmutable ctx);
-}
+public interface FSM_STATE_EXIT<TViewCtx> : IExecutionPathway, FSM_AVALIABLE
+    where TViewCtx : IContextViewImmutable
 
-public interface FSM_STATE_EXIT : IExecutionPathway, FSM_AVALIABLE
 {
-    abstract void OnExitState(IContextViewImmutable ctx);
+    abstract void OnExitState(TViewCtx ctx);
+    void IState.OnExitState(IContextViewImmutable ctx) => OnEnterState((TViewCtx)ctx);
 }

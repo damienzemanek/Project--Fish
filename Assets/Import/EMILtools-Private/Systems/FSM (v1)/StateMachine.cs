@@ -1,51 +1,85 @@
 using System;
 using System.Collections.Generic;
+using EMILtools.Systems;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
-public class StateMachine
+
+public interface IFSM
+{
+    public void AddTransition(IState from, IState to, IPredicate condition);
+    public void AddAnyTransition(IState to, IPredicate condition);
+    public void PollTransitions();
+    public IState State<TState>() where TState : IState;
+}
+
+public class StateMachine<TViewCtx> : IFSM
+    where TViewCtx : IContextViewImmutable
 {
     [ShowInInspector] StateNode CurrentNode;
     [ShowInInspector] List<ITransition> AnyTransitions;
     Dictionary<Type, StateNode> Nodes;
+
+    readonly TViewCtx Context;
+    [ShowInInspector, ReadOnly] List<string> states;
     
-    public StateMachine(IState initialState)
+    public StateMachine(TViewCtx ctx, IState initialState)
     {
+        Context = ctx;
         Nodes = new Dictionary<Type, StateNode>();
         CurrentNode = GetOrAddNode(initialState);
-        CurrentNode.State?.OnEnter();
+        CurrentNode.State?.OnEnterState(Context);
         AnyTransitions = new List<ITransition>();
     }
 
-    public void Update()
+    public void PollTransitions()
     {
-        var transition = GetTransition();
-        if(transition != null) ChangeState(transition);
-        
-        CurrentNode.State?.OnUpdate();
+        var transition = GetTransition(out var hasTransition);
+        if(hasTransition) ChangeState(transition);
     }
 
-    public void FixedUpdate()
+    /// <summary>
+    /// Only use if you know the state has been added
+    /// </summary>
+    /// <typeparam name="TState"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public IState State<TState>() where TState: IState
     {
-        CurrentNode.State?.OnFixedUpdate();
+        var type = typeof(TState);
+        if(!Nodes.TryGetValue(type, out var node)) throw new Exception($"State {type} not found");
+        return node.State;
     }
 
     public void SetState(IState state)
     {
         if(state == null) return;
         CurrentNode = GetOrAddNode(state);
-        CurrentNode.State?.OnEnter();
+        CurrentNode.State?.OnExitState(Context);
     }
 
-    ITransition GetTransition()
+    ITransition GetTransition(out bool hasTransition)
     {
+        hasTransition = false;
+        
         for(int i = 0; i < AnyTransitions.Count; i++)
-            if(AnyTransitions[i].Condition.Evaluate()) return AnyTransitions[i];
+            if (AnyTransitions[i].Condition.Evaluate())
+            {
+                hasTransition = true;
+                return AnyTransitions[i];
+            }
         
         for(int i = 0; i < CurrentNode.Transitions.Count; i++)
-            if(CurrentNode.Transitions[i].Condition.Evaluate()) return CurrentNode.Transitions[i];
+            if(CurrentNode.Transitions[i].Condition.Evaluate())
+            {
+                hasTransition = true;
+                return CurrentNode.Transitions[i];
+            }
 
         return null;
     }
+
+    
     
     public void AddTransition(IState from, IState to, IPredicate condition) 
         => GetOrAddNode(from).AddTransition(GetOrAddNode(to).State, condition);
@@ -53,6 +87,7 @@ public class StateMachine
     public void AddAnyTransition(IState to, IPredicate condition)
         => AnyTransitions.Add(new Transition(GetOrAddNode(to).State, condition));
 
+    public void AddNode(IState state) => GetOrAddNode(state);
 
     StateNode GetOrAddNode(IState state)
     {
@@ -62,6 +97,8 @@ public class StateMachine
         {
             node = new StateNode(state);
             Nodes.Add(state.GetType(), node);
+            if(states == null) states = new List<string>();
+            states.Add(node.name);
         }
         return node;
     }
@@ -73,16 +110,16 @@ public class StateMachine
         var prev = CurrentNode.State;
         var next = Nodes[transition.To.GetType()].State;
         
-        prev?.OnExit();
-        next?.OnEnter();
+        prev?.OnExitState(Context);
+        next?.OnEnterState(Context);
         
         CurrentNode = Nodes[transition.To.GetType()];
     }
     
     public class StateNode
     {
-        [ShowInInspector] readonly string name;
-        public IState State;
+        [ShowInInspector] public readonly string name;
+        [HideInInspector] public IState State;
         public List<ITransition> Transitions;
         
         public StateNode(IState state)

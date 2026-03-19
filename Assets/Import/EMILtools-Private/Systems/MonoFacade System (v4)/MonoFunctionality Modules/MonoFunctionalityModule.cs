@@ -10,19 +10,21 @@ namespace EMILtools.Systems
         public abstract void SetupModule();
     }
     
-    public abstract class MonoFunctionalityModule<TFacade>
-        : IMonoFunctionalityModule
-        where TFacade : class, IFacade
+    public abstract class MonoFunctionalityModule<TFacade> : 
+        IMonoFunctionalityModule,
+        IState
+    where TFacade : class, IFacade
     {
         [Title("$Name"), PropertyOrder(-1)]
         [ShowInInspector] public string Name => "Module: " + this.GetType().Name;
     
     
         // ---------- Variables ----------
-        public TFacade facade { get; set; }
+        protected TFacade facade { get; set; }
+        
 
         // ---------- Ctor ----------
-        public MonoFunctionalityModule(TFacade facade) => this.facade = facade;
+        protected MonoFunctionalityModule(TFacade facade) => this.facade = facade;
     
     
         // ---------- Abstracts ----------

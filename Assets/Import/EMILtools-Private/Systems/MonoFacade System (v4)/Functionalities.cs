@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using static InterfaceEX;
@@ -17,6 +18,7 @@ namespace EMILtools.Systems
         public void UpdateTick();
         public void FixedTick();
         public void LateTick();
+        public IFSM API_FSM();
     }
     
     public abstract class Functionalities<TMonoFacade, TViewCtx> : IFunctionality
@@ -37,19 +39,38 @@ namespace EMILtools.Systems
         readonly Publisher<TViewCtx> fixedTick = new();
         readonly Publisher<TViewCtx> lateTick = new();
 
+
+        bool usingFSM = false;
+        [ShowInInspector] StateMachine<TViewCtx> stateMachine;
+        public IFSM API_FSM() => stateMachine;
+
+        StateMachine<TViewCtx> InitFSM(IState initialState)
+        {
+           var fsm = stateMachine = new StateMachine<TViewCtx>(facade.API_Context<TViewCtx>(), initialState);
+           foreach (var state in states.Where(state => state != initialState))
+               fsm.AddNode(state);
+           return fsm;
+        }
+        List<FSM_AVALIABLE> states;
+        
+        
         public void InjectFacadeReference(IFacade f)
         {
             if(f is TMonoFacade typedFacade) facade = typedFacade;
             else throw new InvalidCastException($"Facade type mismatch. Expected {typeof(TMonoFacade)}, got {f.GetType()}");
         }
         
+
         public void SetupModules()
         {
-            AddModulesHere();
+            var initialState = AddModulesHere();
+            var fsm = InitFSM(initialState);
+            SetupTransitionsForFSM(fsm, facade.API_Context<TViewCtx>());
+            
             foreach (var t in modules)  t.SetupModule();
             Debug.Log($"{GetType().Name} Functionality modules successfully setup | API Count: " + API_Modules.Count);
         }
-
+        
         public void Bind()
         {
             Debug.Log("binding in progress...");
@@ -62,10 +83,16 @@ namespace EMILtools.Systems
             foreach (var t in modules)
                 if(t is IBindable bindable) bindable.Unbind();
         }
-        public void UpdateTick() => updateTick.Publish(facade.API_Context<TViewCtx>()).Forget("UpdateTick");
+
+        public void UpdateTick()
+        {
+            updateTick.Publish(facade.API_Context<TViewCtx>()).Forget("UpdateTick");
+            if(usingFSM) stateMachine.PollTransitions();
+        }
         public void FixedTick() => fixedTick.Publish(facade.API_Context<TViewCtx>()).Forget("FixedTick");
         public void LateTick() => lateTick.Publish(facade.API_Context<TViewCtx>()).Forget("LateTick");
-        protected void AddModule(MonoFunctionalityModule<TMonoFacade> module)
+
+        protected IState AddModule(MonoFunctionalityModule<TMonoFacade> module)
         {
             modules.Add(module);
             Debug.Log("ADDING module " + module.GetType().Name + " new count is " + modules.Count);
@@ -81,9 +108,24 @@ namespace EMILtools.Systems
                     Debug.Log("Added interface to modules API dictionary, new API add is : " + iface + " new count is " + API_Modules.Count);
                 }                
             }
+            Debug.Log("c");
+
+            if (module is FSM_AVALIABLE stateModule)
+            {
+                if(states == null) states = new();
+                usingFSM = true;
+                states.Add(stateModule);
+                Debug.Log("b");
+
+            }
+            
+            Debug.Log("a");
+            return module;
         }
         
-        protected abstract void AddModulesHere();
+        
+        protected abstract IState AddModulesHere();
+        protected abstract void SetupTransitionsForFSM(StateMachine<TViewCtx> fsm, TViewCtx ctx);
 
     }
 }

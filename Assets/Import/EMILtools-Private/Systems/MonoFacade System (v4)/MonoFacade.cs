@@ -33,6 +33,7 @@ namespace EMILtools.Systems
         [field: ShowInInspector] [field:HideLabel] [field: NonSerialized] public TFunctionality Functionality { get; private set; }
 
         
+        public IFSM FSM => Functionality.API_FSM();
         public T GetFunctionality<T>() where T : class, IAPI_Module
         {
             if (Functionality.APIs.TryGetValue(typeof(T), out var module)) return module as T;

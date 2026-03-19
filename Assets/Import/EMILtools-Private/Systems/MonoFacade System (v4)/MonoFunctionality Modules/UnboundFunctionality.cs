@@ -1,13 +1,10 @@
-﻿
-
-using System;
+﻿using System;
 using Sirenix.OdinInspector;
 
 namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
-        IInjectablePipeline<TViewCtx>,
-        FSM_AVALIABLE
+        IInjectablePipeline<TViewCtx>
         where TFacade : class, IFacade
         where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
     {
@@ -17,7 +14,6 @@ namespace EMILtools.Systems
         public Pipeline<TViewCtx> ExecutionPipeline { get; set; }    // PIPELINE SYSTEM
         protected readonly SubResolvableCtx<TViewCtx> subscriber;    // PUB / SUB SYSTEM
         [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;  // INPUT BUFFER SYSTEM
-        
         
         protected void ResetBuffer() => consumeBuffer?.Reset();
         
@@ -46,10 +42,12 @@ namespace EMILtools.Systems
             Awake();
         }
 
-        public void UseBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
-        {
-            consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, subscriber, bufferTime, enableHandle);
-        }
+        // ------------ Optional Compositional Elements -----------
+        
+        // INPUT BUFFER SYSTEM
+        protected void UseBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
+            => consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, subscriber, bufferTime, enableHandle);
+        
     
         // Abstract    
         /// <summary>
