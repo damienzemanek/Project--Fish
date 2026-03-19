@@ -65,8 +65,8 @@ namespace EMILtools.Systems
         {
             Settable = new DataSetter();
             Settable.Publisher = publisher;
-            Debug.Log("Succesfully cached publisher : " + publisher.GetType().Name + " which is " + publisher.GetType());
-           // Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
+            //Debug.Log("Succesfully cached publisher : " + publisher.GetType().Name + " which is " + publisher.GetType());
+            // Debug.Log($"Settable action is : " + Settable.Publisher + $" and template call is : " + Settable.Subscriber + $" for functionality : " + GetType().Name);
         }
 
         public void Bind()

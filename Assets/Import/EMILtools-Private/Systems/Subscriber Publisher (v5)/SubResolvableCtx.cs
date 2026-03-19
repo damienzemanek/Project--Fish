@@ -73,7 +73,12 @@ namespace EMILtools.Systems
             if (!isActive) return Task.CompletedTask;
             return Resolver.ResolveContainer<object>(ResolveContainer, Cb, canShortCircuit, null);
         }
-        void ISubEditable<Func<bool>>.ReplaceCallback(Func<bool> newCb) => Callback = newCb;
+
+        void ISubEditable<Func<bool>>.ReplaceCallback(Func<bool> newCb)
+        {
+            Callback = newCb;
+            Cb = new FuncPredicate(newCb);
+        }
         Func<bool> ISubEditable<Func<bool>>.RetrieveCallback() => Callback;
     }
     
@@ -115,9 +120,13 @@ namespace EMILtools.Systems
         
         public override Task Execute()
             => Resolver.ResolveContainer(ResolveContainer, Cb, canShortCircuit, cachedCtx);
-        
-        
-        void ISubEditable<Func<TContext, bool>>.ReplaceCallback(Func<TContext, bool> newCb) => Callback = newCb;
+
+
+        void ISubEditable<Func<TContext, bool>>.ReplaceCallback(Func<TContext, bool> newCb)
+        {
+            Callback = newCb;
+            Cb = new FuncCtxPredicate<TContext>(newCb);
+        }
         Func<TContext, bool> ISubEditable<Func<TContext, bool>>.RetrieveCallback() => Callback;
 
 

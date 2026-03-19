@@ -21,7 +21,7 @@ namespace EMILtools.Core
         public static TEnum CheckIfAnyContains(RectLabeled<TEnum>[] zones, Vector2 mousePos)
         {
             foreach (var zone in zones) { if (zone.rect.Contains(mousePos)) return zone.label; }
-            Debug.LogWarning("No zone contains mouse position");
+            //Debug.LogWarning("No zone contains mouse position");
             return default;
         }
     }

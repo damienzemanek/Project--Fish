@@ -25,6 +25,7 @@ MonoBehaviour:
     scalar: 5.3
     coyoteInputWindow:
       val: 0.2
+    landTime: 1
   friction:
     <frictionScalar>k__BackingField: 0.8
   fall:

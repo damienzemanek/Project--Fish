@@ -108,18 +108,14 @@ namespace EMILtools.Systems
                     Debug.Log("Added interface to modules API dictionary, new API add is : " + iface + " new count is " + API_Modules.Count);
                 }                
             }
-            Debug.Log("c");
 
             if (module is FSM_AVALIABLE stateModule)
             {
                 if(states == null) states = new();
                 usingFSM = true;
                 states.Add(stateModule);
-                Debug.Log("b");
-
             }
             
-            Debug.Log("a");
             return module;
         }
         
