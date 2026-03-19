@@ -5,11 +5,6 @@ using UnityEngine;
 
 namespace EMILtools.Systems
 {
-    /// <summary>
-    /// Context used in MonoFacade Functionalities
-    /// </summary>
-    public interface IModuleUsabableContext : IPipelineContext { }
-     
     public interface IBindable
     {
         public void Bind();
@@ -22,15 +17,15 @@ namespace EMILtools.Systems
     /// - Use TContext to pass around information
     /// </summary>
     /// <typeparam name="TFacade"></typeparam>
-    /// <typeparam name="TContext"></typeparam>
-    public abstract class BoundFunctionality<TFacade, TContext> : 
-            UnboundFunctionality<TFacade, TContext>, 
+    /// <typeparam name="TViewCtx"></typeparam>
+    public abstract class BoundFunctionality<TFacade, TViewCtx> : 
+            UnboundFunctionality<TFacade, TViewCtx>, 
             IBindable
         where TFacade : class, IFacade
-        where TContext : class, IModuleUsabableContext
+        where TViewCtx : class, IViewableCtx
     {
-        [NonSerialized] readonly Publisher<TContext> publisher; // Lazy (Injected)
-        protected BoundFunctionality(Publisher<TContext> publisher, TFacade facade) : base(facade)
+        [NonSerialized] readonly Publisher<TViewCtx> publisher; // Lazy (Injected)
+        protected BoundFunctionality(Publisher<TViewCtx> publisher, TFacade facade) : base(facade)
             => this.publisher = publisher;
         
         /// <summary>
@@ -57,7 +52,7 @@ namespace EMILtools.Systems
             : UnboundFunctionality<TFacade, TViewCtx>, IBindable
         where TFacade : class, IFacade
         where DataSetter : class, IDataSetter, new()
-        where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
+        where TViewCtx : class, IContextViewImmutable
     {
         protected DataSetter SetContext => Settable;
         [NonSerialized] [ShowInInspector] readonly DataSetter Settable;

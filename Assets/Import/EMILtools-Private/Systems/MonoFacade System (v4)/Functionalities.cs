@@ -23,7 +23,7 @@ namespace EMILtools.Systems
     
     public abstract class Functionalities<TMonoFacade, TViewCtx> : IFunctionality
         where TMonoFacade : class, IFacade
-        where TViewCtx : class, IContextViewImmutable, IModuleUsabableContext
+        where TViewCtx : class, IContextViewImmutable
     {
         [field: NonSerialized] protected TMonoFacade facade { get; private set; }
 
@@ -64,8 +64,12 @@ namespace EMILtools.Systems
         public void SetupModules()
         {
             var initialState = AddModulesHere();
-            var fsm = InitFSM(initialState);
-            SetupTransitionsForFSM(fsm, facade.API_Context<TViewCtx>());
+            if(initialState == null) Debug.LogWarning("(!) You are using a stateless MonoFacade");
+            else
+            {
+                var fsm = InitFSM(initialState);
+                SetupTransitionsForFSM(fsm, facade.API_Context<TViewCtx>());
+            }
             
             foreach (var t in modules)  t.SetupModule();
             Debug.Log($"{GetType().Name} Functionality modules successfully setup | API Count: " + API_Modules.Count);

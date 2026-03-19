@@ -12,9 +12,9 @@ namespace EMILtools.Systems
     /// SRP: Execution
     /// </summary>
     public static class PipelineExecutor<TContext>
-        where TContext : class, IPipelineContext
+        where TContext : IContextViewImmutable
     {
-        public static async Task<bool> Execute(Pipeline pipeline, TContext ctx)
+        public static async Task<bool> Execute(Pipeline<TContext> pipeline, TContext ctx)
         {
             for (int i = 0; i < pipeline.Size; i++)
             {
@@ -47,7 +47,7 @@ namespace EMILtools.Systems
         /// <param name="ctx"></param>
         /// <typeparam name="TContext"></typeparam>
         /// <returns></returns>
-        public static Task TryTo(Pipeline pipeline, in TContext ctx)
+        public static Task TryTo(Pipeline<TContext> pipeline, in TContext ctx)
             => Execute(pipeline, ctx);
 
         

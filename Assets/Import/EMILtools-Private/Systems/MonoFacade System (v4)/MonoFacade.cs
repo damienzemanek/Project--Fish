@@ -84,7 +84,7 @@ namespace EMILtools.Systems
             if (structure is TMonoStructureType monoStructure) return monoStructure; throw new InvalidCastException();
         }
 
-        public TContextType API_Context<TContextType>() where TContextType : IContext
+        public TContextType API_Context<TContextType>() where TContextType : IContextViewImmutable
         {
             if (structure.API_ContextData is TContextType context) return context; throw new InvalidCastException();
         }

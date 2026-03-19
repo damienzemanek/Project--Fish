@@ -11,7 +11,7 @@ using static EMILtools.Systems.PipelineExecutor<PipelineTests.TestCtx>;
 public class PipelineTests
 {
     // Define a simple context for testing
-    public class TestCtx : IPipelineContext
+    public class TestCtx : IViewableCtx
     {
         public int Value;
         public TestCtx(int _value = 0) => Value = _value;
@@ -22,11 +22,11 @@ public class PipelineTests
     public void Test1_PipelineBuilder_CreatesCorrectSize()
     {
         // Arrange
-        var builder = new PipelineBuilder();
+        var builder = new PipelineBuilder<TestCtx>();
         
         // Act
         builder.Add_ShortCircuit(new FuncPredicate(() => true));
-        var pipeline = builder.InjectMainMethod<TestCtx>(MainMethod);
+        var pipeline = builder.InjectMainMethod(MainMethod);
 
         void MainMethod(TestCtx ctx) { }
 
@@ -41,10 +41,10 @@ public class PipelineTests
         // Arrange
         var myctx = new TestCtx(3);
         bool jumpSuccessfull = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2))
-            .InjectMainMethod<TestCtx>(MainMethod);
+            .InjectMainMethod(MainMethod);
         Debug.Log("------- Setup Complete -------");
 
         
@@ -70,10 +70,10 @@ public class PipelineTests
         // Arrange
         var myctx = new TestCtx(2);
         bool jumpSuccessfull = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2))
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
 
         //Act
         await TryTo(jump, myctx);
@@ -94,11 +94,11 @@ public class PipelineTests
         // Arrange
         var myctx = new TestCtx(2);
         var failedStepCallbackExecuted = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 shortCircuited: new IResolvable[] { new Callback(ShortCircuitCallback) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         
         // Act
         await TryTo(jump, myctx);
@@ -118,12 +118,12 @@ public class PipelineTests
         bool jumpCalled = false;
         bool beforecalled = false;
         bool aftercalled = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 before: new IResolvable[]{ new Callback(CallBefore) }, 
                 after: new IResolvable[]{ new Callback(CallAfter) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         
         await TryTo(jump, myctx);
         void Jump(TestCtx ctx) { jumpCalled = true; }
@@ -143,12 +143,12 @@ public class PipelineTests
         var jumpCalled = false;
         var beforecalled = false;
         var aftercalled = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 before: new IResolvable[]{ new Callback(CallBefore) }, 
                 after: new IResolvable[]{ new Callback(CallAfter) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         
         await TryTo(jump, myctx);
         
@@ -174,11 +174,11 @@ public class PipelineTests
         // Arrange
         var myctx = new TestCtx(3);
         var jumpCalled = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 before: new IResolvable[] { new Timed(1) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         void Jump(TestCtx ctx) { jumpCalled = true; }
 
         
@@ -206,11 +206,11 @@ public class PipelineTests
         // Arrange
         var myctx = new TestCtx(2);
         bool jumpCalled = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 0))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1),
                 before: new IResolvable[] { new Wait(1) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         void Jump(TestCtx ctx) { jumpCalled = true; }
 
         
@@ -238,13 +238,13 @@ public class PipelineTests
         bool beforecalled = false;
         bool aftercalled = false;
         bool shortCircuitCalled = false;
-        var jump = new PipelineBuilder()
+        var jump = new PipelineBuilder<TestCtx>()
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 before: new IResolvable[]{ new Callback(CallBefore) }, 
                 after: new IResolvable[]{ new Callback(CallAfter) },
                 shortCircuited: new IResolvable[]{ new Callback(ShortCircuit) })
-            .InjectMainMethod<TestCtx>(Jump);
+            .InjectMainMethod(Jump);
         
         await TryTo(jump, myctx);
         void Jump(TestCtx ctx) { jumpCalled = true; }

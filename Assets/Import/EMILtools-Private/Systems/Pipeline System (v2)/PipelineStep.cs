@@ -18,22 +18,23 @@ namespace EMILtools.Systems
     /// The type of context used in the pipeline.
     /// Intent: High Throughput, so it's a CLASS
     /// </typeparam>
-    public readonly struct PipelineStep
+    public readonly struct PipelineStep<TViewCtx>
+        where TViewCtx : IContextViewImmutable
     {
-        public class ActionResolvable : IResolvable
+        public class ActionCtxResolvable : IResolvable
         {
-            readonly Action<object> action;
-            public bool Resolve<TContext>(TContext ctx)
+            readonly Action<TViewCtx> action;
+            public bool Resolve(object ctx)
             {
-                action(ctx);
-                return false;
+                action((TViewCtx)ctx); return false; // Direct cast, no check
             }
-            public ActionResolvable(Action<object> _action) => action = _action;
+            public ActionCtxResolvable(Action<TViewCtx> _action) => action = _action;
+
         }
         
         // ------ Variables --------
         public readonly IPredicate Condition;
-        public readonly ActionResolvable CallbackSlot;
+        public readonly ActionCtxResolvable CallbackSlot;
         public readonly ResolveContainer Resolves;
         public readonly StepType StepType;
 
@@ -47,18 +48,18 @@ namespace EMILtools.Systems
             Resolves = resolves;
             StepType = StepType.ShortCircuit;
         }
-        public PipelineStep(Action<object> mainMethod)
+        public PipelineStep(Action<TViewCtx> mainMethod)
         {
             Condition = null;
-            CallbackSlot = new ActionResolvable(mainMethod);
+            CallbackSlot = new ActionCtxResolvable(mainMethod);
             Resolves = new ResolveContainer(null, null, null);
             StepType = StepType.MainMethod;
         }
         
-        public PipelineStep(Action<object> middlewareMethod, ResolveContainer resolves)
+        public PipelineStep(Action<TViewCtx> middlewareMethod, ResolveContainer resolves)
         {
             Condition = null;
-            CallbackSlot = new ActionResolvable(middlewareMethod);
+            CallbackSlot = new ActionCtxResolvable(middlewareMethod);
             Resolves = resolves;
             StepType = StepType.Middleware;
         }

@@ -4,7 +4,7 @@ using EMILtools.Timers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public interface IPlayerContextView : IModuleUsabableContext
+public interface IPlayerContextView : IContextViewImmutable
 {
     public ICountdownTimer CoyoteTimer { get; }
     public ICurveValue JumpCurve { get; }

@@ -12,12 +12,16 @@ namespace EMILtools.Systems
     /// Extra Functionality Option: Since the main method returns a bool, you can use that to determine if the
     /// full pipeline execution was SUCCESSFUL dynamically
     /// </typeparam>
-    public class Pipeline
+    public class Pipeline<TViewCtx>
+        where TViewCtx : IContextViewImmutable
     {
-        readonly PipelineStep[] steps;
+        readonly PipelineStep<TViewCtx>[] steps;
         public int Size => steps?.Length ?? throw new System.NullReferenceException();
-        public PipelineStep this[int index] => steps[index];
-        public Pipeline(PipelineStep[] _steps) => steps = _steps;
+        public PipelineStep<TViewCtx> this[int index] => steps[index];
+        public Pipeline(PipelineStep<TViewCtx>[] _steps) => steps = _steps;
+
+        public void Execute(TViewCtx ctx) 
+            => PipelineExecutor<TViewCtx>.Execute(this, ctx).Forget("Pipeline Execution");
     }
 }
 

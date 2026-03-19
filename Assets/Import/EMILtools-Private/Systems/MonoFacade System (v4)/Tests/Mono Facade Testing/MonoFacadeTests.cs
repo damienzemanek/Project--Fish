@@ -10,13 +10,13 @@ public class MonoFacadeTests
     [Serializable] public class TestBlackboard : Blackboard { }
     public class TestConfig : Config { }
     
-    public interface ITestContextView : IContextViewImmutable
+    public interface ITestContextView : IViewableCtx
 {
         // Readonly properties
         public float SomeInt { get; }
     }
 
-    public class TestContextData : ContextData, ITestContextView, IModuleUsabableContext
+    public class TestContextData : ContextData, ITestContextView
     {
         // Mutable state
         public float SomeInt { get; set; }

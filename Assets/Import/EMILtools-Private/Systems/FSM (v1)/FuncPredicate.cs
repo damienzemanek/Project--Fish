@@ -3,13 +3,17 @@ using System;
 
 
 
+
+
+
+
 public sealed class FuncPredicate : IPredicate
 {
     readonly Func<bool> func;
     public bool Evaluate() => func();
     public bool Evaluate<TContext>(TContext ctx) => Evaluate();
     public FuncPredicate(Func<bool> _func) => func = _func;
-    public bool Resolve<TContext>(TContext ctx) => Evaluate();
+    public bool Resolve(object ctx) => Evaluate();
 }
 
 public sealed class FuncCtxPredicate<TCtx> : IPredicate
@@ -17,11 +21,7 @@ public sealed class FuncCtxPredicate<TCtx> : IPredicate
     readonly Func<TCtx, bool> func;
     public FuncCtxPredicate(Func<TCtx, bool> _func) => func = _func;
     public bool Evaluate() => throw new InvalidOperationException("Cannot Evaluate a Predicate without a Context");
-    public bool Resolve<TContext>(TContext ctx)
-    {
-        if (ctx is TCtx ctxRef) return func(ctxRef);
-        throw new InvalidCastException("Wrong Context Type given to Predicate");
-    }
+    public bool Resolve(object ctx) => func((TCtx)ctx);
 }
 
 public sealed class FuncCtxLazyPredicate<TCtxRef> : IPredicate
@@ -36,11 +36,7 @@ public sealed class FuncCtxLazyPredicate<TCtxRef> : IPredicate
     }
     public void ReplaceCtxRef(TCtxRef newCtx) => ctxRef = newCtx;
     public bool Evaluate() => func(ctxRef);
-    public bool Resolve<TContext>(TContext ctx)
-    {
-        if (ctx is TCtxRef newCtxRef) return func(ctxRef = newCtxRef);
-        throw new InvalidCastException("Wrong Context Type given to Predicate");
-    }
+    public bool Resolve(object ctx) => func(ctxRef = (TCtxRef)ctx);
 }
 
 

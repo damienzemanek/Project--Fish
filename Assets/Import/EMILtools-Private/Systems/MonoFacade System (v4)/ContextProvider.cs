@@ -8,7 +8,7 @@ namespace EMILtools.Systems
     /// Override this to add data to the context
     /// </summary>
     /// <typeparam name="TBlackboard"></typeparam>
-    public abstract class ContextData : IModuleUsabableContext
+    public abstract class ContextData : IViewableCtx
     {
         internal IBlackboard Blackboard;
         public TBlackboard API_Blackboard<TBlackboard>()

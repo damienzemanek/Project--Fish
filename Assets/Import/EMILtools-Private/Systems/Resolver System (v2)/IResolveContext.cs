@@ -21,32 +21,40 @@ namespace EMILtools.Systems
         }
         public bool resolveBeforeExecution { get; set; }
 
-        public bool Resolve<TContext>(TContext ctx) 
+        public bool Resolve(object ctx)
         {
             Action?.Invoke();
             return ContinueResolving;
+            
         }
     }
     
     /// <summary>
     /// Represents a callback mechanism that can be invoked before pipeline step execution
     /// </summary>
-    public class Callback<TContext> : IResolvable
+    public class Callback<TCtx> : IResolvable
     {
         static readonly bool ContinueResolving = true;
-        public readonly Action<TContext> Action;
+        public readonly Action<TCtx> Action;
     
-        public Callback(Action<TContext> _action)
+        public Callback(Action<TCtx> _action)
         {
             Action = _action;
         }
         public bool resolveBeforeExecution { get; set; }
-        [NonSerialized] TContext cached;
+        [NonSerialized] TCtx cached;
         
         public bool Resolve<TContext1>(TContext1 ctx)
         {
-            if (ctx is TContext typed) cached = typed;
+            if (ctx is TCtx typed) cached = typed;
             else throw new InvalidCastException("Wrong Context Type given to Callback");
+            Action?.Invoke(cached);
+            return ContinueResolving;
+        }
+
+        public bool Resolve(object ctx)
+        {
+            cached = (TCtx)ctx;
             Action?.Invoke(cached);
             return ContinueResolving;
         }
@@ -69,13 +77,12 @@ namespace EMILtools.Systems
             timer = new CountdownTimer(sec);
             this.InitTimer(timer, isFixed: true); 
         }
-
-        public bool Resolve<TContext>(TContext ctx)
+        
+        public bool Resolve(object ctx)
         {
             if(!timer.isRunning && !timer.IsFinished()) timer.StartAndReset();
             Debug.Log($"Timer called, isRunning: {timer.isRunning}, isFinished: {timer.IsFinished()}");
             return timer.IsFinished() ? ContinueResolving : ShortCircuitIfNotFinished;
-            
         }
     }
 
@@ -125,7 +132,7 @@ namespace EMILtools.Systems
         }
         
 
-        public bool Resolve<TContext>(TContext ctx) 
+        public bool Resolve(object ctx)
         {
             if (!timer.isRunning && !timer.IsFinished())
             {

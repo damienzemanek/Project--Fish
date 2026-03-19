@@ -90,7 +90,10 @@ namespace EMILtools.Systems
     /// <typeparam name="TDelegate"></typeparam>
     /// <typeparam name="TResolver"></typeparam>
     /// <typeparam name="TContext"></typeparam>
-    public sealed class SubResolvableCtx<TContext> : ResolveSubscriberBase, ISubscriber<TContext>, ISubEditable<Func<TContext, bool>>
+    public sealed class SubResolvableCtx<TContext> : 
+        ResolveSubscriberBase, 
+        ISubscriber<TContext>,
+        ISubEditable<Func<TContext, bool>>
     {
         Func<TContext, bool> Callback;
         IPredicate Cb;

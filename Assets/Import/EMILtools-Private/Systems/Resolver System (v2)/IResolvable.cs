@@ -12,7 +12,13 @@ namespace EMILtools.Systems
     /// </summary>
     public interface IResolvable
     {
-        public bool Resolve<TContext>(TContext ctx);
+        public bool Resolve(object ctx);
+    }
+
+    public interface IResolvableVT<TContext> : IResolvable
+        where TContext : struct
+    {
+        public bool Resolve(TContext ctx);
     }
 
     /// <summary>

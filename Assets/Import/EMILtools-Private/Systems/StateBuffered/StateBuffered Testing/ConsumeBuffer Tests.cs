@@ -24,11 +24,11 @@ public class ConsumeBufferTests
         bool condition = false;
         bool consumed = false;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(5);
 
@@ -40,7 +40,7 @@ public class ConsumeBufferTests
 
         Assert.IsTrue(consumed);
 
-        bool Consume(int v) => consumed = true;
+        bool Consume(Ref<int> v) => consumed = true;
     }
     
     [Test]
@@ -48,11 +48,11 @@ public class ConsumeBufferTests
     {
         bool consumed = false;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => false, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => false, pub, 1f);
 
         buffer.Invoke(10);
 
@@ -60,7 +60,7 @@ public class ConsumeBufferTests
 
         Assert.IsFalse(consumed);
 
-        bool Consume(int v) => consumed = true;
+        bool Consume(Ref<int> v) => consumed = true;
     }
     
     [Test]
@@ -69,11 +69,11 @@ public class ConsumeBufferTests
         bool condition = true;
         int received = 0;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(42);
 
@@ -81,7 +81,7 @@ public class ConsumeBufferTests
 
         Assert.AreEqual(42, received);
 
-        bool Consume(int v)
+        bool Consume(Ref<int> v)
         {
             received = v;
             return true;
@@ -94,11 +94,11 @@ public class ConsumeBufferTests
         bool condition = true;
         int count = 0;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(5);
 
@@ -108,7 +108,7 @@ public class ConsumeBufferTests
 
         Assert.AreEqual(1, count);
 
-        bool Consume(int v)
+        bool Consume(Ref<int> v)
         {
             count++;
             return true;
@@ -121,11 +121,11 @@ public class ConsumeBufferTests
         bool condition = false;
         int received = 0;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(1);
         buffer.Invoke(2);
@@ -136,7 +136,7 @@ public class ConsumeBufferTests
 
         Assert.AreEqual(2, received);
 
-        bool Consume(int v)
+        bool Consume(Ref<int> v)
         {
             received = v;
             return true;
@@ -149,11 +149,11 @@ public class ConsumeBufferTests
         bool condition = false;
         bool consumed = false;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 0.5f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 0.5f);
 
         buffer.Invoke(5);
 
@@ -165,7 +165,7 @@ public class ConsumeBufferTests
 
         Assert.IsFalse(consumed);
 
-        bool Consume(int v) => consumed = true;
+        bool Consume(Ref<int> v) => consumed = true;
     }
     
     [Test]
@@ -174,11 +174,11 @@ public class ConsumeBufferTests
         bool condition = true;
         int count = 0;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(1);
         TimerUtility.TickAllFixed(0.1f);
@@ -188,7 +188,7 @@ public class ConsumeBufferTests
 
         Assert.AreEqual(2, count);
 
-        bool Consume(int v)
+        bool Consume(Ref<int> v)
         {
             count++;
             return true;
@@ -201,11 +201,11 @@ public class ConsumeBufferTests
         bool condition = false;
         bool consumed = false;
 
-        var pub = new Publisher<int>();
-        var sub = new SubResolvableCtx<int>(Consume);
+        var pub = new Publisher<Ref<int>>();
+        var sub = new SubResolvableCtx<Ref<int>>(Consume);
         pub.Add(sub);
 
-        var buffer = new ConsumeBuffer<int>(() => condition, pub, 1f);
+        var buffer = new ConsumeBuffer<Ref<int>>(() => condition, pub, 1f);
 
         buffer.Invoke(3);
 
@@ -217,7 +217,7 @@ public class ConsumeBufferTests
 
         Assert.IsTrue(consumed);
 
-        bool Consume(int v) => consumed = true;
+        bool Consume(Ref<int> v) => consumed = true;
     }
 
 }

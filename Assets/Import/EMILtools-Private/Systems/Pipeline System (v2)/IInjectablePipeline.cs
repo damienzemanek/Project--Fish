@@ -3,27 +3,35 @@ using System;
 
 namespace EMILtools.Systems
 {
-    public interface IInjectablePipeline
+    public interface IPipelineInjector<TViewCtx>
+        where TViewCtx : IContextViewImmutable
     {
-        public Pipeline ExecutionPipeline { get; set; }
+        public Pipeline<TViewCtx> InjectPipeline(PipelineBuilder<TViewCtx> builder);
 
-        public Pipeline InjectPipeline(PipelineBuilder builder)
-            => throw new System.NotImplementedException();
+        public PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder);
+        public Action<TViewCtx> InjectMainStep();
+    }
 
-        public PipelineBuilder InjectSteps(PipelineBuilder builder)
-            => throw new System.NotImplementedException();  
+    public class InjectablePipeline<TViewCtx>
+        where TViewCtx : IContextViewImmutable
+    {
+        readonly Pipeline<TViewCtx> Pipeline;
 
-        public Action<TViewCtx> InjectMainStep<TViewCtx>() 
-            where TViewCtx : IContextViewImmutable
-        => throw new System.NotImplementedException(); 
-    
-        public void Setup<TViewCtx>(bool setupWithFinalStep)
-            where TViewCtx : IContextViewImmutable
+        public InjectablePipeline(IPipelineInjector<TViewCtx> injector, bool setupPipelineInOnePass = true)
         {
-            // + 1 to accomodate for the final step
-            var builder = new PipelineBuilder();
-            if (setupWithFinalStep) ExecutionPipeline = InjectPipeline(builder);
-            else ExecutionPipeline = InjectSteps(builder).InjectMainMethod(InjectMainStep<TViewCtx>());
+            Pipeline = SetupInjectablePipeline(injector, setupPipelineInOnePass);
         }
+
+        Pipeline<TViewCtx> SetupInjectablePipeline(IPipelineInjector<TViewCtx> injector, bool setupPipelineInOnePass)
+        {
+            var builder = new PipelineBuilder<TViewCtx>();
+            return setupPipelineInOnePass 
+                ? injector.InjectPipeline(builder) 
+                : injector.InjectSteps(builder).InjectMainMethod(injector.InjectMainStep());
+        }
+        
+        public static implicit operator Pipeline<TViewCtx>(InjectablePipeline<TViewCtx> pipeline) => pipeline.Pipeline;
+        
+        public void Execute(TViewCtx ctx) => Pipeline.Execute(ctx);
     }
 }
