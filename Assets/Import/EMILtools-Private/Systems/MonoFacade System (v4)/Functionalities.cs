@@ -26,6 +26,7 @@ namespace EMILtools.Systems
         where TViewCtx : class, IContextViewImmutable
     {
         [field: NonSerialized] protected TMonoFacade facade { get; private set; }
+        [ShowInInspector, HideLabel, InlineProperty] StateMachine<TViewCtx> stateMachine;
 
         
         /// <summary>
@@ -41,7 +42,6 @@ namespace EMILtools.Systems
 
 
         bool usingFSM = false;
-        [ShowInInspector] StateMachine<TViewCtx> stateMachine;
         public IFSM API_FSM() => stateMachine;
 
         StateMachine<TViewCtx> InitFSM(IState initialState)

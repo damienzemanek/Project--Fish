@@ -28,6 +28,7 @@ namespace EMILtools.Systems
     /// <typeparam name="TContextData"></typeparam>
     /// <typeparam name="TContextViewImmutable"></typeparam>
     [HideLabel]
+    [InlineProperty]
     public class ContextProvider<TContextData, TContextViewImmutable>
         where TContextData : ContextData, TContextViewImmutable, IContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable

@@ -18,10 +18,10 @@ namespace EMILtools.Systems
         where TContextData : ContextData, TContextViewImmutable, new()
         where TContextViewImmutable : IContextViewImmutable
     {
-        [Title("Blackboard")] [SerializeField] [HideLabel]
+        [BoxGroup("Blackboard")] [SerializeField] [HideLabel]
         public TBlackboard Blackboard;
     
-        [Title("Context")] [field: NonSerialized] [field: HideLabel] [field: ShowInInspector]
+        [field: BoxGroup("Context")] [field: NonSerialized] [field: HideLabel] [field: ShowInInspector]
         public ContextProvider<TContextData, TContextViewImmutable> ContextProvider { get; internal set; }
 
 
