@@ -71,7 +71,13 @@ MonoBehaviour:
     - name: Land
       animEnum: 4
       hash: 137525990
-    - name: Attack1
+    - name: AttackFront
       animEnum: 5
-      hash: -47317214
+      hash: 328758227
+    - name: AttackDown
+      animEnum: 7
+      hash: -949119557
+    - name: AttackUp
+      animEnum: 6
+      hash: 1443585033
     BlendTreeVariables: []

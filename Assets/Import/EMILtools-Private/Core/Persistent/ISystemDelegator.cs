@@ -6,6 +6,10 @@ namespace EMILtools.Core
 
     public interface IDelegator { }
     
+    /// <summary>
+    /// Low level Delegate
+    /// </summary>
+    /// <typeparam name="TAbstractedDelegate"></typeparam>
     public interface IDelegatorAbstract<TAbstractedDelegate> : IDelegator
     {
         TAbstractedDelegate Add(TAbstractedDelegate cb);
@@ -13,7 +17,7 @@ namespace EMILtools.Core
     }
     
     /// <summary>
-    /// Lowest level Delegate
+    /// Delegate with no constraints
     /// </summary>
     public interface ISystemDelegator : IDelegatorAbstract<Delegate>
     {
@@ -40,7 +44,7 @@ namespace EMILtools.Core
     /// </summary>
     /// <typeparam name="TDelegate"></typeparam>
     /// <typeparam name="TPersistentCRTP"></typeparam>
-    public interface IPersistentAction<in TDelegate, out TPersistentCRTP>
+    public interface IPersistentAction<TDelegate, out TPersistentCRTP> : IPersistentDelegate<TDelegate>
         where TDelegate : Delegate
         where TPersistentCRTP : IPersistentAction<TDelegate, TPersistentCRTP>
     {

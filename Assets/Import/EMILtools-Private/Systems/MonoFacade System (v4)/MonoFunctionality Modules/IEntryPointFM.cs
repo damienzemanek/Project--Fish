@@ -1,30 +1,29 @@
 ﻿using EMILtools.Systems;
 
-public interface IExecutionPathway { }
+public interface IEntryPointFM { }
 
-public interface UPDATE : IExecutionPathway { }
+public interface UPDATE : IEntryPointFM { }
 
-public interface FIXED_UPDATE : IExecutionPathway { }
+public interface FIXED_UPDATE : IEntryPointFM { }
 
-public interface LATE_UPDATE : IExecutionPathway { }
+public interface LATE_UPDATE : IEntryPointFM { }
 
 
-public interface ON_SET : IExecutionPathway
+public interface ON_SET : IEntryPointFM
 {
     abstract void MutateUsingNewSetValues();
 }
 
-
 public interface FSM_AVALIABLE : IState { }
 
-public interface FSM_STATE_ENTER<TViewCtx> : IExecutionPathway, FSM_AVALIABLE
+public interface FSM_STATE_ENTER<TViewCtx> : IEntryPointFM, FSM_AVALIABLE
     where TViewCtx : IContextViewImmutable
 {
     abstract void OnEnterState(TViewCtx ctx);
     void IState.OnEnterState(IContextViewImmutable ctx) => OnEnterState((TViewCtx)ctx);
 }
 
-public interface FSM_STATE_EXIT<TViewCtx> : IExecutionPathway, FSM_AVALIABLE
+public interface FSM_STATE_EXIT<TViewCtx> : IEntryPointFM, FSM_AVALIABLE
     where TViewCtx : IContextViewImmutable
 
 {

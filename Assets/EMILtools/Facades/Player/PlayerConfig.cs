@@ -10,7 +10,7 @@ public class PlayerConfig : Config
     public enum FaceDirection { Left, Right }
     public enum MouseZones { LeftScreen, RightScreen }
     
-    public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, Attack1 }
+    public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, AttackFront, AttackUp, AttackDown }
     public enum PlayerBlendVars { }
 
     

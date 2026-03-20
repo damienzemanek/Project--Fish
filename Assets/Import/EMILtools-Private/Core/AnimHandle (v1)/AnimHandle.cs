@@ -140,32 +140,33 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         return true;
 
         async Task PlayThenOnEndAsync(
-            Animator a,
-            TAnimEnum e,
-            Action end,
-            int l)
+            Animator _animator,
+            TAnimEnum _animEnum,
+            Action _OnEnd,
+            int _layer)
         {
-            int hash = GetHash(e);
-            if (hash == -1 || a == null || l < 0 || l >= a.layerCount)
+            int hash = GetHash(_animEnum);
+            if (hash == -1 || _animator == null || _layer < 0 || _layer >= _animator.layerCount)
                 return;
 
-            const float timeoutSeconds = 3f;
+            const float timeoutSeconds = 1.5f;
             float start = Time.time;
 
             // 1) Wait until the requested state is actually active
             while (true)
             {
-                if (a == null) return;
+                if (_animator == null) return;
 
-                var s = a.GetCurrentAnimatorStateInfo(l);
+                var s = _animator.GetCurrentAnimatorStateInfo(_layer);
                 bool inTarget = s.shortNameHash == hash || s.fullPathHash == hash;
 
-                if (!a.IsInTransition(l) && inTarget)
+                if (!_animator.IsInTransition(_layer) && inTarget)
                     break;
 
                 if (Time.time - start > timeoutSeconds)
                 {
-                    Debug.LogWarning($"AnimHandle: Timeout waiting to ENTER {e} on layer {l}.");
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to ENTER {_animEnum} on layer {_layer}.");
+                    _OnEnd?.Invoke();
                     return;
                 }
 
@@ -175,9 +176,9 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
             // 2) Wait until target state finishes (for non-loop clips)
             while (true)
             {
-                if (a == null) return;
+                if (_animator == null) return;
 
-                var s = a.GetCurrentAnimatorStateInfo(l);
+                var s = _animator.GetCurrentAnimatorStateInfo(_layer);
                 bool stillTarget = s.shortNameHash == hash || s.fullPathHash == hash;
 
                 // If we already left target state, treat as ended
@@ -185,19 +186,19 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
                     break;
 
                 // End condition for non-looping state
-                if (!s.loop && !a.IsInTransition(l) && s.normalizedTime >= 1f)
+                if (!s.loop && !_animator.IsInTransition(_layer) && s.normalizedTime >= 1f)
                     break;
 
                 if (Time.time - start > timeoutSeconds)
                 {
-                    Debug.LogWarning($"AnimHandle: Timeout waiting to FINISH {e} on layer {l}.");
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to FINISH {_animEnum} on layer {_layer}.");
                     return;
                 }
 
                 await Awaitable.NextFrameAsync();
             }
 
-            end?.Invoke();
+            _OnEnd?.Invoke();
         }
     }
     
