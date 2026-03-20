@@ -16,9 +16,10 @@ MonoBehaviour:
     States: []
     BlendTreeVariables: []
   <follow>k__BackingField:
-    <speedScalar>k__BackingField: 99999
+    <speedScalar>k__BackingField: 60000
     <nextWaypointDistance>k__BackingField: 1
     <stoppingDistToTarget>k__BackingField: 1.5
+    <minHorizAngleToFollow>k__BackingField: 40
   <inAir>k__BackingField:
     <checkDist>k__BackingField: 0.3
     <mask>k__BackingField:
@@ -26,3 +27,7 @@ MonoBehaviour:
       m_Bits: 8
     <fallScalar>k__BackingField: 3000
     <forceMode>k__BackingField: 0
+  <clampLateralMove>k__BackingField:
+    <maxVelocity>k__BackingField: 3
+  <jump>k__BackingField:
+    <jumpForceScalar>k__BackingField: 100

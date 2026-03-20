@@ -12,6 +12,20 @@ public class EnemyConfig : Config
     [field: SerializeField] public AnimHandle<EnemyAnims, EnemyBlendVars> animHandle { get; private set; }
     [field: SerializeField] public Follow follow { get; private set; }
     [field: SerializeField] public InAir inAir { get; private set; }
+    [field: SerializeField] public ClampLateralMov clampLateralMove { get; private set; }
+    [field: SerializeField] public Jump jump { get; private set; }
+    
+    [Serializable]
+    public struct Jump
+    {
+        [field: SerializeField] public float jumpForceScalar { get; private set; }
+    }
+    
+    [Serializable]
+    public struct ClampLateralMov
+    {
+        [field: SerializeField] public float maxVelocity { get; private set; }
+    }
     
     [Serializable]
     public struct Follow
@@ -19,6 +33,7 @@ public class EnemyConfig : Config
         [field: SerializeField] public float speedScalar { get; private set; }   
         [field: SerializeField] public float nextWaypointDistance { get; private set; }  
         [field: SerializeField] public float stoppingDistToTarget { get; private set; }  
+        [field: SerializeField] public float minHorizAngleToFollow { get; private set; } 
 
     }
 

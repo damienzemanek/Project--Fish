@@ -15,6 +15,8 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new Jump(facade));
+        AddModule(new ClampLateralMovement(facade));
         AddModule(new InAir(facade));
         return AddModule(new Follow(facade));
     }
@@ -23,6 +25,38 @@ public class EnemyFunctionality : Functionalities<
     {
         // Add State Transitions here
         // fsm.AddAnyTransition<Jump>(new FuncPredicate(() => ctx.isJumping), "Jumping");
+    }
+
+
+    class Jump : UnboundFunctionality<EnemyController, IEnemyContextView>,
+        FIXED_UPDATE
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
+        public Jump(EnemyController facade) : base(facade) { }
+
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.travelAngleTooCloseToVertical));
+        
+        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        {
+            Debug.Log("ENEMY Jump");
+            //bb.rb.AddForce(Vector2.up * cfg.jump.jumpForceScalar, ForceMode2D.Impulse);
+        }
+    }
+    
+
+    class ClampLateralMovement : UnboundFunctionality<EnemyController, IEnemyContextView>,
+        UPDATE
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
+        EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public ClampLateralMovement(EnemyController facade) : base(facade) { }
+        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        {
+            float clampedX = Mathf.Clamp(bb.rb.linearVelocity.x, -cfg.clampLateralMove.maxVelocity, cfg.clampLateralMove.maxVelocity);
+            float currentY = bb.rb.linearVelocity.y;
+            bb.rb.linearVelocity = new Vector2(clampedX, currentY);
+        }
     }
     
     class InAir : UnboundFunctionality<EnemyController, IEnemyContextView>,
@@ -59,37 +93,54 @@ public class EnemyFunctionality : Functionalities<
             PersistentAction computePath = new PersistentAction(() => bb.seeker.StartPath(bb.rb.position, bb.target.position, OnPathComplete));
             bb.computePath.InjectMethod(computePath);
         }
+        
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_Middleware(_ => bb.computePath.RateLimitedUpdateTick())
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.path == null))
+                .Add_Middleware(GrabVariables)
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ReachedEndOfPath))
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(TravelAngleTooCloseToVertical));
 
+        
         protected override void ExecutionImplementation(IEnemyContextView ctx)
         {
-            bb.computePath.RateLimitedUpdateTick();
-            if (ctx.path == null) return;
-            
-            var pos = bb.rb.position;
-            float distToEndNode = Mathf.Abs((pos - (Vector2)ctx.path.vectorPath[^1]) .magnitude);
-
-            if (distToEndNode < cfg.follow.stoppingDistToTarget)
-            {
-                Debug.Log("Reached end of path");
-                mutateCtx.reachedEndOfPath = true; return;
-            }
-            else 
-                mutateCtx.reachedEndOfPath = false;
-            
             Debug.Log("Follow");
-            Vector2 nextWaypoint = ctx.path.vectorPath[ctx.currentWaypointIndex]; // ths line errors
-            Vector3 dir = (nextWaypoint - pos).normalized;
-            Vector2 force = dir * cfg.follow.speedScalar * Time.deltaTime;
-            float distToNextWaypoint = Vector2.Distance(pos, nextWaypoint);
-
-            if (distToNextWaypoint < cfg.follow.nextWaypointDistance)
+            if (ctx.distToNextWaypoint < cfg.follow.nextWaypointDistance)
                 if (ctx.currentWaypointIndex + 1 < ctx.path.vectorPath.Count) mutateCtx.currentWaypointIndex++;
             
-            bb.rb.AddForce(force);
-            
-            
+            bb.rb.AddForce(ctx.force);
             /// TO DO: If the enemy is in the same position for a long period of time (3 seconds) and the
             /// player is ABOUVE the enemy, it will try jumping very high 3 times, if they fail, it will lose interest
+        }
+
+        void GrabVariables(IEnemyContextView ctx)
+        {
+            mutateCtx.pos = bb.rb.position; 
+            mutateCtx.nextWaypoint = ctx.path.vectorPath[ctx.currentWaypointIndex];
+            mutateCtx.dirToNextWaypoint = (ctx.nextWaypoint - ctx.pos).normalized;
+            mutateCtx.force = ctx.dirToNextWaypoint * (cfg.follow.speedScalar * Time.deltaTime);
+            mutateCtx.distToNextWaypoint = Vector2.Distance(ctx.pos, ctx.nextWaypoint);
+            mutateCtx.distToEndNode = Mathf.Abs((bb.rb.position - (Vector2)ctx.path.vectorPath[^1]) .magnitude);
+        }
+        
+        bool TravelAngleTooCloseToVertical(IEnemyContextView ctx)
+        {
+            float dot = Vector2.Dot(ctx.dirToNextWaypoint.normalized, Vector2.up); // dot: 1 = up, 0 = horizontal, -1 = down
+            float angleToUp = Mathf.Acos(Mathf.Clamp(dot, -1f, 1f)) * Mathf.Rad2Deg;
+            //Debug.Log($"angleToUp: {angleToUp} | dot: {dot}");
+            if (dot < 0f) return false;  // If moving downward, always allow
+            float threshold = Mathf.Cos(cfg.follow.minHorizAngleToFollow * Mathf.Deg2Rad); // Only restrict upward movement
+            bool isTooVertical = dot > threshold;
+            return mutateCtx.travelAngleTooCloseToVertical = isTooVertical;
+        }
+
+
+        bool ReachedEndOfPath(IEnemyContextView ctx)
+        {
+            if (ctx.distToEndNode < cfg.follow.stoppingDistToTarget)
+                { mutateCtx.reachedEndOfPath = true; return true; }
+            else
+                { mutateCtx.reachedEndOfPath = false; return false; }
         }
 
         void OnPathComplete(Path path)
@@ -110,6 +161,7 @@ public class EnemyFunctionality : Functionalities<
         UPDATE
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
+        EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public Idle(EnemyController facade) : base(facade) { }
         protected override void ExecutionImplementation(IEnemyContextView ctx) { }
         public void OnEnterState(IEnemyContextView ctx)
