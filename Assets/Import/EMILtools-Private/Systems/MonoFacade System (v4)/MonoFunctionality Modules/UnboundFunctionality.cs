@@ -13,7 +13,7 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        protected abstract void ExecutionImplementation(TViewCtx iContextViewImmutable);
+        protected abstract void ExecutionImplementation(TViewCtx ctx);
 
         protected UnboundFunctionality(TFacade facade) : base(facade)
         {

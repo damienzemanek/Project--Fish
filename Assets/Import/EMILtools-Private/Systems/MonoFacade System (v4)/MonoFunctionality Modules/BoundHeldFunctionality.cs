@@ -22,7 +22,7 @@ namespace EMILtools.Systems
             UnboundFunctionality<TFacade, TViewCtx>, 
             IBindable
         where TFacade : class, IFacade
-        where TViewCtx : class, IViewableCtx
+        where TViewCtx : class, IContextViewImmutable
     {
         [NonSerialized] readonly Publisher<TViewCtx> publisher; // Lazy (Injected)
         protected BoundFunctionality(Publisher<TViewCtx> publisher, TFacade facade) : base(facade)
