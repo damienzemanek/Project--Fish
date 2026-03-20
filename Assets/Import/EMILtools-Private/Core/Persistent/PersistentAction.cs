@@ -79,6 +79,9 @@ namespace EMILtools.Core
         IPersistentAction<Action, PersistentAction>,
         IPersistentDelegate<Action>
     {
+        public PersistentAction() { }
+        public PersistentAction(Action _del) => _action = _del;
+        
         // ------------ API: IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action)cb);
         public void API_Remove(Delegate cb) => Remove((Action)cb);

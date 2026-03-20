@@ -6,22 +6,18 @@ using UnityEngine;
 public static class LifecycleEX
 {
     [Serializable]
-    public struct RateLimitedMethod
+    public class DelayLimitedMethod
     {
-        public float rate;
-        [ReadOnly] public float interval => 1f / rate;
-        [ReadOnly] public float timer;
-        public PersistentAction method;
-
-        public void UpdateTick()
+        public float delay;
+        [ShowInInspector, ReadOnly] float timer;
+        [NonSerialized] PersistentAction method;
+        public void InjectMethod(PersistentAction mthd) => method = mthd;
+        public void RateLimitedUpdateTick()
         {
             timer += Time.deltaTime;
-
-            while (timer >= interval)
-            {
-                timer -= interval;
-                method?.Invoke();
-            }
+            if (timer < delay) return;
+            timer = 0;
+            method?.Invoke();
         }
     }
 

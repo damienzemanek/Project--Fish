@@ -1,11 +1,20 @@
 using EMILtools.Systems;
+using Pathfinding;
+using Sirenix.OdinInspector;
 
 public interface IEnemyContextView : IContextViewImmutable
 {
-    public float SomeInt { get; }
+    public Path path { get; }
+    public int currentWaypointIndex { get; }
+    public bool reachedEndOfPath { get; }
+    public bool isGrounded { get; }
 }
 
 public class EnemyContextData : ContextData, IEnemyContextView
 {
-    public float SomeInt { get; set; }
+    [field: ShowInInspector] public Path path { get; set; }
+    [field: ShowInInspector] public int currentWaypointIndex { get; set; }
+    [field: ShowInInspector] public bool reachedEndOfPath { get; set; }
+    [field: ShowInInspector] public bool isGrounded { get; set; }
+
 }

@@ -43,15 +43,16 @@ namespace EMILtools.Systems
 
         bool usingFSM = false;
         public IFSM API_FSM() => stateMachine;
+        List<FSM_AVALIABLE> states;
 
         StateMachine<TViewCtx> InitFSM(IState initialState)
         {
+            if(states == null) throw new InvalidOperationException("No states were added to the FSM");
            var fsm = stateMachine = new StateMachine<TViewCtx>(facade.API_Context<TViewCtx>(), initialState);
            foreach (var state in states.Where(state => state != initialState))
                fsm.AddNode(state);
            return fsm;
         }
-        List<FSM_AVALIABLE> states;
         
         
         public void InjectFacadeReference(IFacade f)
