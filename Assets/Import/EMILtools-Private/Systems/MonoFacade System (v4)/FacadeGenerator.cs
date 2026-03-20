@@ -81,7 +81,7 @@ public interface I{facadeName}ContextView : IContextViewImmutable
     public float SomeInt {{ get; }}
 }}
 
-public class {facadeName}ContextData : ContextData, I{facadeName}ContextView, IModuleUsabableContext
+public class {facadeName}ContextData : ContextData, I{facadeName}ContextView
 {{
     public float SomeInt {{ get; set; }}
 }}");
@@ -105,11 +105,22 @@ $@"using EMILtools.Systems;
 
 public class {facadeName}Functionality : Functionalities<
     {facadeName}Controller,
-    {facadeName}Structure>
+    I{facadeName}ContextView>
 {{
-    protected override void AddModulesHere()
+    protected override IState AddModulesHere()
     {{
-        // AddModule(new ExampleModule());
+        // Add Modules like this
+        // AddModule(new ExampleModule(...));
+
+        // Return the module that is the starting state, ex:
+        // return AddModule(new Idle(...))
+        return null;
+    }}
+
+    protected override void SetupTransitionsForFSM(StateMachine<I{facadeName}ContextView> fsm, I{facadeName}ContextView ctx)
+    {{
+        // Add State Transitions here
+        // fsm.AddAnyTransition<Jump>(new FuncPredicate(() => ctx.isJumping), ""Jumping"");
     }}
 }}");
 
@@ -122,10 +133,8 @@ public class {facadeName}Functionality : Functionalities<
             CreateScript(createdPath, $"{facadeName}Controller",
 $@"using UnityEngine;
 using EMILtools.Systems;
-using EMILtools.Core;
 
 public class {facadeName}Controller : MonoFacade<
-    {facadeName}Controller,
     {facadeName}Functionality,
     {facadeName}Config,
     {facadeName}Structure,
@@ -139,6 +148,12 @@ public class {facadeName}Controller : MonoFacade<
     {{
         InitializeFacade();
     }}
+
+    // If you change to an InputSubordinate switch these out with OnAuthorityReceived() and OnAuthorityLost()
+    public void OnEnable() => Functionality.Bind();
+    public void OnDisable() => Functionality.Unbind();
+
+}}
 }}");
         }
 
@@ -177,12 +192,10 @@ $@"using EMILtools.Systems;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using static PrimaryInputAuthority;
-using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,PrimaryInputAuthority.Subordinates>;
-using EMILtools.Core;
+using static EMILtools.Systems.IInputSubordinate<{facadeName}Controller.{facadeName}InputMap,PrimaryInputAuthority.Subordinates>;
 
 
 public class {facadeName}Controller : MonoFacade<
-    {facadeName}Controller,
     {facadeName}Functionality,
     {facadeName}Config,
     {facadeName}Structure,
@@ -195,7 +208,7 @@ public class {facadeName}Controller : MonoFacade<
 
     public class {facadeName}InputMap : InputMap
     {{
-        public PersistentAction<bool, Vector2> Move = new();
+        public readonly Publisher<(bool, Vector2)> Move = new();
     }}
 
     public {facadeName}InputMap Input {{ get; set; }}
@@ -251,9 +264,9 @@ public class {facadeName}InputReader :
     public void OnMove(InputAction.CallbackContext context)
     {{
         if(ia.Player.Move.IsPressed())
-            Input.Move.Invoke(true, context.ReadValue<UnityEngine.Vector2>());
+            Input.Move.Invoke((true, context.ReadValue<UnityEngine.Vector2>()));
         else
-            Input.Move.Invoke(false, UnityEngine.Vector2.zero);
+            Input.Move.Invoke((false, UnityEngine.Vector2.zero));
     }}
 }}");
         }
