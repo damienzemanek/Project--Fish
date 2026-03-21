@@ -33,3 +33,6 @@ MonoBehaviour:
     <jumpForceScalar>k__BackingField: 1000
     <jumpDelay>k__BackingField:
       val: 1
+  <viewRange>k__BackingField:
+    <delayToStopChasing>k__BackingField:
+      val: 2

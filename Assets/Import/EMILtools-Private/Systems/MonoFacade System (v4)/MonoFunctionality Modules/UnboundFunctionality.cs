@@ -18,7 +18,7 @@ namespace EMILtools.Systems
         protected UnboundFunctionality(TFacade facade) : base(facade)
         {
             var injectablePipeline = new InjectablePipeline<TViewCtx> ( injector: this, setupPipelineInOnePass:false);
-            subscriber = new SubResolvableCtx<TViewCtx>(ctx => { injectablePipeline.Execute(ctx); return false; });
+            exeSub = new SubResolvableCtx<TViewCtx>(ctx => { injectablePipeline.Execute(ctx); return false; });
         }
         public override void SetupModule() => Awake();
 
@@ -31,16 +31,16 @@ namespace EMILtools.Systems
 
         // ---------------------------------- PUB / SUB SYSTEM ----------------------------------
 
-        protected readonly SubResolvableCtx<TViewCtx> subscriber;    
-        public override ISubscriber Subscriber => subscriber;
+        protected readonly SubResolvableCtx<TViewCtx> exeSub;    
+        public override ISubscriber Subscriber => exeSub;
         
         
         // ---------------------------------- CONSUME BUFFER SYSTEM ----------------------------------
         
         [ShowInInspector] ConsumeBufferSub<TViewCtx> consumeBuffer;  
-        protected void ResetConsumeBuffer() => consumeBuffer?.Reset();
-        protected void UseBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
-            => consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, subscriber, bufferTime, enableHandle);
+        protected void ResetExeConsumeBuffer() => consumeBuffer?.Reset();
+        protected void UseExecutionBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
+            => consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, exeSub, bufferTime, enableHandle);
         
 
 

@@ -2,6 +2,7 @@ using EMILtools.Core;
 using EMILtools.Systems;
 using EMILtools.Timers;
 using Pathfinding;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class EnemyFunctionality : Functionalities<
@@ -16,6 +17,7 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new ViewRange(facade.Actions.CanSeeTarget, facade));
         AddModule(new Jump(facade));
         AddModule(new ClampLateralMovement(facade));
         AddModule(new InAir(facade));
@@ -26,6 +28,43 @@ public class EnemyFunctionality : Functionalities<
     {
         // Add State Transitions here
         // fsm.AddAnyTransition<Jump>(new FuncPredicate(() => ctx.isJumping), "Jumping");
+    }
+
+    class Idle : UnboundFunctionality<EnemyController, IEnemyContextView>
+    {
+        public Idle(EnemyController facade) : base(facade) { }
+
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget));
+
+        protected override void ExecutionImplementation(IEnemyContextView ctx) { }
+    }
+
+
+    class ViewRange : BoundSetFunctionality<EnemyController, IEnemyContextView, ViewRange.Setter>, 
+        ON_SET
+    {
+        public class Setter : DataSetter<Ref<bool>>
+        {
+            [ShowInInspector] public Ref<bool> canSeeTarget => Get;
+        }
+
+        protected override void Awake()
+        {
+            mutateCtx.canSeeTarget = new DelayBuffer<bool>(false, cfg.viewRange.delayToStopChasing);
+        }
+
+        public ViewRange(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>(); EnemyConfig cfg => facade.API_Config<EnemyConfig>();
+        protected override void ExecutionImplementation(IEnemyContextView ctx) { }
+
+        public void MutateUsingNewSetValues()
+        {
+            if(!SetContext.canSeeTarget)
+                mutateCtx.canSeeTarget.SetBuffered(SetContext.canSeeTarget);
+            else 
+                mutateCtx.canSeeTarget.SetNotBuffered(SetContext.canSeeTarget);
+        }
     }
 
 
@@ -42,6 +81,7 @@ public class EnemyFunctionality : Functionalities<
         }
 
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.travelAngleTooCloseToVertical))
                 .Add_ShortCircuit(new FuncPredicate(() => bb.jumpTimer.isRunning));
         
@@ -109,6 +149,7 @@ public class EnemyFunctionality : Functionalities<
         }
         
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
                 .Add_Middleware(_ => bb.computePath.RateLimitedUpdateTick())
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.path == null))
                 .Add_Middleware(GrabVariables)
@@ -123,8 +164,6 @@ public class EnemyFunctionality : Functionalities<
                 if (ctx.currentWaypointIndex + 1 < ctx.path.vectorPath.Count) mutateCtx.currentWaypointIndex++;
             
             bb.rb.AddForce(ctx.force);
-            /// TO DO: If the enemy is in the same position for a long period of time (3 seconds) and the
-            /// player is ABOUVE the enemy, it will try jumping very high 3 times, if they fail, it will lose interest
         }
 
         void GrabVariables(IEnemyContextView ctx)
@@ -170,18 +209,5 @@ public class EnemyFunctionality : Functionalities<
         }
     }
     
-    class Idle : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FSM_STATE_ENTER<IEnemyContextView>,
-        UPDATE
-    {
-        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
-        EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-        public Idle(EnemyController facade) : base(facade) { }
-        protected override void ExecutionImplementation(IEnemyContextView ctx) { }
-        public void OnEnterState(IEnemyContextView ctx)
-        {
-            Debug.Log("Entered Idle State");
-            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Idle);
-        }
-    }
+    
 }

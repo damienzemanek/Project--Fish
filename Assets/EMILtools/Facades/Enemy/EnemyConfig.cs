@@ -14,6 +14,13 @@ public class EnemyConfig : Config
     [field: SerializeField] public InAir inAir { get; private set; }
     [field: SerializeField] public ClampLateralMov clampLateralMove { get; private set; }
     [field: SerializeField] public Jump jump { get; private set; }
+    [field: SerializeField] public ViewRange viewRange { get; private set; }
+
+    [Serializable]
+    public struct ViewRange
+    {
+        [field: SerializeField] public Ref<float> delayToStopChasing { get; private set; }
+    }
     
     [Serializable]
     public struct Jump

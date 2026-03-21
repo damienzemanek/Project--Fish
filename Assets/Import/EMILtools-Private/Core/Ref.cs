@@ -16,4 +16,10 @@ public class Ref<T> where T : struct
     public Ref(ref T initialValue) => val = initialValue;
     public static implicit operator T(Ref<T> r) => (r != null) ? r.val : default;
     public static implicit operator Ref<T>(T val) => new Ref<T>(val);
+
+    public Ref<T> SetReturnThis(T val)
+    {
+        this.val = val;
+        return this;
+    }
 }

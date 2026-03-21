@@ -31,8 +31,8 @@ namespace EMILtools.Systems
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => publisher.Add(subscriber);
-        public virtual void Unbind() => publisher.Remove(subscriber);
+        public virtual void Bind() => publisher.Add(exeSub);
+        public virtual void Unbind() => publisher.Remove(exeSub);
     }
 
 
