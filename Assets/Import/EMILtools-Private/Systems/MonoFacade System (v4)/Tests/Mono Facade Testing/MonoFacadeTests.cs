@@ -46,15 +46,15 @@ public class MonoFacadeTests
         TestController,
         TestContextData>
     {
-
-        protected override IState AddModulesHere()
+        
+        protected override IState AddModulesHere(TestController f)
         {
             return null;
         }
 
         protected override void SetupTransitionsForFSM(StateMachine<TestContextData> fsm, TestContextData ctx)
         {
-            throw new NotImplementedException();
+            return;
         }
     }
     

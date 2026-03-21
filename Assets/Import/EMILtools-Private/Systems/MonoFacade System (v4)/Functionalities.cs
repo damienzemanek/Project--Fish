@@ -64,7 +64,7 @@ namespace EMILtools.Systems
 
         public void SetupModules()
         {
-            var initialState = AddModulesHere();
+            var initialState = AddModulesHere(facade);
             if(initialState == null) Debug.LogWarning("(!) You are using a stateless MonoFacade");
             else
             {
@@ -125,7 +125,7 @@ namespace EMILtools.Systems
         }
         
         
-        protected abstract IState AddModulesHere();
+        protected abstract IState AddModulesHere(TMonoFacade f);
         protected abstract void SetupTransitionsForFSM(StateMachine<TViewCtx> fsm, TViewCtx ctx);
 
     }

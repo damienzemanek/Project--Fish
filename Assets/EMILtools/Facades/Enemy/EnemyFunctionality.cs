@@ -9,7 +9,7 @@ public class EnemyFunctionality : Functionalities<
     EnemyController,
     IEnemyContextView>
 {
-    protected override IState AddModulesHere()
+    protected override IState AddModulesHere(EnemyController f)
     {
         // Add Modules like this
         // AddModule(new ExampleModule(...));
@@ -17,27 +17,38 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
-        AddModule(new ViewRange(facade.Actions.CanSeeTarget, facade));
-        AddModule(new Jump(facade));
-        AddModule(new ClampLateralMovement(facade));
-        AddModule(new InAir(facade));
-        return AddModule(new Follow(facade));
+        AddModule(new Idle(f));
+        AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
+        AddModule(new Jump(f));
+        AddModule(new ClampLateralMovement(f));
+        AddModule(new InAir(f));
+        return AddModule(new Follow(f));
     }
 
     protected override void SetupTransitionsForFSM(StateMachine<IEnemyContextView> fsm, IEnemyContextView ctx)
     {
         // Add State Transitions here
         // fsm.AddAnyTransition<Jump>(new FuncPredicate(() => ctx.isJumping), "Jumping");
+        
+        fsm.AddTransition<Idle, Follow>(new FuncPredicate(() => ctx.canSeeTarget), "Can See Target");
+        fsm.AddTransition<Follow, Idle>(new FuncPredicate(() => !ctx.canSeeTarget), "Can't See Target");
     }
 
-    class Idle : UnboundFunctionality<EnemyController, IEnemyContextView>
+    class Idle : UnboundFunctionality<EnemyController, IEnemyContextView>,
+        FSM_STATE_ENTER<IEnemyContextView>
     {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         public Idle(EnemyController facade) : base(facade) { }
 
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget));
 
         protected override void ExecutionImplementation(IEnemyContextView ctx) { }
+        public void OnEnterState(IEnemyContextView ctx)
+        {
+            Debug.Log("Entered Idle State");
+            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Idle);
+        }
     }
 
 
@@ -110,8 +121,7 @@ public class EnemyFunctionality : Functionalities<
     }
     
     class InAir : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FIXED_UPDATE,
-        FSM_STATE_ENTER<IPlayerContextView>
+        FIXED_UPDATE
     {
         EnemyConfig cfg => facade.Config; EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         public InAir(EnemyController facade) : base(facade) { }
@@ -126,11 +136,6 @@ public class EnemyFunctionality : Functionalities<
             for (int i = 0; i < bb.feetPoints.Length; i++)
                 if (Physics2D.Raycast(bb.feetPoints[i].position, -facade.transform.up, cfg.inAir.checkDist, cfg.inAir.mask)) return true;
             return false;
-        }
-
-        public void OnEnterState(IPlayerContextView ctx)
-        {
-            Debug.Log("Entetered State: InAir");
         }
     }
 
@@ -206,6 +211,7 @@ public class EnemyFunctionality : Functionalities<
         public void OnEnterState(IEnemyContextView ctx)
         {
             Debug.Log("Entered Follow State");
+            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Walk);
         }
     }
     

@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: EnemyConfig
   m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
   <animHandle>k__BackingField:
-    States: []
+    States:
+    - name: Idle
+      animEnum: 0
+      hash: 2081823275
+    - name: Walk
+      animEnum: 2
+      hash: 765711723
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 60000

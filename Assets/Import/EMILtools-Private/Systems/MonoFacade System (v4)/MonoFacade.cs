@@ -53,7 +53,7 @@ namespace EMILtools.Systems
             Debug.Assert(Functionality != null, $"{name}: Functionality did not initialize");
 
             Functionality.InjectFacadeReference(this);
-            Functionality.SetupModules();   // Functionality must be last because it depends on the Config and the Blackboard
+            Functionality.SetupModules();  
             
             initialized = true;
         }
