@@ -1,5 +1,6 @@
 using EMILtools.Core;
 using EMILtools.Systems;
+using EMILtools.Timers;
 using Pathfinding;
 using UnityEngine;
 
@@ -34,13 +35,22 @@ public class EnemyFunctionality : Functionalities<
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         public Jump(EnemyController facade) : base(facade) { }
 
+        protected override void Awake()
+        {
+            bb.jumpTimer = new CountdownTimer(cfg.jump.jumpDelay);
+            facade.InitTimer(bb.jumpTimer, true);
+        }
+
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
-                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.travelAngleTooCloseToVertical));
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.travelAngleTooCloseToVertical))
+                .Add_ShortCircuit(new FuncPredicate(() => bb.jumpTimer.isRunning));
+        
         
         protected override void ExecutionImplementation(IEnemyContextView ctx)
         {
+            bb.jumpTimer.StartAndReset();
+            bb.rb.AddForce(Vector2.up * cfg.jump.jumpForceScalar, ForceMode2D.Impulse);
             Debug.Log("ENEMY Jump");
-            //bb.rb.AddForce(Vector2.up * cfg.jump.jumpForceScalar, ForceMode2D.Impulse);
         }
     }
     
@@ -67,12 +77,16 @@ public class EnemyFunctionality : Functionalities<
         public InAir(EnemyController facade) : base(facade) { }
         protected override void ExecutionImplementation(IEnemyContextView ctx)
         {
-            facade.API_Context<EnemyContextData>().isGrounded = isGrounded();
+            facade.API_Context<EnemyContextData>().isGrounded = IsGrounded();
             if(!ctx.isGrounded) bb.rb.AddForce(-facade.transform.up * cfg.inAir.fallScalar, cfg.inAir.forceMode);
         }
-        
-        bool isGrounded() => Physics2D.Raycast
-            ( bb.feetPoint.position, -facade.transform.up, cfg.inAir.checkDist, cfg.inAir.mask);
+
+        bool IsGrounded()
+        {
+            for (int i = 0; i < bb.feetPoints.Length; i++)
+                if (Physics2D.Raycast(bb.feetPoints[i].position, -facade.transform.up, cfg.inAir.checkDist, cfg.inAir.mask)) return true;
+            return false;
+        }
 
         public void OnEnterState(IPlayerContextView ctx)
         {

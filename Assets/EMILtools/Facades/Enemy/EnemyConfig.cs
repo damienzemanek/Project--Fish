@@ -19,6 +19,7 @@ public class EnemyConfig : Config
     public struct Jump
     {
         [field: SerializeField] public float jumpForceScalar { get; private set; }
+        [field: SerializeField] public Ref<float> jumpDelay { get; private set;}
     }
     
     [Serializable]

@@ -19,7 +19,7 @@ MonoBehaviour:
     <speedScalar>k__BackingField: 60000
     <nextWaypointDistance>k__BackingField: 1
     <stoppingDistToTarget>k__BackingField: 1.5
-    <minHorizAngleToFollow>k__BackingField: 40
+    <minHorizAngleToFollow>k__BackingField: 50
   <inAir>k__BackingField:
     <checkDist>k__BackingField: 0.3
     <mask>k__BackingField:
@@ -30,4 +30,6 @@ MonoBehaviour:
   <clampLateralMove>k__BackingField:
     <maxVelocity>k__BackingField: 3
   <jump>k__BackingField:
-    <jumpForceScalar>k__BackingField: 100
+    <jumpForceScalar>k__BackingField: 1000
+    <jumpDelay>k__BackingField:
+      val: 1

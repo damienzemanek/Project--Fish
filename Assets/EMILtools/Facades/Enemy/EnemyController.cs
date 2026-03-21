@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
 using EMILtools.Systems;
+using static EMILtools.Timers.TimerUtility;
 
 public class EnemyController : MonoFacade<
     EnemyFunctionality,
     EnemyConfig,
     EnemyStructure,
-    EnemyController.ActionMap>
+    EnemyController.ActionMap>, ITimerUser
 {
     public class ActionMap : IActionMap
     {
