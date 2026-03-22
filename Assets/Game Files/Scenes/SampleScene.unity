@@ -2716,7 +2716,7 @@ GameObject:
   - component: {fileID: 990602687}
   - component: {fileID: 990602690}
   - component: {fileID: 990602685}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: P1 Enemy 1 AI AGENT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3101,7 +3101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1218048174}
   - component: {fileID: 1218048176}
-  - component: {fileID: 1218048175}
+  - component: {fileID: 1218048177}
   m_Layer: 0
   m_Name: View Range
   m_TagString: Untagged
@@ -3124,31 +3124,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 990602683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1218048175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1218048173}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 270159429b9904449b5a90e644e4ea26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: EMILtools::BoundsChecker
-  is2D: 1
-  ThingCollidedWith: 0
-  SelectedReceiver: 1
-  selectedReceiver3D:
-    underlyingValue: {fileID: 0}
-  selectedReceiver2D:
-    underlyingValue: {fileID: 990602687}
-  enter: 1
-  exit: 1
-  stay: 0
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!61 &1218048176
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3195,6 +3170,37 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6622975, y: 0.918579}
   m_EdgeRadius: 0
+--- !u!114 &1218048177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218048173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167f7de3a49471a45ac5a44dfe379078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CanSeeBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 0
+  SelectedReceiver: 1
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 990602687}
+  enter: 1
+  exit: 1
+  stay: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  enterContext:
+    canSeeTarget: 1
+  stayContext:
+    canSeeTarget: 0
+  exitContext:
+    canSeeTarget: 0
 --- !u!1 &1223606819
 GameObject:
   m_ObjectHideFlags: 0
