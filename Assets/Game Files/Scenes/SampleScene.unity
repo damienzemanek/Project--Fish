@@ -443,6 +443,38 @@ Transform:
   - {fileID: 990602683}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &197626920
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 197626921}
+  m_Layer: 0
+  m_Name: Facing Direction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &197626921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197626920}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 491382229}
+  m_Father: {fileID: 990602683}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &229002527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1331,12 +1363,12 @@ Transform:
   m_GameObject: {fileID: 491382228}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.733, z: 0}
+  m_LocalPosition: {x: 0, y: -0.7329999, z: 0}
   m_LocalScale: {x: 0.69064, y: 0.69064, z: 0.69064}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 907991117}
-  m_Father: {fileID: 990602683}
+  m_Father: {fileID: 197626921}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &491382234
 Animator:
@@ -2704,7 +2736,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 491382229}
+  - {fileID: 197626921}
   - {fileID: 539075576}
   - {fileID: 41291135}
   - {fileID: 1213963158}
@@ -2763,6 +2795,7 @@ MonoBehaviour:
       <feetPoints>k__BackingField:
       - {fileID: 539075576}
       - {fileID: 41291135}
+      <faceDirTransform>k__BackingField: {fileID: 197626921}
 --- !u!50 &990602688
 Rigidbody2D:
   serializedVersion: 5
@@ -3667,8 +3700,8 @@ Transform:
   m_GameObject: {fileID: 1635896417}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.02, y: -3.54, z: 0}
-  m_LocalScale: {x: 9.313055, y: 1.3362626, z: 1}
+  m_LocalPosition: {x: -3.02, y: -3.12, z: 0}
+  m_LocalScale: {x: 9.313055, y: 2.305053, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2042459450}
@@ -4786,6 +4819,6 @@ SceneRoots:
   - {fileID: 386642707}
   - {fileID: 1644718410}
   - {fileID: 619394802}
-  - {fileID: 1881229042}
   - {fileID: 1237382219}
+  - {fileID: 1881229042}
   - {fileID: 195081126}

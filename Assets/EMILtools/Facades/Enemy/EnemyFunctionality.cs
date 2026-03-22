@@ -17,12 +17,34 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new FaceDir(f));
         AddModule(new Idle(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
         AddModule(new Jump(f));
         AddModule(new ClampLateralMovement(f));
         AddModule(new InAir(f));
         return AddModule(new Follow(f));
+    }
+
+
+    class FaceDir : UnboundFunctionality<EnemyController, IEnemyContextView>,
+        UPDATE
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
+        public FaceDir(EnemyController facade) : base(facade) { }
+
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget));
+
+        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        {
+            float targX = bb.target.position.x;
+            float myX = facade.transform.position.x;
+            float dif = targX - myX;
+            if(dif < 0) bb.faceDirTransform.rotation = Quaternion.Euler(0, 0, 0);
+            else bb.faceDirTransform.rotation = Quaternion.Euler(0, 180, 0);
+            Debug.Log("facing");
+        }
     }
 
     protected override void SetupTransitionsForFSM(StateMachine<IEnemyContextView> fsm, IEnemyContextView ctx)
