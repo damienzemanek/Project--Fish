@@ -17,7 +17,10 @@ public class EnemyBlackboard : Blackboard
     [field: SerializeField] [field: Required] public Transform[] feetPoints { get; private set; }
     [field: SerializeField] [field: Required] public CountdownTimer jumpTimer { get; set; }
     [field: SerializeField] [field: Required] public CountdownTimer invulnerableTimer { get; set; }
+    [field: SerializeField] [field: Required] public CountdownTimer dyingStateTimer { get; set; }
     [field: SerializeField] [field: Required] public Transform faceDirTransform { get; private set; }
-    [field: SerializeField] [field: Required] public InterfaceReference<ILivingEntityControlled> livingEntity { get; private set; }
+    [field: SerializeField] [field: Required] public LivingEntity livingEntity { get; private set; }
+    [field: SerializeField] [field: Required] public Behaviour viewRange { get; private set; }
 
+    
 }

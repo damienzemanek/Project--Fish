@@ -21,9 +21,9 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     private InterfaceReference<IBoundsCheckMsgReceiver<Collider2D, TContext>, MonoBehaviour> selectedReceiver2D;
 
     [Header("Which trigger callbacks are active?")]
-    [SerializeField] private bool enter = true;
-    [SerializeField] private bool exit = true;
-    [SerializeField] private bool stay;
+    [SerializeField] bool enter = true;
+    [SerializeField] bool exit = true;
+    [SerializeField] bool stay;
 
         
     [Header("Layer filtering")]
@@ -32,8 +32,8 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     
     [BoxGroup("Context")] [Header("What Message is being sent?")]
     [BoxGroup("Context")] [ShowIf("enter")] [SerializeField] public TContext enterContext;
-    [BoxGroup("Context")] [ShowIf("stay")][SerializeField] public TContext stayContext;
-    [BoxGroup("Context")] [ShowIf("exit")][SerializeField] public TContext exitContext;
+    [BoxGroup("Context")] [ShowIf("stay")]  [SerializeField] public TContext stayContext;
+    [BoxGroup("Context")] [ShowIf("exit")]  [SerializeField] public TContext exitContext;
     
 
     private HashSet<IBoundsCheckMsgReceiver<Collider, TContext>> collisions3D;
@@ -64,11 +64,72 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     bool PassesLayerMask(GameObject go) =>
         (layerMask.value & (1 << go.layer)) != 0;
 
+    void OnEnable()
+    {
+        if (!is2D || !enter) return;
+
+        var col = this.Get<Collider2D>();
+        if (col == null) return;
+
+        var filter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = layerMask,
+            useTriggers = true
+        };
+
+        var hits = new Collider2D[32];
+        int count = col.Overlap(filter, hits);
+
+        if (ThingCollidedWith)
+        {
+            collisions2D ??= new HashSet<IBoundsCheckMsgReceiver<Collider2D, TContext>>();
+            collisions2D.Clear();
+
+            for (int i = 0; i < count; i++)
+            {
+                var other = hits[i];
+                if (other == null) continue;
+                if (!PassesLayerMask(other.gameObject)) continue;
+                if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> r)) continue;
+                if (!collisions2D.Add(r)) continue;
+                r.OnEnterBounds(other, this, enterContext);
+            }
+        }
+
+        if (SelectedReceiver && count > 0)
+            selectedReceiver2D.Value?.OnEnterBounds(hits[0], this, enterContext);
+    }
+
 
     void OnDisable()
     {
-       if(is2D) collisions2D?.Clear();
-       else collisions3D?.Clear();
+        if (!exit) return;
+
+        if (is2D)
+        {
+            if (ThingCollidedWith && collisions2D != null)
+            {
+                foreach (var c in collisions2D)
+                    c?.OnExitBounds(null, this, exitContext);
+                collisions2D.Clear();
+            }
+
+            if (SelectedReceiver)
+                selectedReceiver2D.Value?.OnExitBounds(null, this, exitContext);
+        }
+        else
+        {
+            if (ThingCollidedWith && collisions3D != null)
+            {
+                foreach (var c in collisions3D)
+                    c?.OnExitBounds(null, this, exitContext);
+                collisions3D.Clear();
+            }
+
+            if (SelectedReceiver)
+                selectedReceiver3D.Value?.OnExitBounds(null, this, exitContext);
+        }
     }
 
     // -------------------- 3D --------------------

@@ -3045,8 +3045,8 @@ MonoBehaviour:
       - {fileID: 539075576}
       - {fileID: 41291135}
       <faceDirTransform>k__BackingField: {fileID: 197626921}
-      <livingEntity>k__BackingField:
-        underlyingValue: {fileID: 990602690}
+      <livingEntity>k__BackingField: {fileID: 990602690}
+      <viewRange>k__BackingField: {fileID: 1218048177}
 --- !u!50 &990602688
 Rigidbody2D:
   serializedVersion: 5
@@ -3124,7 +3124,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::LivingEntity
   isDead: 0
   deathStatus: 0
-  maxHealth: 5
   deathLayer: 0
   hitLayer: 1
   destroyOnDeath: 0
@@ -3134,6 +3133,14 @@ MonoBehaviour:
   - {fileID: 990602689}
   deathFloorCollider: {fileID: 1213963159}
   enableOnDeathAndUnparents: []
+  healthThresholds:
+    entries:
+    - label: 0
+      threshold: 5
+    - label: 1
+      threshold: 1
+    - label: 2
+      threshold: 0
   animator: {fileID: 491382234}
   deathAnimHandle:
     States:
@@ -4738,7 +4745,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::LivingEntity
   isDead: 0
   deathStatus: 0
-  maxHealth: 5
   deathLayer: 0
   hitLayer: 1
   destroyOnDeath: 0
@@ -4748,6 +4754,12 @@ MonoBehaviour:
   - {fileID: 1881229045}
   deathFloorCollider: {fileID: 392042225}
   enableOnDeathAndUnparents: []
+  healthThresholds:
+    entries:
+    - label: 0
+      threshold: 5
+    - label: 2
+      threshold: 0
   animator: {fileID: 389884463}
   deathAnimHandle:
     States:

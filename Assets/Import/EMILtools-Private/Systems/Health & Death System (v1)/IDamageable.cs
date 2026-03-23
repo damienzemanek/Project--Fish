@@ -32,5 +32,11 @@ public interface IDamageable
         }
     }
     
-    public void TakeDamage(DamageInfo info);
+    public float TakeDamage(DamageInfo info);
+}
+
+public interface IHealable<TEnumHealthStates>
+    where TEnumHealthStates : Enum
+{
+    public float Heal(float amount, out TEnumHealthStates newState);
 }

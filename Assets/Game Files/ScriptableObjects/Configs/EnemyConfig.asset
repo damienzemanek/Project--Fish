@@ -20,6 +20,9 @@ MonoBehaviour:
     - name: Walk
       animEnum: 2
       hash: 765711723
+    - name: Dying
+      animEnum: 3
+      hash: 315139327
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 60000
@@ -44,3 +47,6 @@ MonoBehaviour:
       val: 2
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
+  <dyingState>k__BackingField:
+    <dyingStatePeriod>k__BackingField: 6
+    <outOfDeathStateHealAmount>k__BackingField: 2

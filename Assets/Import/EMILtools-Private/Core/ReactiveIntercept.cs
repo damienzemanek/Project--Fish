@@ -23,13 +23,13 @@ namespace EMILtools.Core
         [SerializeField, HideLabel] T _value;
         [NonSerialized] PersistentAction _SimpleReactions;
         [NonSerialized] PersistentAction<T> _Reactions;
-        [NonSerialized] PersistentFunc<T, T> _Intercepts;
+        [NonSerialized] PersistentFuncINOUT<T, T> _Intercepts;
 
-        public PersistentFunc<T, T> Intercepts
+        public PersistentFuncINOUT<T, T> Intercepts
         {
             get
             {
-                if(_Intercepts == null) _Intercepts = new PersistentFunc<T, T>();
+                if(_Intercepts == null) _Intercepts = new PersistentFuncINOUT<T, T>();
                 return _Intercepts;
             }
             set => _Intercepts = value;
@@ -83,7 +83,7 @@ namespace EMILtools.Core
         public ReactiveIntercept(T initial,
             PersistentAction simpleReaction = null,
             PersistentAction<T> reaction = null,
-            PersistentFunc<T, T> intercept = null)
+            PersistentFuncINOUT<T, T> intercept = null)
         {
             _value = initial;
             _SimpleReactions = simpleReaction;

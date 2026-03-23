@@ -6,7 +6,7 @@ using Pathfinding;
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "EMILtools/ScriptableObjects/Configs/Enemy")]
 public class EnemyConfig : Config
 {
-    public enum EnemyAnims { Idle, Attack, Walk, }
+    public enum EnemyAnims { Idle, Attack, Walk, Dying }
     public enum EnemyBlendVars { }
     
     [field: SerializeField] public AnimHandle<EnemyAnims, EnemyBlendVars> animHandle { get; private set; }
@@ -16,6 +16,15 @@ public class EnemyConfig : Config
     [field: SerializeField] public Jump jump { get; private set; }
     [field: SerializeField] public ViewRange viewRange { get; private set; }
     [field: SerializeField] public TakeDmg takeDmg { get; private set; }
+    [field: SerializeField] public DyingState dyingState { get; private set; }
+
+    [Serializable]
+    public struct DyingState
+    {
+        [field: SerializeField] public float dyingStatePeriod { get; private set; }
+        [field: SerializeField] public float outOfDeathStateHealAmount { get; private set; }
+
+    }
     
     [Serializable]
     public struct TakeDmg

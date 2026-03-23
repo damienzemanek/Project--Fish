@@ -6,9 +6,7 @@ namespace EMILtools.Core
 {
     
 
-    public sealed class PersistentAction<T1, T2> : 
-        IPersistentAction<Action<T1,T2>, PersistentAction<T1, T2>>,
-        IPersistentDelegate<Action<T1,T2>>
+    public sealed class PersistentAction<T1, T2> : IPersistentAction<Action<T1,T2>, PersistentAction<T1, T2>>
     {
         public PersistentAction() { }
         public PersistentAction(Action<T1, T2> _del) => _action = _del;
@@ -42,9 +40,7 @@ namespace EMILtools.Core
         
     }
     
-    public sealed class PersistentAction<T> : 
-            IPersistentAction<Action<T>, PersistentAction<T>>, 
-            IPersistentDelegate<Action<T>>
+    public sealed class PersistentAction<T> : IPersistentAction<Action<T>, PersistentAction<T>>
     {
         public PersistentAction() { }
         public PersistentAction(Action<T> _del) => _action = _del;
@@ -80,9 +76,7 @@ namespace EMILtools.Core
     /// <summary>
     /// Non-generic version for simple triggers
     /// </summary>
-    public sealed class PersistentAction : 
-        IPersistentAction<Action, PersistentAction>,
-        IPersistentDelegate<Action>
+    public sealed class PersistentAction : IPersistentAction<Action, PersistentAction>
     {
         public PersistentAction() { }
         public PersistentAction(Action _del) => _action = _del;
