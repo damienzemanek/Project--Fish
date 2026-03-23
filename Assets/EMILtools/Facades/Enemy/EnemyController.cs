@@ -36,5 +36,10 @@ public class EnemyController : MonoFacade<
 
 
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackingCtx> sender, AttackingCtx ctx)
-        => Actions.TakeDamage.Publish(ctx);
+    {
+        Debug.Log("Hit");
+        Actions.TakeDamage.Publish(ctx);
+        Debug.Log("Hit Compelte");
+
+    }
 }

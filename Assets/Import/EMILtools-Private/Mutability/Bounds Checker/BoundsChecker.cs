@@ -64,6 +64,13 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     bool PassesLayerMask(GameObject go) =>
         (layerMask.value & (1 << go.layer)) != 0;
 
+
+    void OnDisable()
+    {
+       if(is2D) collisions2D?.Clear();
+       else collisions3D?.Clear();
+    }
+
     // -------------------- 3D --------------------
 
     private void OnTriggerEnter(Collider other)
@@ -83,15 +90,17 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (is2D || !exit || !PassesLayerMask(other.gameObject)) return;
+        if (is2D || !PassesLayerMask(other.gameObject)) return;
 
         if (ThingCollidedWith)
         {
             if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider, TContext> receiver)) return;
             if (!collisions3D.Remove(receiver)) return;
+            if (!exit) return;
             receiver.OnExitBounds(other, this, exitContext);
         }
 
+        if (!exit) return;
         if (SelectedReceiver)
             selectedReceiver3D.Value?.OnExitBounds(other, this, exitContext);
     }
@@ -129,14 +138,17 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!is2D || !exit || !PassesLayerMask(other.gameObject)) return;
+        if (!is2D || !PassesLayerMask(other.gameObject)) return;
 
         if (ThingCollidedWith)
         {
             if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> receiver)) return;
             if (!collisions2D.Remove(receiver)) return;
+            if (!exit) return;
             receiver.OnExitBounds(other, this, exitContext);
         }
+
+        if (!exit) return;
 
         if (SelectedReceiver)
             selectedReceiver2D.Value?.OnExitBounds(other, this, exitContext);

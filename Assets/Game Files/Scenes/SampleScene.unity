@@ -3046,7 +3046,7 @@ MonoBehaviour:
       - {fileID: 41291135}
       <faceDirTransform>k__BackingField: {fileID: 197626921}
       <livingEntity>k__BackingField:
-        underlyingValue: {fileID: 990602687}
+        underlyingValue: {fileID: 990602690}
 --- !u!50 &990602688
 Rigidbody2D:
   serializedVersion: 5

@@ -33,7 +33,6 @@ namespace EMILtools.Systems
         // Template Call 
         readonly SubResolvableCtx<T1> subscriber_TemplateCall;
         public ISubscriber Subscriber => subscriber_TemplateCall;
-        public IDelegator API_OnSetEvent() => OnSetEvent;
         public PersistentAction OnSetEvent { get; set; } = new();
         bool _TemplateCall(T1 val)
         {

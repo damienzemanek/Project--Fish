@@ -53,6 +53,7 @@ namespace EMILtools.Timers
         public virtual void StartAndReset()
         {
             InitializeTime();
+            isRunning = false;
             if (initialTime <= 0) this.Warn("Please set an initial time for this timer");
             StartNoReset();
         }

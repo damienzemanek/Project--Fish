@@ -48,11 +48,11 @@ public class EnemyFunctionality : Functionalities<
             bb.invulnerableTimer.OnTimerStop.Add(InvulnerablitityEnd);
         }
 
-        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder)
-            => builder.Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.invulnerable));
-
         public void MutateUsingNewSetValues()
         {
+            Debug.Log("Attempting to apply damgae");
+            if (mutateCtx.invulnerable) return;
+            Debug.Log("Damage GOing to applyied");
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             bb.livingEntity.Value.TakeDamageCaller.Invoke(SetContext.attackingCtx.damageInfo);
