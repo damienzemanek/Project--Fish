@@ -36,9 +36,10 @@ public class EnemyFunctionality : Functionalities<
         {
             [ShowInInspector] public AttackingCtx attackingCtx => Get;
         }
-        
+
+        public TakeDmg(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-        public TakeDmg(Publisher<IEnemyContextView> publisher, EnemyController facade) : base(publisher, facade) { }
 
         protected override void Awake()
         {
@@ -55,6 +56,7 @@ public class EnemyFunctionality : Functionalities<
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             bb.livingEntity.Value.TakeDamageCaller.Invoke(SetContext.attackingCtx.damageInfo);
+            Debug.Log(facade.gameObject.name + " Took Damage");
         }
         
         void InvulnerablitityEnd() => mutateCtx.invulnerable = false;

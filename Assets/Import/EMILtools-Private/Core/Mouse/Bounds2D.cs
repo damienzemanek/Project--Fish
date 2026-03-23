@@ -6,7 +6,7 @@ using UnityEngine;
 public class Bounds2D<TEnum>
     where TEnum : Enum
 {
-    public ObjectEnumNamed<TEnum, PolygonCollider2D>[] colliders;
+    public EnumTagged<TEnum, PolygonCollider2D>[] colliders;
     
     public TEnum GetBound(Vector2 mousePos)
     {
@@ -14,7 +14,7 @@ public class Bounds2D<TEnum>
         foreach (var bound in colliders)
         {
             bool hit = bound.obj.OverlapPoint(worldMouse);
-            if (hit) return bound.label;
+            if (hit) return bound.tag;
         }
         return default;
     }

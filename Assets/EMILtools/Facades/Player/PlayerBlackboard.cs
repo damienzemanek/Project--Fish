@@ -17,4 +17,5 @@ public class PlayerBlackboard : Blackboard
     [field:SerializeField] [field:Required] public Animator animator { get; private set; }
     [field: SerializeField] public CurveValue jumpCurve { get; private set; } = new();
     [field:SerializeField] [field:Required] public Bounds2D<AttackDir> attackBounds { get; private set; }
+    [field:SerializeField] [field:Required] public EnumTagged<AttackDir, Collider2D>[] attackColliders { get; private set; }
 }

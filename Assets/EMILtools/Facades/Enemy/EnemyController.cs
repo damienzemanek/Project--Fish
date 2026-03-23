@@ -19,7 +19,7 @@ public class EnemyController : MonoFacade<
     {
         public readonly Publisher Idle = new();
         public readonly Publisher<bool> CanSeeTarget = new ();
-        public readonly Publisher<IEnemyContextView> TakeDamage = new();
+        public readonly Publisher<AttackingCtx> TakeDamage = new();
     }
 
     protected void Awake()
@@ -36,5 +36,5 @@ public class EnemyController : MonoFacade<
 
 
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackingCtx> sender, AttackingCtx ctx)
-        => Actions.TakeDamage.Publish(API_Context<EnemyContextData>());
+        => Actions.TakeDamage.Publish(ctx);
 }
