@@ -17,6 +17,7 @@ public interface IEnemyContextView : IContextViewImmutable
     public float distToEndNode { get; }   
     public bool travelAngleTooCloseToVertical { get; }
     public DelayBuffer<bool> canSeeTarget { get; }
+    public bool invulnerable { get; }
 }
 
 public class EnemyContextData : ContextData, IEnemyContextView
@@ -25,6 +26,8 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool isGrounded { get; set; }
     [field: ShowInInspector] public bool travelAngleTooCloseToVertical { get; set; }
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
+    [field: ShowInInspector] public bool invulnerable { get; set; }
+
 
     [field: ShowInInspector] public Path path { get; set; }
     [field: ShowInInspector] public int currentWaypointIndex { get; set; }

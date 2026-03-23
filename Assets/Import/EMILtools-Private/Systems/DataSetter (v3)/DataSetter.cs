@@ -31,8 +31,8 @@ namespace EMILtools.Systems
         public T1 Get { get; private set; }
 
         // Template Call 
-        readonly SubResolvableCtx<T1> templateCallSubscriber;
-        public ISubscriber Subscriber => templateCallSubscriber;
+        readonly SubResolvableCtx<T1> subscriber_TemplateCall;
+        public ISubscriber Subscriber => subscriber_TemplateCall;
         public IDelegator API_OnSetEvent() => OnSetEvent;
         public PersistentAction OnSetEvent { get; set; } = new();
         bool _TemplateCall(T1 val)
@@ -40,11 +40,12 @@ namespace EMILtools.Systems
             Get = val;
             LocalOnSet(val);
             OnSetEvent.Invoke();
+            //Debug.Log(" ( ! ) DataSetter Called, Value: " + val + "");
             return false;
         }
         
         // Ctor
-        protected DataSetter() => templateCallSubscriber = new SubResolvableCtx<T1>(_TemplateCall);
+        protected DataSetter() => subscriber_TemplateCall = new SubResolvableCtx<T1>(_TemplateCall);
         
         // Action
         [NonSerialized] Publisher<T1> _publisher;

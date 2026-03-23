@@ -1,6 +1,7 @@
 ﻿using System;
 using EMILtools.Core;
 using EMILtools.Systems;
+using UnityEngine;
 
 
 namespace EMILtools.Systems
@@ -21,25 +22,32 @@ namespace EMILtools.Systems
     public readonly struct PipelineStep<TViewCtx>
         where TViewCtx : IContextViewImmutable
     {
-        public class ActionCtxResolvable : IResolvable
+        public class ActionCtxResolvable : IResolvable, IContextInjectible<TViewCtx>
         {
             readonly Action<TViewCtx> action;
-            public bool consumed => false;
+            [NonSerialized] TViewCtx cachedCtx;
 
-            public void ResetWait()
+            public void InjectContext(TViewCtx ctx)
             {
+                cachedCtx = ctx;
+                //Debug.Log($" + + + Injection At Class Level Detected!");
+            }
+            public bool consumed => false;
+            public void ResetWait() {
                 // No op
             }
 
-            public bool Resolve(object ctx)
+            public Func<bool> Resolve { get; }
+            
+            public ActionCtxResolvable(Action<TViewCtx> _action)
             {
-                action((TViewCtx)ctx); return true; // Direct cast, no check
+                action = _action;
+                Resolve = () => { action?.Invoke(cachedCtx); return true; };
             }
-            public ActionCtxResolvable(Action<TViewCtx> _action) => action = _action;
         }
         
         // ------ Variables --------
-        public readonly NotPredicate Condition;
+        public readonly NotPredicateCtx<TViewCtx> Condition;
         public readonly ActionCtxResolvable CallbackSlot;
         public readonly Resolves Resolves;
         public readonly StepType StepType;
@@ -49,7 +57,7 @@ namespace EMILtools.Systems
         public PipelineStep(IPredicate condition, 
             Resolves resolves = default)
         {
-            Condition = new NotPredicate(condition);
+            Condition = new NotPredicateCtx<TViewCtx>(condition);
             CallbackSlot = null;
             Resolves = resolves;
             StepType = StepType.ShortCircuit;

@@ -73,7 +73,7 @@ public class StateMachine<TViewCtx> : IFSM
     {
         
         for(int i = 0; i < AnyTransitions.Count; i++)
-            if (await Resolver.ResolveContainer(
+            if (await Resolver<TViewCtx>.ResolveContainer(
                     AnyTransitions[i].Resolves,
                     AnyTransitions[i].Condition,
                     canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false
@@ -83,7 +83,7 @@ public class StateMachine<TViewCtx> : IFSM
             }
         
         for(int i = 0; i < CurrentNode.Transitions.Count; i++)
-            if(await Resolver.ResolveContainer(
+            if(await Resolver<TViewCtx>.ResolveContainer(
                    CurrentNode.Transitions[i].Resolves,
                    CurrentNode.Transitions[i].Condition,
                    canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false

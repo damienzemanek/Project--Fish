@@ -15,7 +15,14 @@ public class EnemyConfig : Config
     [field: SerializeField] public ClampLateralMov clampLateralMove { get; private set; }
     [field: SerializeField] public Jump jump { get; private set; }
     [field: SerializeField] public ViewRange viewRange { get; private set; }
-
+    [field: SerializeField] public TakeDmg takeDmg { get; private set; }
+    
+    [Serializable]
+    public struct TakeDmg
+    {
+        [field: SerializeField] public float invulnerablePeriod { get; private set; }
+    }
+    
     [Serializable]
     public struct ViewRange
     {

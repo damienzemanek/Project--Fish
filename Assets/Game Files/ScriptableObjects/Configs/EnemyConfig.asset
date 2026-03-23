@@ -42,3 +42,5 @@ MonoBehaviour:
   <viewRange>k__BackingField:
     <delayToStopChasing>k__BackingField:
       val: 2
+  <takeDmg>k__BackingField:
+    <invulnerablePeriod>k__BackingField: 0.2

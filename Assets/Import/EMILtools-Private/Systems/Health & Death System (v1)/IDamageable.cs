@@ -1,4 +1,6 @@
-﻿public interface IDamageable
+﻿using System;
+
+public interface IDamageable
 {
     public enum DeathType
     {
@@ -12,9 +14,10 @@
     
     public enum DamageType
     {
-        Bullet,
+        Regular,
     }
     
+    [Serializable]
     public struct DamageInfo
     {
         public int dmg;

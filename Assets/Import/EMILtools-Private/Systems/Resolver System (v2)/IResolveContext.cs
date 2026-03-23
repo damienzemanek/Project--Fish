@@ -10,16 +10,34 @@ namespace EMILtools.Systems
 
     public abstract class Resolvable : IResolvable
     {
+        protected readonly bool ShortCircuitIfNotFinished = false; 
+        protected readonly bool ContinueResolving = true;
         public readonly bool executeOnce;
         public bool consumed { get; set; }
         protected Resolvable(bool executeOnce = false) => this.executeOnce = executeOnce;
-        public virtual void ResetWait()
-        {
-            consumed = false;
-        }
-        public abstract bool Resolve(object ctx);
+        public virtual void ResetWait() => consumed = false;
+        public Func<bool> Resolve { get; protected set; }
     }
+
     
+    /// <summary>
+    /// Represents a callback mechanism that can be invoked before pipeline step execution
+    /// </summary>
+    public class CallbackCtx<TCtx> : Resolvable, IContextInjectible<TCtx>
+    {
+        readonly Action<TCtx> action;
+        [NonSerialized] TCtx cached;
+        public void InjectContext(TCtx ctx) => cached = ctx;
+        public CallbackCtx(Action<TCtx> action, bool executeOnce = false) : base(executeOnce)
+        {
+            this.action = action;
+            Resolve = () =>
+            {
+                action?.Invoke(cached);
+                return ContinueResolving;
+            };
+        }
+    }
     
     
     /// <summary>
@@ -27,48 +45,21 @@ namespace EMILtools.Systems
     /// </summary>
     public class Callback : Resolvable
     {
-        readonly bool ContinueResolving = true;
         readonly Action Action;
 
         public Callback(Action _action, bool executeOnce = false) : base(executeOnce)
-            => Action = _action;
+        {
+            Action = _action;
+            Resolve = ResolveImplementation;
+        }
 
-        public override bool Resolve(object ctx)
+        bool ResolveImplementation()
         {
             Action?.Invoke();
             return ContinueResolving;
         }
     }
-    
-    /// <summary>
-    /// Represents a callback mechanism that can be invoked before pipeline step execution
-    /// </summary>
-    public class Callback<TCtx> : Resolvable
-    {
-        readonly bool ContinueResolving = true;
-        readonly Action<TCtx> Action;
-        [NonSerialized] TCtx cached;
-        
-        public Callback(Action<TCtx> _action, bool executeOnce = false) : base(executeOnce)
-            => Action = _action;
 
-        
-        public bool Resolve<TContext1>(TContext1 ctx)
-        {
-            if (ctx is TCtx typed) cached = typed;
-            else throw new InvalidCastException("Wrong Context Type given to Callback");
-            Action?.Invoke(cached);
-            return ContinueResolving;
-        }
-
-        public override bool Resolve(object ctx)
-        {
-            cached = (TCtx)ctx;
-            Action?.Invoke(cached);
-            return ContinueResolving;
-        }
-    }
-    
 
     /// <summary>
     /// Short Circuits if time is not finished
@@ -78,8 +69,6 @@ namespace EMILtools.Systems
     public class TimedGate : Resolvable, ITimerUser
     {
         // Is not intended to be read as ShortCircuit FALSE, used just for readability in the Resolve()
-        readonly bool ShortCircuitIfNotFinished = false; 
-        readonly bool ContinueResolving = true;
         readonly bool resetWhenAccessedAndDone;
         readonly CountdownTimer timer;
 
@@ -91,9 +80,10 @@ namespace EMILtools.Systems
             this.InitTimer(timer, isFixed: true); 
             this.resetWhenAccessedAndDone = resetWhenAccessedAndDone;
             resetHandle = () => timer.StartAndReset();
+            Resolve = ResolveImplementation;
         }
         
-        public override bool Resolve(object ctx)
+        bool ResolveImplementation()
         {
             if(!timer.isRunning && !timer.IsFinished()) timer.StartAndReset();
             var _open = open;
@@ -107,9 +97,6 @@ namespace EMILtools.Systems
     /// </summary>
     public class Wait : Resolvable, ITimerUser, IResolveWaitable
     {
-        // --- static ----
-        readonly bool ContinueResolving = true;
-        
         // --- Privates ----
         readonly CountdownTimer timer;
         TaskCompletionSource<bool> blockingTcs;
@@ -126,6 +113,7 @@ namespace EMILtools.Systems
             blockingTcs = new();
             cachedWaitTask = blockingTcs.Task;
             timer.OnTimerStop.Add(TimerStopped);
+            Resolve = ResolveImplementation;
         }
         
         void TimerStopped()
@@ -143,19 +131,17 @@ namespace EMILtools.Systems
             cachedWaitTask = blockingTcs.Task;
             timer.Reset();
         }
-        
 
-        public override bool Resolve(object ctx)
+        bool ResolveImplementation()
         {
-            Debug.Log("Wait Timer Called");
             if (!timer.isRunning && !timer.IsFinished())
             {
                 timer.StartAndReset();
                 Debug.Log("Started Wait Timer");
             }
-            return ContinueResolving;
-            
+            return ContinueResolving;   
         }
+        
     }
     
 }

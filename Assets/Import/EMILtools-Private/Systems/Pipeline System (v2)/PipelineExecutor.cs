@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using EMILtools.Core;
 using UnityEngine;
-using static EMILtools.Systems.Resolver;
 
 namespace EMILtools.Systems
 {
@@ -25,7 +24,8 @@ namespace EMILtools.Systems
                 if (step.Condition != null) resolve = step.Condition;
                 else resolve = step.CallbackSlot;
                 
-                if(!await Resolver.ResolveContainer(step.Resolves, resolve, isShortCircuit, ctx)) return false;
+               // Debug.Log($"[Pipeline Executor] Step {i}: {step.StepType}, Size: {pipeline.Size}");
+                if(!await Resolver<TContext>.ResolveContainer(step.Resolves, resolve, isShortCircuit, ctx)) return false;
             }
             return true;
         }

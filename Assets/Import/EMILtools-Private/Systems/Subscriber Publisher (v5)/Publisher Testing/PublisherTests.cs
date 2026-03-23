@@ -110,7 +110,7 @@ public class PublisherTests
             Call,
             new Resolves(true,
                 beforeExe: new IResolvable[] { new Callback(ActionCall) },
-                afterExe: new IResolvable[] { new Callback<MyContext>(Action2Call) })
+                afterExe: new IResolvable[] { new CallbackCtx<MyContext>(Action2Call) })
             
         );
 

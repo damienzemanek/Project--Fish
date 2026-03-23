@@ -23,9 +23,9 @@ public class DelayBufferTests
 
         bufferedBool.SetBuffered(true);
         TimerUtility.TickAllFixed(0.9f);
-        Assert.AreEqual(bufferedBool, false);
+        Assert.AreEqual(false, bufferedBool.Value);
         TimerUtility.TickAllFixed(0.2f);
-        Assert.AreEqual(bufferedBool, true);
+        Assert.AreEqual(true, bufferedBool.Value);
     }
     
     [Test]
@@ -35,7 +35,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(2f);
 
-        Assert.AreEqual(false, bufferedBool);
+        Assert.AreEqual(false, bufferedBool.Value);
     }
     
     [Test]
@@ -52,11 +52,11 @@ public class DelayBufferTests
         TimerUtility.TickAllFixed(0.6f);
 
         // Should still be old value because timer restarted
-        Assert.AreEqual(false, bufferedBool);
+        Assert.AreEqual(false, bufferedBool.Value);
 
         TimerUtility.TickAllFixed(0.5f);
 
-        Assert.AreEqual(false, bufferedBool);
+        Assert.AreEqual(false, bufferedBool.Value);
     }
 
     
@@ -75,7 +75,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(1.1f);
 
-        Assert.AreEqual(true, bufferedBool);
+        Assert.AreEqual(true, bufferedBool.Value);
     }
     
     [Test]
@@ -87,7 +87,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(1f);
 
-        Assert.AreEqual(true, bufferedBool);
+        Assert.AreEqual(true, bufferedBool.Value);
     }
     
     [Test]
@@ -99,7 +99,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(5f);
 
-        Assert.AreEqual(true, bufferedBool);
+        Assert.AreEqual(true, bufferedBool.Value);
     }
     
     [Test]
@@ -111,7 +111,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(1.1f);
 
-        Assert.AreEqual(false, bufferedBool);
+        Assert.AreEqual(false, bufferedBool.Value);
     }
     
     [Test]
@@ -132,7 +132,7 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(1.2f);
 
-        Assert.AreEqual(false, bufferedBool);
+        Assert.AreEqual(false, bufferedBool.Value);
     }
     
     [Test]
@@ -144,11 +144,11 @@ public class DelayBufferTests
 
         TimerUtility.TickAllFixed(1.1f);
 
-        Assert.AreEqual(true, bufferedBool);
+        Assert.AreEqual(true, bufferedBool.Value);
 
         TimerUtility.TickAllFixed(5f);
 
-        Assert.AreEqual(true, bufferedBool);
+        Assert.AreEqual(true, bufferedBool.Value);
     }
 
     [Test]

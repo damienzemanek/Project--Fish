@@ -8,9 +8,17 @@ using UnityEngine.Events;
 using static EMILtools.Extensions.NumEX;
 using static IDamageable;
 
-public class LivingEntity : Entity,
-    IDamageable
+public interface ILivingEntityControlled
 {
+    public PersistentAction<DamageInfo> TakeDamageCaller { get; }
+    public PersistentAction<DeathType> OnDeath { set; }
+}
+
+public class LivingEntity : Entity,
+    IDamageable,
+    ILivingEntityControlled
+{
+    
     const float RestartAnimation = ZeroF;
     const float FromBeginning = ZeroF;
     
@@ -30,9 +38,9 @@ public class LivingEntity : Entity,
     public Animator animator;
     public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
-    [HideInInspector] public PersistentAction<DeathType> OnDeath = new();
 
-    public UnityEvent OnDie = new UnityEvent();
+    [field: HideInInspector] public PersistentAction<DamageInfo> TakeDamageCaller { get; private set; }
+    [field: HideInInspector] public PersistentAction<DeathType> OnDeath { get; set; } = new();
     
     void Awake()
     {
@@ -40,17 +48,16 @@ public class LivingEntity : Entity,
         health = new ReactiveIntercept<float>(maxHealth);
         health.Intercepts.Add(value => value < ZeroF ? ZeroF : value);
         health.Reactions.Add(CheckDie);
+        TakeDamageCaller = new PersistentAction<DamageInfo>(TakeDamage);
     }
     
     public void TakeDamage(DamageInfo info)
     {
-        Debug.Log("Taking Damage");
+        Debug.Log($"{gameObject.name} Taking Damage");
         health.Value -= info.dmg;
     }
     
-    [Button]
-    public void TakeDamage(int dmg) => health.Value -= dmg;
-
+    
     void CheckDie(float v)
     {
         if (v > 0) LocationalDamageReaction();
@@ -77,7 +84,6 @@ public class LivingEntity : Entity,
         foreach (var c in colliders) c.enabled = false;
         deathFloorCollider.enabled = true;
         foreach (var g in enableOnDeathAndUnparents) g.SetActiveThen(true).transform.parent = null;
-        OnDie?.Invoke();
         if (destroyOnDeath) StartCoroutine(DestroyOnDeath());
     }
 
@@ -86,5 +92,12 @@ public class LivingEntity : Entity,
         yield return new WaitForSeconds(2);
         Destroy(gameObject);   
     }
-
+    
+    
+    
+    
+    
+    
+    [Button] public void TakeDamageTesting(int dmg) => health.Value -= dmg;
+    
 }

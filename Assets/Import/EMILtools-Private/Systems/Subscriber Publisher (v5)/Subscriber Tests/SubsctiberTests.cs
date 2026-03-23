@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using EMILtools.Systems;
 using NUnit.Framework;
@@ -8,14 +9,24 @@ public class SubsctiberTests : MonoBehaviour
 
     public class TestFailResolvable : IResolvable
     {
-        public bool Resolve<TContext>(TContext ctx) => false;
+        public bool wasCalled;
         public bool consumed { get; }
         public void ResetWait()
         {
-            throw new System.NotImplementedException();
+            // No op
         }
 
-        public bool Resolve(object ctx) => false;
+        public Func<bool> Resolve { get; }
+
+        public TestFailResolvable()
+        {
+            Resolve = () =>
+            {
+                wasCalled = true;
+                return false;
+            };
+        }
+
     }
     public class TestResolvable : IResolvable
     {
@@ -23,10 +34,19 @@ public class SubsctiberTests : MonoBehaviour
         public bool consumed { get; }
         public void ResetWait()
         {
-            throw new System.NotImplementedException();
+            // No op
         }
 
-        public bool Resolve(object ctx) => wasCalled = true;
+        public Func<bool> Resolve { get; }
+
+        public TestResolvable(bool resolveResult = true)
+        {
+            Resolve = () =>
+            {
+                wasCalled = true;
+                return resolveResult;
+            };
+        }
     }
     
     [Test]
@@ -102,6 +122,7 @@ public class SubsctiberTests : MonoBehaviour
         await sub.Execute();
 
         Assert.IsFalse(executed);
+        Assert.IsTrue(beforeFail.wasCalled);
     }
     
     [Test]
@@ -148,7 +169,8 @@ public class SubsctiberTests : MonoBehaviour
 
         await sub.Execute();
 
-        Assert.IsTrue(!after.wasCalled);
+        Assert.IsTrue(failPointBefore.wasCalled);
+        Assert.IsFalse(after.wasCalled);
     }
         
 

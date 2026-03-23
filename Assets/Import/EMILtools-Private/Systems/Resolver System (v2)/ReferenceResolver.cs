@@ -5,16 +5,15 @@ using EMILtools.Systems;
 using UnityEngine;
 
 namespace EMILtools.Systems
-{ 
-    public static class Resolver
+{
+    public static class Resolver<TContext>
     {
         static bool _debug = false;
         static void Log(string msg)
         {
             if (_debug) Debug.Log($"[ResolverSystem] {msg}");
         }
-
-        public static async Task<bool> ResolveContainer<TContext>(
+        public static async Task<bool> ResolveContainer(
             Resolves resolves,
             IResolvable resolveable,
             bool canShortCircuit,
@@ -22,15 +21,24 @@ namespace EMILtools.Systems
         {
             Log("=== ResolveContainer START ===");
 
+            Log("(Attempting to resolve BEFORE)");
             if (!await ResolveArray(resolves.beforeExecution, canShortCircuit, ctx))
             {
                 Log("beforeExecution FAILED (short-circuit)");
                 return false;
             }
+            Log(" + Complete!");
 
-            Log($"Main Resolve: {resolveable.GetType().Name}");
-            bool mainResultContinues = resolveable.Resolve(ctx);
-            Log($"Main Result: {mainResultContinues}");
+            Log($"(Attempting to Inject MAIN: {resolveable.GetType().Name})");
+            if (resolveable is IContextInjectible<TContext> injectible)
+            {
+                injectible.InjectContext(ctx);
+                Log($" + + Injection Successful!");
+            }
+            Log($" + Complete!");
+            Log($"(Attempting to resolve MAIN)");
+            bool mainResultContinues = resolveable.Resolve();
+            Log($" + Complete! Main Result: {mainResultContinues}");
 
             if (!mainResultContinues && canShortCircuit)
             {
@@ -42,11 +50,13 @@ namespace EMILtools.Systems
                 return false;
             }
 
+            Log("(Attempting to resolve AFTER)");
             if (!await ResolveArray(resolves.afterExecution, canShortCircuit, ctx))
             {
                 Log("afterExecution FAILED (short-circuit)");
                 return false;
             }
+            Log(" + Complete!");
 
             if (resolves.resetWhenAllResolved) resolves.ResetAllOnceResolves();
 
@@ -54,8 +64,7 @@ namespace EMILtools.Systems
             return true;
         }
         
-        
-        static async Task<bool> ResolveArray<TContext>(
+        static async Task<bool> ResolveArray(
             IResolvable[] resolvables,
             bool isShortCircuit,
             TContext ctx)
@@ -80,7 +89,9 @@ namespace EMILtools.Systems
                     continue;
                 }
                 
-                var result = resolve.Resolve(ctx);
+                if(resolve is IContextInjectible<TContext> injectible) 
+                    injectible.InjectContext(ctx);
+                bool result = resolve.Resolve();
 
                 Log($"Result [{i}] -> {result}");
 
@@ -111,5 +122,7 @@ namespace EMILtools.Systems
             Log("ResolveArray END");
             return true;
         }
+        
     }
+    
 }

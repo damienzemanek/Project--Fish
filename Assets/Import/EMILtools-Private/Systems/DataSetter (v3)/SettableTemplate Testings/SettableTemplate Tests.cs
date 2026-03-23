@@ -42,7 +42,7 @@ public class DataSetterTests
         var publisher = new Publisher<int>();
 
         publisher.Add(settable.Subscriber);
-        publisher.Publish(5).Wait();
+        publisher.Publish(5).Forget("Test2_SetStoresData");
 
         Assert.AreEqual(5, settable.Get);
     }

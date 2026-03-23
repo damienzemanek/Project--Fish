@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,8 +15,15 @@ namespace EMILtools.Systems
     {
         public bool consumed { get; }
         public virtual void ResetWait() { }
-        public bool Resolve(object ctx);
+        Func<bool> Resolve { get; }
     }
+    
+    public interface IContextInjectible<TCtx>
+    {
+        public void InjectContext(TCtx ctx);
+    }
+    
+
     
     /// <summary>
     /// Represents an interface for waitable resolve operations in the pipeline.

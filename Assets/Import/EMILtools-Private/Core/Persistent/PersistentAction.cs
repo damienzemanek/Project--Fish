@@ -10,6 +10,9 @@ namespace EMILtools.Core
         IPersistentAction<Action<T1,T2>, PersistentAction<T1, T2>>,
         IPersistentDelegate<Action<T1,T2>>
     {
+        public PersistentAction() { }
+        public PersistentAction(Action<T1, T2> _del) => _action = _del;
+        
         // ------------ IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action<T1, T2>)cb);
         public void API_Remove(Delegate cb) => Remove((Action<T1, T2>)cb);
@@ -43,6 +46,8 @@ namespace EMILtools.Core
             IPersistentAction<Action<T>, PersistentAction<T>>, 
             IPersistentDelegate<Action<T>>
     {
+        public PersistentAction() { }
+        public PersistentAction(Action<T> _del) => _action = _del;
         
         // ------------ IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action<T>)cb);
