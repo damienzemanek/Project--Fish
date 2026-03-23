@@ -102,9 +102,9 @@ namespace EMILtools.Systems
             modules.Add(module);
             Debug.Log("ADDING module " + module.GetType().Name + " new count is " + modules.Count);
             if(module is not IEntryPointFM) Debug.LogError("Module is not an IEntryPointFM, Please assign an EntryPoint");
-            if (typeof(UPDATE).IsAssignableFrom(module.GetType())) updateTick.Add(module.Subscriber);
-            if (typeof(FIXED_UPDATE).IsAssignableFrom(module.GetType())) fixedTick.Add(module.Subscriber);
-            if (typeof(LATE_UPDATE).IsAssignableFrom(module.GetType())) lateTick.Add(module.Subscriber);
+            if (typeof(UPDATE<TViewCtx>).IsAssignableFrom(module.GetType())) updateTick.Add(module.Subscriber);
+            if (typeof(FIXED_UPDATE<TViewCtx>).IsAssignableFrom(module.GetType())) fixedTick.Add(module.Subscriber);
+            if (typeof(LATE_UPDATE<TViewCtx>).IsAssignableFrom(module.GetType())) lateTick.Add(module.Subscriber);
             if (typeof(IAPI_Module).IsAssignableFrom(module.GetType()))
             {
                 foreach (var iface in GetInterfacesAssignableTo<IAPI_Module>(module.GetType()))

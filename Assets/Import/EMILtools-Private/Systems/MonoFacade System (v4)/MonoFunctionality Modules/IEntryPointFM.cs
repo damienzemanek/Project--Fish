@@ -2,16 +2,25 @@
 
 public interface IEntryPointFM { }
 
-public interface UPDATE : IEntryPointFM { }
+public interface TickFM<TViewCtx> : IEntryPointFM
+    where TViewCtx : class, IContextViewImmutable
+{
+    void Tick(TViewCtx ctx);
+}
 
-public interface FIXED_UPDATE : IEntryPointFM { }
+public interface UPDATE<TViewCtx> : TickFM<TViewCtx>
+    where TViewCtx : class, IContextViewImmutable { }
 
-public interface LATE_UPDATE : IEntryPointFM { }
+public interface FIXED_UPDATE<TViewCtx> : TickFM<TViewCtx> 
+    where TViewCtx : class, IContextViewImmutable { }
+
+public interface LATE_UPDATE<TViewCtx> : TickFM<TViewCtx> 
+    where TViewCtx : class, IContextViewImmutable { }
 
 
 public interface ON_SET : IEntryPointFM
 {
-    abstract void MutateUsingNewSetValues();
+    void MutateUsingNewSetValues();
 }
 
 public interface FSM_AVALIABLE : IState { }
@@ -28,5 +37,5 @@ public interface FSM_STATE_EXIT<TViewCtx> : IEntryPointFM, FSM_AVALIABLE
 
 {
     abstract void OnExitState(TViewCtx ctx);
-    void IState.OnExitState(IContextViewImmutable ctx) => OnEnterState((TViewCtx)ctx);
+    void IState.OnExitState(IContextViewImmutable ctx) => OnExitState((TViewCtx)ctx);
 }

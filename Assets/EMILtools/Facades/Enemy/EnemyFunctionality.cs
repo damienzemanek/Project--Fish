@@ -4,6 +4,7 @@ using EMILtools.Timers;
 using Pathfinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using static AttackingBoundsChecker;
 
 public class EnemyFunctionality : Functionalities<
     EnemyController,
@@ -28,9 +29,14 @@ public class EnemyFunctionality : Functionalities<
     }
 
 
-    class TakeDmg : BoundFunctionality<EnemyController, IEnemyContextView>,
-        UPDATE
+    class TakeDmg : BoundSetFunctionality<EnemyController, IEnemyContextView, TakeDmg.Setter>,
+        ON_SET
     {
+        public class Setter : DataSetter<AttackingCtx>
+        {
+            [ShowInInspector] public AttackingCtx attackingCtx => Get;
+        }
+        
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public TakeDmg(Publisher<IEnemyContextView> publisher, EnemyController facade) : base(publisher, facade) { }
 
@@ -43,19 +49,20 @@ public class EnemyFunctionality : Functionalities<
 
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder)
             => builder.Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.invulnerable));
-        
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+
+        public void MutateUsingNewSetValues()
         {
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
+            bb.livingEntity.Value.TakeDamageCaller.Invoke(SetContext.attackingCtx.damageInfo);
         }
-
+        
         void InvulnerablitityEnd() => mutateCtx.invulnerable = false;
 
     }
 
     class FaceDir : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        UPDATE
+        UPDATE<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public FaceDir(EnemyController facade) : base(facade) { }
@@ -63,7 +70,7 @@ public class EnemyFunctionality : Functionalities<
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget));
 
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        public override void Tick(IEnemyContextView ctx)
         {
             float targX = bb.target.position.x;
             float myX = facade.transform.position.x;
@@ -92,7 +99,6 @@ public class EnemyFunctionality : Functionalities<
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget));
 
-        protected override void ExecutionImplementation(IEnemyContextView ctx) { }
         public void OnEnterState(IEnemyContextView ctx)
         {
             Debug.Log("Entered Idle State");
@@ -116,7 +122,6 @@ public class EnemyFunctionality : Functionalities<
         }
 
         public ViewRange(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-        protected override void ExecutionImplementation(IEnemyContextView ctx) { }
 
         public void MutateUsingNewSetValues()
         {
@@ -129,7 +134,7 @@ public class EnemyFunctionality : Functionalities<
 
 
     class Jump : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FIXED_UPDATE
+        FIXED_UPDATE<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public Jump(EnemyController facade) : base(facade) { }
@@ -146,7 +151,7 @@ public class EnemyFunctionality : Functionalities<
                 .Add_ShortCircuit(new FuncPredicate(() => bb.jumpTimer.isRunning));
         
         
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        public override void Tick(IEnemyContextView ctx)
         {
             bb.jumpTimer.StartAndReset();
             bb.rb.AddForce(Vector2.up * cfg.jump.jumpForceScalar, ForceMode2D.Impulse);
@@ -156,11 +161,11 @@ public class EnemyFunctionality : Functionalities<
     
 
     class ClampLateralMovement : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        UPDATE
+        UPDATE<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public ClampLateralMovement(EnemyController facade) : base(facade) { }
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        public override void Tick(IEnemyContextView ctx)
         {
             float clampedX = Mathf.Clamp(bb.rb.linearVelocity.x, -cfg.clampLateralMove.maxVelocity, cfg.clampLateralMove.maxVelocity);
             float currentY = bb.rb.linearVelocity.y;
@@ -169,11 +174,11 @@ public class EnemyFunctionality : Functionalities<
     }
     
     class InAir : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FIXED_UPDATE
+        FIXED_UPDATE<IEnemyContextView>
     {
         EnemyConfig cfg => facade.Config; EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         public InAir(EnemyController facade) : base(facade) { }
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        public override void Tick(IEnemyContextView ctx)
         {
             facade.API_Context<EnemyContextData>().isGrounded = IsGrounded();
             if(!ctx.isGrounded) bb.rb.AddForce(-facade.transform.up * cfg.inAir.fallScalar, cfg.inAir.forceMode);
@@ -188,7 +193,7 @@ public class EnemyFunctionality : Functionalities<
     }
 
     class Follow : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FIXED_UPDATE,
+        FIXED_UPDATE<IEnemyContextView>,
         FSM_STATE_ENTER<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
@@ -210,7 +215,7 @@ public class EnemyFunctionality : Functionalities<
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(TravelAngleTooCloseToVertical));
 
         
-        protected override void ExecutionImplementation(IEnemyContextView ctx)
+        public override void Tick(IEnemyContextView ctx)
         {
             //Debug.Log("Follow");
             if (ctx.distToNextWaypoint < cfg.follow.nextWaypointDistance)

@@ -4,7 +4,8 @@ using Sirenix.OdinInspector;
 namespace EMILtools.Systems
 {
     public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
-        IPipelineInjector<TViewCtx>
+        IPipelineInjector<TViewCtx>,
+        TickFM<TViewCtx>
         where TFacade : class, IFacade
         where TViewCtx : class, IContextViewImmutable
     {
@@ -13,7 +14,7 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        protected abstract void ExecutionImplementation(TViewCtx ctx);
+        public virtual void Tick(TViewCtx ctx) { }
 
         protected UnboundFunctionality(TFacade facade) : base(facade)
         {
@@ -24,7 +25,7 @@ namespace EMILtools.Systems
 
         // ---------------------------------- PIPELINE SYSTEM ----------------------------------
         public Pipeline<TViewCtx> InjectPipeline(PipelineBuilder<TViewCtx> builder) => throw new NotImplementedException();
-        public Action<TViewCtx> InjectMainStep() => ExecutionImplementation;
+        public Action<TViewCtx> InjectMainStep() => Tick;
         public virtual PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder) => builder;
         
         
@@ -41,11 +42,5 @@ namespace EMILtools.Systems
         protected void ResetExeConsumeBuffer() => consumeBuffer?.Reset();
         protected void UseExecutionBuffer(Func<bool> bufferPredicate, Ref<float> bufferTime, Func<bool> enableHandle = null)
             => consumeBuffer = new ConsumeBufferSub<TViewCtx>(bufferPredicate, exeSub, bufferTime, enableHandle);
-        
-
-
-        
-
-        
     }
 }
