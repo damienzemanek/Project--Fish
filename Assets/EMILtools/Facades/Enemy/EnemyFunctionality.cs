@@ -105,9 +105,9 @@ public class EnemyFunctionality : Functionalities<
         ON_SET
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-        public class Setter : DataSetter<Ref<bool>>
+        public class Setter : DataSetter<bool>
         {
-            [ShowInInspector] public Ref<bool> canSeeTarget => Get;
+            [ShowInInspector] public bool canSeeTarget => Get;
         }
 
         protected override void Awake()

@@ -18,10 +18,8 @@ public class EnemyController : MonoFacade<
     public class ActionMap : IActionMap
     {
         public readonly Publisher Idle = new();
-        public readonly Publisher<Ref<bool>> CanSeeTarget = new ();
+        public readonly Publisher<bool> CanSeeTarget = new ();
         public readonly Publisher<IEnemyContextView> TakeDamage = new();
-        
-        internal readonly Ref<bool> canSeeTarget = new(false);
     }
 
     protected void Awake()
@@ -34,7 +32,7 @@ public class EnemyController : MonoFacade<
     
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
-    void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(Actions.canSeeTarget.SetReturnThis(canSee)).Forget("Can See");
+    void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
 
 
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackingCtx> sender, AttackingCtx ctx)

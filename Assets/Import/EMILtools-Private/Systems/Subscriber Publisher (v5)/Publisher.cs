@@ -24,11 +24,7 @@ namespace EMILtools.Systems
         }
     }
     
-    /// <summary>
-    /// Only for reference types
-    /// Simple values use Ref<ValueType>
-    /// Complex values use your own classes
-    /// </summary>
+
     public class Publisher :
         IPublisher
     {
@@ -52,11 +48,7 @@ namespace EMILtools.Systems
     }
 
     
-    /// <summary>
-    /// Only for reference types
-    /// Simple values use Ref<ValueType>
-    /// Complex values use your own classes
-    /// </summary>
+
     public class Publisher<TContext> :
         IDelegatorAbstract<ISubscriber<TContext>>,
         IPublisher

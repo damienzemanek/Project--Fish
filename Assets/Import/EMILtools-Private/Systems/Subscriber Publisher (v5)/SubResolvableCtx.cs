@@ -43,8 +43,6 @@ namespace EMILtools.Systems
 
     /// <summary>
     /// No context
-    /// Note: Predicates return TRUE are fore SHORTCIRCUIT
-    ///       Predicates return FALSE are NOT SHORTCIRCUIT
     /// </summary>
     /// <typeparam name="TDelegate"></typeparam>
     /// <typeparam name="TResolver"></typeparam>
@@ -83,8 +81,6 @@ namespace EMILtools.Systems
     
     /// <summary>
     /// With Context
-    /// Note: Predicates return TRUE are fore SHORTCIRCUIT
-    ///       Predicates return FALSE are NOT SHORTCIRCUIT
     /// </summary>
     /// <typeparam name="TDelegate"></typeparam>
     /// <typeparam name="TResolver"></typeparam>
