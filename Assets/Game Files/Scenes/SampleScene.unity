@@ -452,7 +452,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 158690988}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: inspector debug
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -1410,7 +1410,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 448723816}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: inspector debug
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -2072,7 +2072,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640002569}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Feet Points
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2428,7 +2428,7 @@ GameObject:
   - component: {fileID: 841343399}
   - component: {fileID: 841343401}
   - component: {fileID: 841343400}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Down AtkBound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2473,6 +2473,7 @@ MonoBehaviour:
   enter: 1
   exit: 0
   stay: 0
+  exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -2546,7 +2547,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 860695253}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Attack Bounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3039,6 +3040,7 @@ MonoBehaviour:
   enter: 1
   exit: 0
   stay: 0
+  exitOnDisableEvenIfExitFalse: 1
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -3282,15 +3284,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::LivingEntity
   isDead: 0
   deathStatus: 0
-  deathLayer: 0
-  hitLayer: 1
-  destroyOnDeath: 0
-  behaviours:
-  - {fileID: 990602687}
-  colliders:
-  - {fileID: 990602689}
-  deathFloorCollider: {fileID: 1213963159}
-  enableOnDeathAndUnparents: []
   healthThresholds:
     entries:
     - label: 0
@@ -3299,6 +3292,15 @@ MonoBehaviour:
       threshold: 1
     - label: 2
       threshold: 0
+  deathLayer: 2
+  hitLayer: 1
+  destroyOnDeath: 0
+  rb: {fileID: 990602688}
+  deathFloorCollider: {fileID: 1213963159}
+  enableOnDeathAndUnparents: []
+  OnDeathUnityEvent:
+    m_PersistentCalls:
+      m_Calls: []
   animator: {fileID: 491382234}
   deathAnimHandle:
     States:
@@ -3606,6 +3608,7 @@ MonoBehaviour:
   enter: 1
   exit: 1
   stay: 0
+  exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -4256,7 +4259,7 @@ GameObject:
   - component: {fileID: 1657967437}
   - component: {fileID: 1657967439}
   - component: {fileID: 1657967438}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Up AtkBound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4301,6 +4304,7 @@ MonoBehaviour:
   enter: 1
   exit: 0
   stay: 0
+  exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -4904,17 +4908,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::LivingEntity
   isDead: 0
   deathStatus: 0
-  deathLayer: 0
+  healthThresholds:
+    entries:
+    - label: 0
+      threshold: 99
+    - label: 2
+      threshold: 0
+  deathLayer: 2
   hitLayer: 1
   destroyOnDeath: 0
-  behaviours:
-  - {fileID: 1881229041}
-  colliders:
-  - {fileID: 1881229045}
+  rb: {fileID: 1881229044}
   deathFloorCollider: {fileID: 392042225}
   enableOnDeathAndUnparents: []
-  healthThresholds:
-    entries: []
+  OnDeathUnityEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1881229045}
+        m_TargetAssemblyTypeName: UnityEngine.CapsuleCollider2D, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1881229041}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   animator: {fileID: 389884463}
   deathAnimHandle:
     States:
@@ -4937,7 +4969,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1989452146}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: inspector debug
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -4970,7 +5002,7 @@ GameObject:
   - component: {fileID: 1998817663}
   - component: {fileID: 1998817664}
   - component: {fileID: 1998817665}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Front AtkBound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5061,6 +5093,7 @@ MonoBehaviour:
   enter: 1
   exit: 0
   stay: 0
+  exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -5436,7 +5469,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2125198209}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Indicators
   m_TagString: Untagged
   m_Icon: {fileID: 0}

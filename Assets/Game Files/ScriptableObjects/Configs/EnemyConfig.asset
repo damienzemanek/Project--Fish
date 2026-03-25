@@ -27,7 +27,7 @@ MonoBehaviour:
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 60000
     <nextWaypointDistance>k__BackingField: 1
-    <stoppingDistToTarget>k__BackingField: 1.5
+    <stoppingDistToTarget>k__BackingField: 0.5
     <minHorizAngleToFollow>k__BackingField: 50
   <inAir>k__BackingField:
     <checkDist>k__BackingField: 0.3
@@ -45,8 +45,8 @@ MonoBehaviour:
   <viewRange>k__BackingField:
     <delayToStopChasing>k__BackingField:
       val: 2
-  <takeDmg>k__BackingField:
-    <invulnerablePeriod>k__BackingField: 0.2
   <dyingState>k__BackingField:
     <dyingStatePeriod>k__BackingField: 6
     <outOfDeathStateHealAmount>k__BackingField: 2
+  <takeDmg>k__BackingField:
+    <invulnerablePeriod>k__BackingField: 0.2

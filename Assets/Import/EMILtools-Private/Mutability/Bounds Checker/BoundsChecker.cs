@@ -24,6 +24,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     [SerializeField] bool enter = true;
     [SerializeField] bool exit = true;
     [SerializeField] bool stay;
+    [ShowIf("@!exit")] [SerializeField] private bool exitOnDisableEvenIfExitFalse = true;
 
         
     [Header("Layer filtering")]
@@ -104,7 +105,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     void OnDisable()
     {
-        if (!exit) return;
+        if (!exit && !exitOnDisableEvenIfExitFalse) return;
 
         if (is2D)
         {
@@ -127,6 +128,8 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
                 collisions3D.Clear();
             }
 
+            Debug.Log("OnDisable Exit: Exiting: exit is " + exit);
+            
             if (SelectedReceiver)
                 selectedReceiver3D.Value?.OnExitBounds(null, this, exitContext);
         }
@@ -184,8 +187,10 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log($"{gameObject.name}: OnTriggerEnter2D");
         if (!is2D || !enter || !PassesLayerMask(other.gameObject)) return;
-
+        Debug.Log($"{gameObject.name}: OnTriggerEnter2D passes");
+        
         if (ThingCollidedWith)
         {
             if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> receiver)) return;
@@ -199,7 +204,9 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        Debug.Log($"{gameObject.name}: OnTriggerExit2D");
         if (!is2D || !PassesLayerMask(other.gameObject)) return;
+        Debug.Log($"{gameObject.name}: OnTriggerExit2D passes");
 
         if (ThingCollidedWith)
         {
@@ -211,6 +218,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
         if (!exit) return;
 
+        Debug.Log("Actual Exit: Exiting: exit is " + exit + " gameobject " + gameObject.name);
         if (SelectedReceiver)
             selectedReceiver2D.Value?.OnExitBounds(other, this, exitContext);
     }

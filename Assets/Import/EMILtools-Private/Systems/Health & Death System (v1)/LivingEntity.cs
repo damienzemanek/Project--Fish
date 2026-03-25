@@ -25,28 +25,30 @@ public class LivingEntity : Entity,
 
     const float RestartAnimation = ZeroF;
     const float FromBeginning = ZeroF;
-    
-    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
+    float maxHealth;
+
+
     [FoldoutGroup("ReadOnly")] [ShowInInspector] ReactiveIntercept<float> health;
+    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
-    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] float maxHealth;
     
+    [BoxGroup("Settings")] public Threshold<BasicHealthThresholds, PersistentAction<BasicHealthThresholds>> healthThresholds = new();
     [BoxGroup("Settings")] [SerializeField] int deathLayer = 3;
     [BoxGroup("Settings")] [SerializeField] int hitLayer = 2; 
-    [BoxGroup("Settings")] public bool destroyOnDeath = false;
     
-    [BoxGroup("References")] public List<Behaviour> behaviours = new();
-    [BoxGroup("References")] public List<Collider2D> colliders = new();
-    [BoxGroup("References")] public Collider2D deathFloorCollider;
-    [BoxGroup("References")] public List<GameObject> enableOnDeathAndUnparents = new();
-    [BoxGroup("References")] public Threshold<BasicHealthThresholds, PersistentAction<BasicHealthThresholds>> healthThresholds = new();
+    [BoxGroup("Death")] public bool destroyOnDeath = false;
+    [BoxGroup("Death")] [Required] public Rigidbody2D rb;
+    [BoxGroup("Death")] [Required] public Collider2D deathFloorCollider;
+    [BoxGroup("Death")] public List<GameObject> enableOnDeathAndUnparents = new();
+    [BoxGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
+
     
-    [BoxGroup("Animation")] public Animator animator;
+    [BoxGroup("Animation")] [Required] public Animator animator;
     [BoxGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     [BoxGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
 
-    [field: HideInInspector] public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
-    [field: HideInInspector] public PersistentAction<DeathType> OnDeath { get; set; } = new();
+    public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
+    public PersistentAction<DeathType> OnDeath { get; set; } = new();
     
     void Awake()
     {
@@ -101,12 +103,11 @@ public class LivingEntity : Entity,
     void Die()
     {
         if (isDead) return;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
         isDead = true;
         deathStatus = DeathType.Regular;
         OnDeath.Invoke(deathStatus);
         deathAnimHandle.PlayWeightSet(animator, deathStatus, 1, deathLayer, FromBeginning);
-        foreach (var b in behaviours) b.enabled = false;
-        foreach (var c in colliders) c.enabled = false;
         deathFloorCollider.enabled = true;
         foreach (var g in enableOnDeathAndUnparents) g.SetActiveThen(true).transform.parent = null;
         if (destroyOnDeath) StartCoroutine(DestroyOnDeath());
@@ -117,8 +118,6 @@ public class LivingEntity : Entity,
         yield return new WaitForSeconds(2);
         Destroy(gameObject);   
     }
-    
-    
     
     
     

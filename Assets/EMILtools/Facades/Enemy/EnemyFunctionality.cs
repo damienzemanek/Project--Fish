@@ -40,15 +40,7 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholds.Dying), "Dying");
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholds.Dying), "Not Dying");
     }
-
-
-    class Attack : UnboundFunctionality<EnemyController, IEnemyContextView>
-    {
-        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-        public Attack(EnemyController facade) : base(facade) { }
-        
-        
-    }
+    
     
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,
         FSM_STATE_ENTER<IEnemyContextView>
@@ -77,7 +69,6 @@ public class EnemyFunctionality : Functionalities<
             bb.livingEntity.Heal(cfg.dyingState.outOfDeathStateHealAmount, out var newState);
             mutateCtx.currentHealthState = newState;
             bb.viewRange.enabled = true;
-            
         }
     }
     
@@ -137,6 +128,7 @@ public class EnemyFunctionality : Functionalities<
 
         public void MutateUsingNewSetValues()
         {
+            Debug.Log("View Range: NEW " + SetContext.canSeeTarget);
             if(!SetContext.canSeeTarget)
                 mutateCtx.canSeeTarget.SetBuffered(SetContext.canSeeTarget);
             else 
