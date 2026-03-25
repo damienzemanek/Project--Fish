@@ -7,6 +7,8 @@ public class AttackingBoundsChecker : BoundsChecker<AttackCtx>
     [Serializable]
     public struct AttackCtx
     {
+        public Transform attackerTransform;
+        public Rigidbody attackerRb;
         public IDamageable.DamageInfo damageInfo;
     }
 }

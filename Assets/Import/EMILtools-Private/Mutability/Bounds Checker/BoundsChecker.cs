@@ -35,7 +35,10 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     [BoxGroup("Context")] [ShowIf("enter")] [SerializeField] public TContext enterContext;
     [BoxGroup("Context")] [ShowIf("stay")]  [SerializeField] public TContext stayContext;
     [BoxGroup("Context")] [ShowIf("exit")]  [SerializeField] public TContext exitContext;
-    
+
+    [HideInInspector] public IPredicate injectedEnterPredicate;
+    [HideInInspector] public IPredicate injectedExitPredicate;
+    [HideInInspector] public IPredicate injectedStayPredicate;
 
     private HashSet<IBoundsCheckMsgReceiver<Collider, TContext>> collisions3D;
     private HashSet<IBoundsCheckMsgReceiver<Collider2D, TContext>> collisions2D;
@@ -92,14 +95,19 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
                 var other = hits[i];
                 if (other == null) continue;
                 if (!PassesLayerMask(other.gameObject)) continue;
-                if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> r)) continue;
-                if (!collisions2D.Add(r)) continue;
-                r.OnEnterBounds(other, this, enterContext);
+                
+                
+                if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> receiver)) continue;
+                if (!collisions2D.Add(receiver)) continue;
+                receiver.OnEnterBounds(other, this, enterContext);
             }
         }
 
         if (SelectedReceiver && count > 0)
-            selectedReceiver2D.Value?.OnEnterBounds(hits[0], this, enterContext);
+        {
+            for (int i = 0; i < count; i++)
+                selectedReceiver2D.Value?.OnEnterBounds(hits[0], this, enterContext);
+        }
     }
 
 

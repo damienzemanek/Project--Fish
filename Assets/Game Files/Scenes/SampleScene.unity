@@ -2478,16 +2478,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackerTransform: {fileID: 1881229042}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -3045,16 +3048,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   enterContext:
+    attackerTransform: {fileID: 990602683}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -4309,16 +4315,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackerTransform: {fileID: 1881229042}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -5098,16 +5107,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackerTransform: {fileID: 1881229042}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackerTransform: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0

@@ -15,6 +15,8 @@ public class PlayerController : MonoFacade<
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
         IEntityFacade
 {
+    Transform IFacade.transform => gameObject.transform;
+
     public class ActionMap : IActionMap
     {
         public readonly Publisher<AttackCtx> TakeDamage = new();

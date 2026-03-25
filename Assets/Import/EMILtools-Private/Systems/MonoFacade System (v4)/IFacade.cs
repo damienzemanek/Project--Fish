@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 namespace EMILtools.Systems
 {
     public interface IFacade
@@ -9,6 +11,7 @@ namespace EMILtools.Systems
         public TConfigType API_Config<TConfigType>() where TConfigType : IConfig;
         public TFunctionalityType API_Functionality<TFunctionalityType>() where TFunctionalityType : IFunctionality;
         public IFSM FSM { get; }
+        public Transform transform { get; }
     }
 
 }

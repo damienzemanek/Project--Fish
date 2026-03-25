@@ -31,6 +31,7 @@ public interface IEntityConfig : IConfig
     }
     
     public TakeDmg takeDmg { get; set; }
+    public float pushForce { get; set; }
 }
 
 
@@ -66,6 +67,9 @@ public class SharedFMs
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
+            
+            Vector3 pushDir = SetContext.AttackCtx.attackerTransform.position - facade.transform.position;
+            SetContext.AttackCtx.attackerRb.AddForce(pushDir.normalized * cfg.takeDmg.pushForce, ForceMode.Impulse);
         }
 
         void NewHealthState(LivingEntity.BasicHealthThresholds newHealthState)
