@@ -4,7 +4,7 @@ using EMILtools.Timers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public interface IPlayerContextView : IContextViewImmutable
+public interface IPlayerContextView : IEntityCtx
 {
     public ICountdownTimer CoyoteTimer { get; }
     public ICurveValue JumpCurve { get; }
@@ -42,4 +42,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     public ICountdownTimer CoyoteTimer => coyoteTimer;
     public bool IsGrounded => isGrounded;
     public bool FallingWithoutJumpingFirst => fallingWithoutJumpingFirst;
+    public float hp { get; set; }
+    public bool invulnerable { get; set; }
+    public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
 }

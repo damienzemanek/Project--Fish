@@ -2,11 +2,14 @@ using System;
 using UnityEngine;
 using static AttackingBoundsChecker;
 
-public class AttackingBoundsChecker : BoundsChecker<AttackingCtx>
+public class AttackingBoundsChecker : BoundsChecker<AttackCtx>
 {
     [Serializable]
-    public struct AttackingCtx
+    public struct AttackCtx
     {
         public IDamageable.DamageInfo damageInfo;
     }
 }
+
+
+

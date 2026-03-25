@@ -13,13 +13,14 @@ public class EnemyController : MonoFacade<
     ActionMap>, 
         ITimerUser, 
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
-        IBoundsCheckMsgReceiver<Collider2D, AttackingCtx>
+        IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
+        IEntityFacade
 {
     public class ActionMap : IActionMap
     {
         public readonly Publisher Idle = new();
         public readonly Publisher<bool> CanSeeTarget = new ();
-        public readonly Publisher<AttackingCtx> TakeDamage = new();
+        public readonly Publisher<AttackCtx> TakeDamage = new();
     }
 
     protected void Awake()
@@ -33,13 +34,11 @@ public class EnemyController : MonoFacade<
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
-
-
-    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackingCtx> sender, AttackingCtx ctx)
+    
+    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
     {
         Debug.Log("Hit");
         Actions.TakeDamage.Publish(ctx);
         Debug.Log("Hit Compelte");
-
     }
 }

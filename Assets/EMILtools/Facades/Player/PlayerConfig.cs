@@ -5,7 +5,7 @@ using UnityEngine;
 using EMILtools.Systems;
 
 [CreateAssetMenu(fileName = "PlayerConfig", menuName = "EMILtools/ScriptableObjects/Configs/Player")]
-public class PlayerConfig : Config
+public class PlayerConfig : Config, IEntityConfig
 {
     public enum FaceDirection { Left, Right }
     public enum MouseZones { LeftScreen, RightScreen }
@@ -20,6 +20,7 @@ public class PlayerConfig : Config
     [SerializeField] public Fall fall;
     [SerializeField] public Facing facing;
     [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
+    [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
 
     [Serializable]
     public struct Facing

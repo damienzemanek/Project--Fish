@@ -4,7 +4,7 @@ using EMILtools.Systems;
 using Pathfinding;
 
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "EMILtools/ScriptableObjects/Configs/Enemy")]
-public class EnemyConfig : Config
+public class EnemyConfig : Config, IEntityConfig
 {
     public enum EnemyAnims { Idle, Attack, Walk, Dying }
     public enum EnemyBlendVars { }
@@ -15,8 +15,8 @@ public class EnemyConfig : Config
     [field: SerializeField] public ClampLateralMov clampLateralMove { get; private set; }
     [field: SerializeField] public Jump jump { get; private set; }
     [field: SerializeField] public ViewRange viewRange { get; private set; }
-    [field: SerializeField] public TakeDmg takeDmg { get; private set; }
     [field: SerializeField] public DyingState dyingState { get; private set; }
+    [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
 
     [Serializable]
     public struct DyingState
@@ -26,12 +26,7 @@ public class EnemyConfig : Config
 
     }
     
-    [Serializable]
-    public struct TakeDmg
-    {
-        [field: SerializeField] public float invulnerablePeriod { get; private set; }
-    }
-    
+
     [Serializable]
     public struct ViewRange
     {

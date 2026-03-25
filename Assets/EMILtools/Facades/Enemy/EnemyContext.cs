@@ -3,7 +3,7 @@ using Pathfinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public interface IEnemyContextView : IContextViewImmutable
+public interface IEnemyContextView : IEntityCtx
 {
     public Path path { get; }
     public int currentWaypointIndex { get; }
@@ -31,8 +31,6 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool invulnerable { get; set; }
     [field: ShowInInspector] public float hp { get; set; }
     [field: ShowInInspector] public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
-
-
     
     [field: BoxGroup("A Star")] [field: ShowInInspector] public Path path { get; set; }
     [field: BoxGroup("A Star")] [field: ShowInInspector] public int currentWaypointIndex { get; set; }

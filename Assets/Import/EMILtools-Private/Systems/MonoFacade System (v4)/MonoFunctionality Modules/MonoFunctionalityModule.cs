@@ -13,7 +13,7 @@ namespace EMILtools.Systems
     public abstract class MonoFunctionalityModule<TFacade> : 
         IMonoFunctionalityModule,
         IState
-    where TFacade : class, IFacade
+    where TFacade : IFacade
     {
         [Title("$Name"), PropertyOrder(-1)]
         [ShowInInspector] public string Name => "Module: " + this.GetType().Name;

@@ -6,7 +6,7 @@ namespace EMILtools.Systems
     public abstract class UnboundFunctionality<TFacade, TViewCtx> : MonoFunctionalityModule<TFacade>, 
         IPipelineInjector<TViewCtx>,
         TickFM<TViewCtx>
-        where TFacade : class, IFacade
+        where TFacade : IFacade
         where TViewCtx : class, IContextViewImmutable
     {
         /// <summary>

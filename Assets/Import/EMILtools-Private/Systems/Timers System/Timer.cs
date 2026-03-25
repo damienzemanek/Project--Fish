@@ -11,7 +11,7 @@ namespace EMILtools.Timers
     public abstract class Timer
     {
         [field: ShowInInspector] [field: ReadOnly] public bool isRunning { get; protected set; } = false;
-        [ShowInInspector] [Range(0, 1)] public float Progress => Mathf.Clamp01(Time / initialTime);
+        [ShowInInspector] [Range(0, 1)] public float Progress => initialTime != 0 ? Mathf.Clamp01(Time / initialTime) : 1;
         [FoldoutGroup("Timer")] [ShowInInspector] protected Ref<float> initialTime;
         [FoldoutGroup("Timer")] [ShowInInspector] [ReadOnly] public float Time { get; set; } = 1f;
         public float Duration => initialTime;

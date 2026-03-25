@@ -81,3 +81,5 @@ MonoBehaviour:
       animEnum: 6
       hash: 1443585033
     BlendTreeVariables: []
+  <takeDmg>k__BackingField:
+    <invulnerablePeriod>k__BackingField: 0.2

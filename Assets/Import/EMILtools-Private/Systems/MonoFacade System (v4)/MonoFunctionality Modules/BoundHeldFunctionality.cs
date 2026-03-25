@@ -50,7 +50,7 @@ namespace EMILtools.Systems
             TViewCtx, 
             DataSetter> 
             : UnboundFunctionality<TFacade, TViewCtx>, IBindable
-        where TFacade : class, IFacade
+        where TFacade : IFacade
         where DataSetter : class, IDataSetter, new()
         where TViewCtx : class, IContextViewImmutable
     {

@@ -182,6 +182,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 990602683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &72913893
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 72913894}
+  m_Layer: 0
+  m_Name: Attack Colliders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &72913894
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 72913893}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 968118876}
+  m_Father: {fileID: 197626921}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &102217631
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,6 +536,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 491382229}
+  - {fileID: 72913894}
   m_Father: {fileID: 990602683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &229002527
@@ -2951,6 +2984,131 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &968118875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 968118876}
+  - component: {fileID: 968118878}
+  - component: {fileID: 968118877}
+  m_Layer: 0
+  m_Name: ' Body Attack Collider'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &968118876
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968118875}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 72913894}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &968118877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968118875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3730d2aa4704b4a808581d73cbfc66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackingBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 1
+  SelectedReceiver: 0
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 0}
+  enter: 1
+  exit: 0
+  stay: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  enterContext:
+    damageInfo:
+      dmg: 1
+      location: 0
+      type: 0
+  stayContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+  exitContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+--- !u!60 &968118878
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968118875}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0.046164513, y: 0.117112756}
+      - {x: -0.6105967, y: -0.27957445}
+      - {x: -0.4435224, y: -0.8667221}
+      - {x: 0.5069982, y: -0.8609515}
+      - {x: 0.6625314, y: -0.29688588}
+  m_UseDelaunayMesh: 1
 --- !u!1 &990602682
 GameObject:
   m_ObjectHideFlags: 0
@@ -3046,7 +3204,7 @@ MonoBehaviour:
       - {fileID: 41291135}
       <faceDirTransform>k__BackingField: {fileID: 197626921}
       <livingEntity>k__BackingField: {fileID: 990602690}
-      <viewRange>k__BackingField: {fileID: 1218048177}
+      <viewRange>k__BackingField: {fileID: 1218048176}
 --- !u!50 &990602688
 Rigidbody2D:
   serializedVersion: 5
@@ -4579,12 +4737,32 @@ MonoBehaviour:
   structure:
     Blackboard:
       <rb>k__BackingField: {fileID: 1881229044}
-      <feetPoints>k__BackingField:
-      - {fileID: 1230481292}
-      - {fileID: 507188533}
+      <livingEntity>k__BackingField: {fileID: 1881229046}
       <facingBody>k__BackingField: {fileID: 1206560638}
       <attackDirIndicator>k__BackingField: {fileID: 1838079756}
       <animator>k__BackingField: {fileID: 389884463}
+      <attackBounds>k__BackingField:
+        colliders:
+        - tag: 0
+          obj: {fileID: 2134637841}
+        - tag: 0
+          obj: {fileID: 745807906}
+        - tag: 0
+          obj: {fileID: 1192591229}
+        - tag: 0
+          obj: {fileID: 814472843}
+      <feetPoints>k__BackingField:
+      - {fileID: 1230481292}
+      - {fileID: 507188533}
+      <attackColliders>k__BackingField:
+      - tag: 0
+        obj: {fileID: 1998817664}
+      - tag: 1
+        obj: {fileID: 1998817664}
+      - tag: 2
+        obj: {fileID: 1657967439}
+      - tag: 3
+        obj: {fileID: 841343401}
       <jumpCurve>k__BackingField:
         operation: 0
         curve:
@@ -4622,25 +4800,6 @@ MonoBehaviour:
           m_RotationOrder: 4
         operationScalar: 1
         pauseProgress: -1
-      <attackBounds>k__BackingField:
-        colliders:
-        - tag: 2
-          obj: {fileID: 2134637841}
-        - tag: 3
-          obj: {fileID: 745807906}
-        - tag: 0
-          obj: {fileID: 1192591229}
-        - tag: 1
-          obj: {fileID: 814472843}
-      <attackColliders>k__BackingField:
-      - tag: 0
-        obj: {fileID: 1998817664}
-      - tag: 1
-        obj: {fileID: 1998817664}
-      - tag: 2
-        obj: {fileID: 1657967439}
-      - tag: 3
-        obj: {fileID: 841343401}
   <inputSubordinateContext>k__BackingField:
     Subordinate:
       underlyingValue: {fileID: 1881229041}
@@ -4755,11 +4914,7 @@ MonoBehaviour:
   deathFloorCollider: {fileID: 392042225}
   enableOnDeathAndUnparents: []
   healthThresholds:
-    entries:
-    - label: 0
-      threshold: 5
-    - label: 2
-      threshold: 0
+    entries: []
   animator: {fileID: 389884463}
   deathAnimHandle:
     States:

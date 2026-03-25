@@ -20,7 +20,7 @@ public class EnemyFunctionality : Functionalities<
         // return AddModule(new Idle(...))
 
         AddModule(new DyingState(f));
-        AddModule(new TakeDmg(facade.Actions.TakeDamage, f));
+        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f));
         AddModule(new FaceDir(f));
         AddModule(new Idle(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -41,8 +41,15 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholds.Dying), "Not Dying");
     }
 
-    
 
+    class Attack : UnboundFunctionality<EnemyController, IEnemyContextView>
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public Attack(EnemyController facade) : base(facade) { }
+        
+        
+    }
+    
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,
         FSM_STATE_ENTER<IEnemyContextView>
     {
@@ -74,48 +81,6 @@ public class EnemyFunctionality : Functionalities<
         }
     }
     
-
-    class TakeDmg : BoundSetFunctionality<EnemyController, IEnemyContextView, TakeDmg.Setter>,
-        ON_SET
-    {
-        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-
-        public class Setter : DataSetter<AttackingCtx>
-        {
-            [ShowInInspector] public AttackingCtx attackingCtx => Get;
-        }
-
-        public TakeDmg(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-
-        protected override void Awake()
-        {
-            bb.invulnerableTimer = new CountdownTimer(cfg.takeDmg.invulnerablePeriod);
-            facade.InitTimer(bb.invulnerableTimer, true);
-            bb.invulnerableTimer.OnTimerStop.Add(InvulnerablitityEnd);
-            
-            PersistentAction<BasicHealthThresholds> newHealthState = new PersistentAction<BasicHealthThresholds>(NewHealthState);
-            bb.livingEntity.healthThresholds.SetAllDelegates(newHealthState);
-        }
-
-        public void MutateUsingNewSetValues()
-        {
-            if (mutateCtx.invulnerable) return;
-            if (mutateCtx.currentHealthState == BasicHealthThresholds.Dying) return;
-            bb.invulnerableTimer.StartAndReset();
-            mutateCtx.invulnerable = true;
-            mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.attackingCtx.damageInfo);
-            Debug.Log(facade.gameObject.name + " Took Damage");
-        }
-
-        void NewHealthState(BasicHealthThresholds newHealthState)
-        {
-            Debug.Log("New Health State: " + newHealthState + "");
-            mutateCtx.currentHealthState = newHealthState;
-        }
-        
-        void InvulnerablitityEnd() => mutateCtx.invulnerable = false;
-
-    }
 
     class FaceDir : UnboundFunctionality<EnemyController, IEnemyContextView>,
         UPDATE<IEnemyContextView>

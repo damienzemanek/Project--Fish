@@ -7,7 +7,7 @@ using UnityEngine;
 using static LifecycleEX;
 
 [Serializable]
-public class EnemyBlackboard : Blackboard
+public class EnemyBlackboard : Blackboard, IEntityBlackboard
 {
     [field: SerializeField] [field: Required] public Animator animator { get; private set; }
     [field: SerializeField] [field: Required] public Seeker seeker { get; private set; }
