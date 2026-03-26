@@ -128,6 +128,8 @@ public class SharedFMs
         {
             if (mutateCtx.invulnerable) return;
             if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
+            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
+            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dead) return;
             
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
