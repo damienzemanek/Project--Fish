@@ -6,6 +6,7 @@ using UnityEngine;
 namespace EMILtools.Systems
 {
     
+    
     /// <summary>
     /// DataSetters handle what happens when values are set
     /// They solve the problem of needing to do repetitive templating and work generically

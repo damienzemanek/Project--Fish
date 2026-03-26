@@ -48,5 +48,9 @@ MonoBehaviour:
   <dyingState>k__BackingField:
     <dyingStatePeriod>k__BackingField: 6
     <outOfDeathStateHealAmount>k__BackingField: 2
+  <hitStop>k__BackingField:
+    <scalar>k__BackingField: 0
+    <period>k__BackingField: 0.1
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
+    <pushForce>k__BackingField: 25

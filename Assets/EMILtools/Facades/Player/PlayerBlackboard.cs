@@ -11,6 +11,7 @@ public class PlayerBlackboard : Blackboard, IEntityBlackboard
     public enum AttackDir { Left, Right, Up, Down }
     
     [field: SerializeField] [field:Required] public Rigidbody2D rb { get; private set;}
+    [field:SerializeField] [field:Required] public AttackingBoundsChecker[] attackingBoundsCheckers { get; private set; }
     [field:SerializeField] [field:Required] public LivingEntity livingEntity { get; set; }
     [field:SerializeField] [field:Required] public Transform facingBody { get; private set; }
     [field:SerializeField] [field:Required] public Transform attackDirIndicator { get; private set; }

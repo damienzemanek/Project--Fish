@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using EMILtools.Core;
 using UnityEngine;
 using EMILtools.Systems;
+using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "PlayerConfig", menuName = "EMILtools/ScriptableObjects/Configs/Player")]
 public class PlayerConfig : Config, IEntityConfig
 {
-    public enum FaceDirection { Left, Right }
     public enum MouseZones { LeftScreen, RightScreen }
     
     public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, AttackFront, AttackUp, AttackDown }
@@ -20,12 +20,16 @@ public class PlayerConfig : Config, IEntityConfig
     [SerializeField] public Fall fall;
     [SerializeField] public Facing facing;
     [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
-    [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
+    [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
+    [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
+    
 
+    
+    
     [Serializable]
     public struct Facing
     {
-        [field: SerializeField] public FaceDirection faceDirection { get; private set; }
+        [field: SerializeField] public IEntityCtx.FaceDirection faceDirection { get; private set; }
         [field: SerializeField] public RectLabeled<MouseZones>[] callbackZones { get; private set; }
     }
     

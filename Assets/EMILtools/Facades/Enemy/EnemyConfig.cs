@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using EMILtools.Systems;
 using Pathfinding;
+using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "EMILtools/ScriptableObjects/Configs/Enemy")]
 public class EnemyConfig : Config, IEntityConfig
@@ -16,7 +18,8 @@ public class EnemyConfig : Config, IEntityConfig
     [field: SerializeField] public Jump jump { get; private set; }
     [field: SerializeField] public ViewRange viewRange { get; private set; }
     [field: SerializeField] public DyingState dyingState { get; private set; }
-    [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
+    [field: FormerlySerializedAs("<timeSlowTakeDmg>k__BackingField")] [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
+    [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
 
     [Serializable]
     public struct DyingState

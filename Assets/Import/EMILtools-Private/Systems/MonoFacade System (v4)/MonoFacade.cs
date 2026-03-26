@@ -23,8 +23,8 @@ namespace EMILtools.Systems
         
         bool initialized = false;
 
-        [field: BoxGroup("Action Mappings")]
-        [field: ShowInInspector] [field:ReadOnly] [field:HideLabel] [field: NonSerialized] public TActionMap Actions { get; protected set; }
+        [field:HideLabel] [field: NonSerialized] public TActionMap Actions { get; protected set; }
+        
         [field: BoxGroup("Config")]
         [field:SerializeField, Required] public TConfig Config { get; private set; }
         [SerializeField, HideLabel] public TMonoStructure structure;

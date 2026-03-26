@@ -12,6 +12,7 @@ public class EnemyBlackboard : Blackboard, IEntityBlackboard
     [field: SerializeField] [field: Required] public Animator animator { get; private set; }
     [field: SerializeField] [field: Required] public Seeker seeker { get; private set; }
     [field: SerializeField] [field: Required] public Rigidbody2D rb { get; private set; }
+    [field: SerializeField] [field: Required] public AttackingBoundsChecker[] attackingBoundsCheckers { get; private set; }
     [field: SerializeField] [field: Required] public Transform target { get; private set; }
     [field: SerializeField] [field: Required] public DelayLimitedMethod computePath { get; private set; }
     [field: SerializeField] [field: Required] public Transform[] feetPoints { get; private set; }

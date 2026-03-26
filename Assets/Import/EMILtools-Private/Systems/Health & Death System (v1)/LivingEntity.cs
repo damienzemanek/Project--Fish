@@ -32,20 +32,20 @@ public class LivingEntity : Entity,
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
     
-    [BoxGroup("Settings")] public Threshold<BasicHealthThresholds, PersistentAction<BasicHealthThresholds>> healthThresholds = new();
-    [BoxGroup("Settings")] [SerializeField] int deathLayer = 3;
-    [BoxGroup("Settings")] [SerializeField] int hitLayer = 2; 
+    [FoldoutGroup("Settings")] public Threshold<BasicHealthThresholds, PersistentAction<BasicHealthThresholds>> healthThresholds = new();
+    [FoldoutGroup("Settings")] [SerializeField] int deathLayer = 3;
+    [FoldoutGroup("Settings")] [SerializeField] int hitLayer = 2; 
     
-    [BoxGroup("Death")] public bool destroyOnDeath = false;
-    [BoxGroup("Death")] [Required] public Rigidbody2D rb;
-    [BoxGroup("Death")] [Required] public Collider2D deathFloorCollider;
-    [BoxGroup("Death")] public List<GameObject> enableOnDeathAndUnparents = new();
-    [BoxGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
+    [FoldoutGroup("Death")] public bool destroyOnDeath = false;
+    [FoldoutGroup("Death")] [Required] public Rigidbody2D rb;
+    [FoldoutGroup("Death")] [Required] public Collider2D deathFloorCollider;
+    [FoldoutGroup("Death")] public List<GameObject> enableOnDeathAndUnparents = new();
+    [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
 
     
-    [BoxGroup("Animation")] [Required] public Animator animator;
-    [BoxGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
-    [BoxGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
+    [FoldoutGroup("Animation")] [Required] public Animator animator;
+    [FoldoutGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
+    [FoldoutGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
 
     public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
     public PersistentAction<DeathType> OnDeath { get; set; } = new();

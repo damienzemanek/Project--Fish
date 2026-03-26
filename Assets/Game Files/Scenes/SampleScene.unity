@@ -443,6 +443,144 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &138287229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 138287230}
+  - component: {fileID: 138287232}
+  - component: {fileID: 138287231}
+  m_Layer: 3
+  m_Name: Square (11)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &138287230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138287229}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -17.43, y: -4.37, z: 0}
+  m_LocalScale: {x: 4.45639, y: 1.1029909, z: 0.47851}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2042459450}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &138287231
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138287229}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!212 &138287232
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 138287229}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
 --- !u!1 &158690987
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,6 +1183,144 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 372769729}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!1 &374524034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 374524035}
+  - component: {fileID: 374524037}
+  - component: {fileID: 374524036}
+  m_Layer: 3
+  m_Name: Square (10)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &374524035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374524034}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -11.96, y: -5.9, z: 0}
+  m_LocalScale: {x: 9.313055, y: 2.305053, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2042459450}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &374524036
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374524034}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
+--- !u!212 &374524037
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374524034}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -1749,6 +2025,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 990602683}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &576072529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 576072530}
+  m_Layer: 0
+  m_Name: Time Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &576072530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 576072529}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.11383, y: 0.55285, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &587846830
 GameObject:
@@ -2470,27 +2777,30 @@ MonoBehaviour:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
     underlyingValue: {fileID: 0}
-  enter: 1
-  exit: 0
-  stay: 0
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 1
+  <stay>k__BackingField: 0
   exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
-    attackerTransform: {fileID: 1881229042}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 1881229041}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -3040,27 +3350,30 @@ MonoBehaviour:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
     underlyingValue: {fileID: 0}
-  enter: 1
-  exit: 0
-  stay: 0
-  exitOnDisableEvenIfExitFalse: 1
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 0
+  <stay>k__BackingField: 1
+  exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 64
   enterContext:
-    attackerTransform: {fileID: 990602683}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 990602687}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 990602687}
     damageInfo:
-      dmg: 0
+      dmg: 1
       location: 0
       type: 0
   exitContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -3078,10 +3391,10 @@ PolygonCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 191
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -3147,7 +3460,7 @@ Transform:
   m_GameObject: {fileID: 990602682}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.19000006, y: -1.054, z: 0}
+  m_LocalPosition: {x: -12.49, y: -9.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3204,6 +3517,8 @@ MonoBehaviour:
       <animator>k__BackingField: {fileID: 491382234}
       <seeker>k__BackingField: {fileID: 990602685}
       <rb>k__BackingField: {fileID: 990602688}
+      <attackingBoundsCheckers>k__BackingField:
+      - {fileID: 968118877}
       <target>k__BackingField: {fileID: 1881229042}
       <computePath>k__BackingField:
         delay: 0.4
@@ -3232,7 +3547,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3274,8 +3589,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.32545793}
-  m_Radius: 0.4356439
+  m_Offset: {x: 0.03, y: -0.42}
+  m_Radius: 0.3293236
 --- !u!114 &990602690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3306,7 +3621,31 @@ MonoBehaviour:
   enableOnDeathAndUnparents: []
   OnDeathUnityEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 990602687}
+        m_TargetAssemblyTypeName: EnemyController, Assembly-CSharp
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 990602689}
+        m_TargetAssemblyTypeName: UnityEngine.CircleCollider2D, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   animator: {fileID: 491382234}
   deathAnimHandle:
     States:
@@ -3611,9 +3950,9 @@ MonoBehaviour:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
     underlyingValue: {fileID: 990602687}
-  enter: 1
-  exit: 1
-  stay: 0
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 1
+  <stay>k__BackingField: 0
   exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
@@ -4166,7 +4505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: AstarPathfindingProject::AstarPath
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACAn+v/eCiZXQIAABMFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMty2jAU/RVG65KxIQ/ornUI6SIJE9rJxhshXWMNsuTRI0Ay/HuvZBs7dLpCnHN077kP+ZMIZWtgTpulEfxJcyDfRyScybdRTz7CgW61WosP6DRvgrsyiGjUvFInNOJpuGZ1Bc4I9kNtZRAnCHolCm2qBd9Cpq2zCBdUWkDKaBduK4Q+R+SAP+N5uHLE0+QunD7wNE9GJzwyUA5ML+2EnaxRecUkrWrgwXIvvr7pwt5EmcJiWkVyFTimpRS29ULcsY61ZrS2HitBARcUa4sGkqs7BEoQ29KFkMPrL0VhwbW2DD3eC4NNauKSn7rpXEXtrvH2TqUPmWbRVRPy6R92nEa6MLp67LKmScjgSsF2r/TIqHWDxg7h+954Ghu0p3JHNxLeSlDPemm0VxxJZ3y46i1M7vu/58KyEtiuxxurF6Cv/z+eUMMp1n7IpKg2sY/XDbCWOvY7Dh8MzuYXGo6rYdsQiAYXfyz8ptvhDrXEgzDWIdVWqYK9jfYmSMki9ixU412mjYIIt6ZrUFS64wrDuMsBXnCDtBfMAw2vpU3ect0j+Jonor08SS6old6fZ2VLvX8CW754J4UaxArEM7Yp00o16zVsSXdt7U1B2eDa1gv+dbPIpJjQ2WTGkiS5nc6S23EKPE2L6zlMp2xzN5+SuHpCYZlUrhqjbXdwaKoPrnDNum/IaGloHVedG7pfio9KDzouVKHXzAColybC2TgYTILPki+4wAatwTmh4rjJZ06kZjvg+TlQHitdHJyheR8lJ7V41y4gOcniRyMnAT6v8srAu4B9SN4FO5HTX1BLAwQUAAAICAAAgJ/r4vfcr20AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNdRUEovSizIKAaKGII4pZkpIHa0klGaUaKFkUWygYGBmbGFgZmuYWqKoWGaiWWqsXFykrmlsVIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAgJ/r/3gomV0CAAATBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAgJ/r4vfcr20AAAB4AAAACQAkAAAAAAAAAAAAAACqAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAGIDAAAAAA==
+    dataString: UEsDBBQAAAgIAACAn+tsFZwtXAIAABMFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VMty2jAU/RVG65KxIQnQXWsI6SIJE9rJxhthXWMNsuTRI0Ay/Huv5GfodIU49+jccx/yJ+HSVJBZpdeasyfFgHwfEX8m30Z98BFOdK/kln9Ay3njzBaeRAPnlVquEI/9NaNKsJpnP+ReeHKEoJM8V7pcsT0kyliDcE6FAQxpZf1tidDniJzwZ7zwV854msz86QNPi2h0wWMG0oLuqS2xpdUsJzNBywqYt9yTZ53sXaBJLKZhRDd3Xl0JwU3jhdhzFWpNaGUcVoIExinWFgxENzMECuD7wnrJ4fWXPDdgG1uanpdcY5NqXfJT1Z0rqTnU3t6pcD7TPLiqJZ/+iY7jEM61Kh/brHHkM9iCZ4dXes6osYPGDuFlbzwODTpScaA7AW8FyGe11spJhkGrnb/qDEyW/d+usKSA7NDjtdUr0FX/H4+v4RJqPyWCl7vQx9sa2AoV+h2GDxpn8wsNh9UwjQSi3sUfA7/pfrhDTeCBa2Mx1FQpvb2dctpTySr0zFfjbKK0hAA3piuQVNjzBmXs9QCvYoO0V5EH6l9Lk7yJtY/ga56A9vQougpt1LGblSnU8QlM8eKs4HKg5QPP2KZESVmv17Al7bWt0znNBtf2jrOvm0Um+YTOJ/MsiqL76Ty6H8fA4ji/XcB0mu1miykJq8cllknFpjbadAeHJntxiWvWfkNGa02rsOpM0+Oaf5Rq0HEuc7XNNIB8qRU646AxCT5LtmIcG7QFa7kM4yafKREqOwBLO6E0VLo6WU3TXiUlFX9X1iMpScJHIyUe7lZ5o+Gdw9Enb8Uu5PIXUEsDBBQAAAgIAACAn+vi99yvbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSSUZpRooWRRbKBgYGZsYWBma5haoqhYZqJZaqxcXKSuaWxUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAACAn+tsFZwtXAIAABMFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACAn+vi99yvbQAAAHgAAAAJACQAAAAAAAAAAAAAAKkCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAYQMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -4307,27 +4646,30 @@ MonoBehaviour:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
     underlyingValue: {fileID: 0}
-  enter: 1
-  exit: 0
-  stay: 0
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 1
+  <stay>k__BackingField: 0
   exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
-    attackerTransform: {fileID: 1881229042}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 1881229041}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -4750,6 +5092,10 @@ MonoBehaviour:
   structure:
     Blackboard:
       <rb>k__BackingField: {fileID: 1881229044}
+      <attackingBoundsCheckers>k__BackingField:
+      - {fileID: 1998817665}
+      - {fileID: 1657967438}
+      - {fileID: 841343400}
       <livingEntity>k__BackingField: {fileID: 1881229046}
       <facingBody>k__BackingField: {fileID: 1206560638}
       <attackDirIndicator>k__BackingField: {fileID: 1838079756}
@@ -4828,7 +5174,7 @@ Transform:
   m_GameObject: {fileID: 1881229040}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -12.15, y: -7.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5099,27 +5445,30 @@ MonoBehaviour:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
     underlyingValue: {fileID: 0}
-  enter: 1
-  exit: 0
-  stay: 0
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 1
+  <stay>k__BackingField: 0
   exitOnDisableEvenIfExitFalse: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
-    attackerTransform: {fileID: 1881229042}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 1881229041}
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
-    attackerTransform: {fileID: 0}
+    hitMsgReceiver:
+      underlyingValue: {fileID: 0}
     damageInfo:
       dmg: 0
       location: 0
@@ -5295,6 +5644,8 @@ Transform:
   - {fileID: 319784163}
   - {fileID: 443863711}
   - {fileID: 1635896420}
+  - {fileID: 374524035}
+  - {fileID: 138287230}
   - {fileID: 2000016499}
   - {fileID: 350904889}
   - {fileID: 2098110344}
@@ -5597,3 +5948,4 @@ SceneRoots:
   - {fileID: 1237382219}
   - {fileID: 1881229042}
   - {fileID: 195081126}
+  - {fileID: 576072530}

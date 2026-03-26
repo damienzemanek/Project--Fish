@@ -1,3 +1,4 @@
+using System;
 using EMILtools.Systems;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -13,6 +14,7 @@ public class PlayerController : MonoFacade<
     PlayerController.ActionMap>,
         IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
+        IContextInjectible<SimpleMsg>,
         IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
@@ -20,6 +22,7 @@ public class PlayerController : MonoFacade<
     public class ActionMap : IActionMap
     {
         public readonly Publisher<AttackCtx> TakeDamage = new();
+        public readonly Publisher<IPlayerContextView> AttackHit = new();
     }
 
     public class PlayerInputMap : InputMap
@@ -43,5 +46,19 @@ public class PlayerController : MonoFacade<
     {
         Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
+    }
+
+    public void OnStayBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
+    {
+        Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
+        Actions.TakeDamage.Publish(ctx);
+    }
+
+    public void InjectContext(SimpleMsg ctx)
+    {
+        switch (ctx)
+        {
+            case SimpleMsg.SimpleAttackHit: Actions.AttackHit.Publish(API_Context<PlayerContextData>()); break;
+        }
     }
 }

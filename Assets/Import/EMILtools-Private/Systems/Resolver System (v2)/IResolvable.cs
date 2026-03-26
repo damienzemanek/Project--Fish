@@ -17,14 +17,8 @@ namespace EMILtools.Systems
         public virtual void ResetWait() { }
         Func<bool> Resolve { get; }
     }
-    
-    public interface IContextInjectible<TCtx>
-    {
-        public void InjectContext(TCtx ctx);
-    }
-    
 
-    
+
     /// <summary>
     /// Represents an interface for waitable resolve operations in the pipeline.
     /// This interface enables components to await asynchronous resolution

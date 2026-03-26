@@ -5,7 +5,7 @@ public interface IEntryPointFM { }
 public interface TickFM<TViewCtx> : IEntryPointFM
     where TViewCtx : class, IContextViewImmutable
 {
-    void Tick(TViewCtx ctx);
+    void Execute(TViewCtx ctx);
 }
 
 public interface UPDATE<TViewCtx> : TickFM<TViewCtx>

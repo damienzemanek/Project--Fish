@@ -21,7 +21,7 @@ namespace EMILtools.Systems
     public abstract class BoundFunctionality<TFacade, TViewCtx> : 
             UnboundFunctionality<TFacade, TViewCtx>, 
             IBindable
-        where TFacade : class, IFacade
+        where TFacade : IFacade
         where TViewCtx : class, IContextViewImmutable
     {
         [NonSerialized] readonly Publisher<TViewCtx> publisher; // Lazy (Injected)

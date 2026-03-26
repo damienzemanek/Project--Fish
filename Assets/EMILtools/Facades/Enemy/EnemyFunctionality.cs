@@ -11,6 +11,7 @@ public class EnemyFunctionality : Functionalities<
     EnemyController,
     IEnemyContextView>
 {
+    
     protected override IState AddModulesHere(EnemyController f)
     {
         // Add Modules like this
@@ -19,8 +20,9 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
-        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f));
+        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null));
         AddModule(new FaceDir(f));
         AddModule(new Idle(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -40,7 +42,6 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholds.Dying), "Dying");
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholds.Dying), "Not Dying");
     }
-    
     
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,
         FSM_STATE_ENTER<IEnemyContextView>
@@ -82,13 +83,21 @@ public class EnemyFunctionality : Functionalities<
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget));
 
-        public override void Tick(IEnemyContextView ctx)
+        public override void Execute(IEnemyContextView ctx)
         {
             float targX = bb.target.position.x;
             float myX = facade.transform.position.x;
             float dif = targX - myX;
-            if(dif < 0) bb.faceDirTransform.rotation = Quaternion.Euler(0, 0, 0);
-            else bb.faceDirTransform.rotation = Quaternion.Euler(0, 180, 0);
+            if (dif < 0)
+            {
+                bb.faceDirTransform.rotation = Quaternion.Euler(0, 0, 0);
+                mutateCtx.facingDirection = IEntityCtx.FaceDirection.Left;
+            }
+            else
+            {
+                bb.faceDirTransform.rotation = Quaternion.Euler(0, 180, 0);
+                mutateCtx.facingDirection = IEntityCtx.FaceDirection.Right;
+            }
             //Debug.Log("facing");
         }
     }
@@ -156,7 +165,7 @@ public class EnemyFunctionality : Functionalities<
                 .Add_ShortCircuit(new FuncPredicate(() => bb.jumpTimer.isRunning));
         
         
-        public override void Tick(IEnemyContextView ctx)
+        public override void Execute(IEnemyContextView ctx)
         {
             bb.jumpTimer.StartAndReset();
             bb.rb.AddForce(Vector2.up * cfg.jump.jumpForceScalar, ForceMode2D.Impulse);
@@ -170,11 +179,16 @@ public class EnemyFunctionality : Functionalities<
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public ClampLateralMovement(EnemyController facade) : base(facade) { }
-        public override void Tick(IEnemyContextView ctx)
+
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder)
+            => builder.Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.invulnerable));
+
+        public override void Execute(IEnemyContextView ctx)
         {
+            if (ctx.invulnerable) return;
             float clampedX = Mathf.Clamp(bb.rb.linearVelocity.x, -cfg.clampLateralMove.maxVelocity, cfg.clampLateralMove.maxVelocity);
             float currentY = bb.rb.linearVelocity.y;
-            bb.rb.linearVelocity = new Vector2(clampedX, currentY);
+            //bb.rb.linearVelocity = new Vector2(clampedX, currentY);
         }
     }
     
@@ -183,7 +197,7 @@ public class EnemyFunctionality : Functionalities<
     {
         EnemyConfig cfg => facade.Config; EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         public InAir(EnemyController facade) : base(facade) { }
-        public override void Tick(IEnemyContextView ctx)
+        public override void Execute(IEnemyContextView ctx)
         {
             facade.API_Context<EnemyContextData>().isGrounded = IsGrounded();
             if(!ctx.isGrounded) bb.rb.AddForce(-facade.transform.up * cfg.inAir.fallScalar, cfg.inAir.forceMode);
@@ -221,7 +235,7 @@ public class EnemyFunctionality : Functionalities<
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(TravelAngleTooCloseToVertical));
 
         
-        public override void Tick(IEnemyContextView ctx)
+        public override void Execute(IEnemyContextView ctx)
         {
             //Debug.Log("Follow");
             if (ctx.distToNextWaypoint < cfg.follow.nextWaypointDistance)

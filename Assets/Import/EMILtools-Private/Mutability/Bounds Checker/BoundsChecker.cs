@@ -10,31 +10,28 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     [Header("What type of Bounds Checker?")]
     public bool is2D;
 
-    [Header("Who will receive the Message?")]
-    [SerializeField] private bool ThingCollidedWith;
-    [SerializeField] private bool SelectedReceiver;
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField] private bool ThingCollidedWith;
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField] private bool SelectedReceiver;
 
-    [SerializeField, ShowIf("@SelectedReceiver && !is2D")]
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField, ShowIf("@SelectedReceiver && !is2D")]
     private InterfaceReference<IBoundsCheckMsgReceiver<Collider, TContext>, MonoBehaviour> selectedReceiver3D;
 
-    [SerializeField, ShowIf("@SelectedReceiver && is2D")]
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField, ShowIf("@SelectedReceiver && is2D")]
     private InterfaceReference<IBoundsCheckMsgReceiver<Collider2D, TContext>, MonoBehaviour> selectedReceiver2D;
 
-    [Header("Which trigger callbacks are active?")]
-    [SerializeField] bool enter = true;
-    [SerializeField] bool exit = true;
-    [SerializeField] bool stay;
-    [ShowIf("@!exit")] [SerializeField] private bool exitOnDisableEvenIfExitFalse = true;
+    [field: FoldoutGroup("Which trigger callbacks are active?")] [field: SerializeField] public bool enter { get; private set; } = true;
+    [field: FoldoutGroup("Which trigger callbacks are active?")] [field: SerializeField] public bool exit { get; private set; } = true;
+    [field: FoldoutGroup("Which trigger callbacks are active?")] [field: SerializeField] public bool stay { get; private set; }
+    [FoldoutGroup("Which trigger callbacks are active?")] [ShowIf("@!exit")] [SerializeField] private bool exitOnDisableEvenIfExitFalse = true;
 
         
-    [Header("Layer filtering")]
-    [SerializeField] private LayerMask layerMask = ~0;
+    [FoldoutGroup("Layer filtering")] [SerializeField] private LayerMask layerMask = ~0;
     
     
-    [BoxGroup("Context")] [Header("What Message is being sent?")]
-    [BoxGroup("Context")] [ShowIf("enter")] [SerializeField] public TContext enterContext;
-    [BoxGroup("Context")] [ShowIf("stay")]  [SerializeField] public TContext stayContext;
-    [BoxGroup("Context")] [ShowIf("exit")]  [SerializeField] public TContext exitContext;
+    [FoldoutGroup("Context")] [Header("What Message is being sent?")]
+    [FoldoutGroup("Context")] [ShowIf("enter")] [SerializeField] public TContext enterContext;
+    [FoldoutGroup("Context")] [ShowIf("stay")]  [SerializeField] public TContext stayContext;
+    [FoldoutGroup("Context")] [ShowIf("exit")]  [SerializeField] public TContext exitContext;
 
     [HideInInspector] public IPredicate injectedEnterPredicate;
     [HideInInspector] public IPredicate injectedExitPredicate;
@@ -135,8 +132,6 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
                     c?.OnExitBounds(null, this, exitContext);
                 collisions3D.Clear();
             }
-
-            Debug.Log("OnDisable Exit: Exiting: exit is " + exit);
             
             if (SelectedReceiver)
                 selectedReceiver3D.Value?.OnExitBounds(null, this, exitContext);
@@ -195,9 +190,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"{gameObject.name}: OnTriggerEnter2D");
         if (!is2D || !enter || !PassesLayerMask(other.gameObject)) return;
-        Debug.Log($"{gameObject.name}: OnTriggerEnter2D passes");
         
         if (ThingCollidedWith)
         {
@@ -212,9 +205,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log($"{gameObject.name}: OnTriggerExit2D");
         if (!is2D || !PassesLayerMask(other.gameObject)) return;
-        Debug.Log($"{gameObject.name}: OnTriggerExit2D passes");
 
         if (ThingCollidedWith)
         {
@@ -226,7 +217,6 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
 
         if (!exit) return;
 
-        Debug.Log("Actual Exit: Exiting: exit is " + exit + " gameobject " + gameObject.name);
         if (SelectedReceiver)
             selectedReceiver2D.Value?.OnExitBounds(other, this, exitContext);
     }

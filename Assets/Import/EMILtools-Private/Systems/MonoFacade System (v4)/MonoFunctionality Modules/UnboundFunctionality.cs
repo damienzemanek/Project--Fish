@@ -14,7 +14,7 @@ namespace EMILtools.Systems
         /// </summary>
         /// <param name="ctx"></param>
         /// <returns></returns>
-        public virtual void Tick(TViewCtx ctx) { }
+        public virtual void Execute(TViewCtx ctx) { }
 
         protected UnboundFunctionality(TFacade facade) : base(facade)
         {
@@ -25,7 +25,7 @@ namespace EMILtools.Systems
 
         // ---------------------------------- PIPELINE SYSTEM ----------------------------------
         public Pipeline<TViewCtx> InjectPipeline(PipelineBuilder<TViewCtx> builder) => throw new NotImplementedException();
-        public Action<TViewCtx> InjectMainStep() => Tick;
+        public Action<TViewCtx> InjectMainStep() => Execute;
         public virtual PipelineBuilder<TViewCtx> InjectSteps(PipelineBuilder<TViewCtx> builder) => builder;
         
         

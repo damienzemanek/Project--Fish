@@ -13,7 +13,7 @@ public interface IPlayerContextView : IEntityCtx
     public bool FallingWithoutJumpingFirst { get; }
     public bool isJumping { get; }
     public bool canJumpCoyote { get; }
-    public PlayerConfig.FaceDirection facingDirection { get; }
+    public FaceDirection facingDirection { get; }
     public PlayerBlackboard.AttackDir attackDir { get; }
     public bool landing { get; }
     public bool isAttacking { get; }
@@ -29,7 +29,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public int jumps { get; set; }
     
     [ShowInInspector] public DelayBuffer<bool> fallingWithoutJumpingFirst { get; set; }
-    [ShowInInspector] public PlayerConfig.FaceDirection facingDirection { get; set; }
+    [ShowInInspector] public IEntityCtx.FaceDirection facingDirection { get; set; }
     [ShowInInspector] public PlayerBlackboard.AttackDir attackDir { get; set; }
     [ShowInInspector] public bool landing { get; set; }
     [ShowInInspector] public bool isJumping { get; set; }
