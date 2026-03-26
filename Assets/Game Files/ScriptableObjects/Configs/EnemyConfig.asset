@@ -25,7 +25,7 @@ MonoBehaviour:
       hash: 315139327
     BlendTreeVariables: []
   <follow>k__BackingField:
-    <speedScalar>k__BackingField: 60000
+    <speedScalar>k__BackingField: 1000
     <nextWaypointDistance>k__BackingField: 1
     <stoppingDistToTarget>k__BackingField: 0.5
     <minHorizAngleToFollow>k__BackingField: 50
@@ -37,9 +37,9 @@ MonoBehaviour:
     <fallScalar>k__BackingField: 3000
     <forceMode>k__BackingField: 0
   <clampLateralMove>k__BackingField:
-    <maxVelocity>k__BackingField: 3
+    <maxVelocityX>k__BackingField: 4
   <jump>k__BackingField:
-    <jumpForceScalar>k__BackingField: 1000
+    <jumpForceScalar>k__BackingField: 5
     <jumpDelay>k__BackingField:
       val: 1
   <viewRange>k__BackingField:
@@ -50,7 +50,8 @@ MonoBehaviour:
     <outOfDeathStateHealAmount>k__BackingField: 2
   <hitStop>k__BackingField:
     <scalar>k__BackingField: 0
-    <period>k__BackingField: 0.1
+    <period>k__BackingField: 0.2
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
-    <pushForce>k__BackingField: 25
+    <pushForceX>k__BackingField: 3
+    <pushForceY>k__BackingField: 1

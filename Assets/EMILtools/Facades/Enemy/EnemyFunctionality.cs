@@ -27,7 +27,7 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new Idle(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
         AddModule(new Jump(f));
-        AddModule(new ClampLateralMovement(f));
+        AddModule(new SharedFMs.ClampLateralMovement<EnemyController>(f));
         AddModule(new InAir(f));
         return AddModule(new Follow(f));
     }
@@ -173,24 +173,6 @@ public class EnemyFunctionality : Functionalities<
         }
     }
     
-
-    class ClampLateralMovement : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        UPDATE<IEnemyContextView>
-    {
-        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-        public ClampLateralMovement(EnemyController facade) : base(facade) { }
-
-        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder)
-            => builder.Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.invulnerable));
-
-        public override void Execute(IEnemyContextView ctx)
-        {
-            if (ctx.invulnerable) return;
-            float clampedX = Mathf.Clamp(bb.rb.linearVelocity.x, -cfg.clampLateralMove.maxVelocity, cfg.clampLateralMove.maxVelocity);
-            float currentY = bb.rb.linearVelocity.y;
-            //bb.rb.linearVelocity = new Vector2(clampedX, currentY);
-        }
-    }
     
     class InAir : UnboundFunctionality<EnemyController, IEnemyContextView>,
         FIXED_UPDATE<IEnemyContextView>

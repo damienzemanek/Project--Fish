@@ -5,8 +5,4 @@
         public void InjectContext(TCtx ctx);
     }
 
-    public enum SimpleMsg
-    {
-        SimpleAttackHit
-    }
 }

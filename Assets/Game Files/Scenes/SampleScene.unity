@@ -3540,7 +3540,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 50
+  m_Mass: 1
   m_LinearDamping: 2
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -5102,13 +5102,13 @@ MonoBehaviour:
       <animator>k__BackingField: {fileID: 389884463}
       <attackBounds>k__BackingField:
         colliders:
-        - tag: 0
+        - tag: 2
           obj: {fileID: 2134637841}
-        - tag: 0
+        - tag: 3
           obj: {fileID: 745807906}
         - tag: 0
           obj: {fileID: 1192591229}
-        - tag: 0
+        - tag: 1
           obj: {fileID: 814472843}
       <feetPoints>k__BackingField:
       - {fileID: 1230481292}

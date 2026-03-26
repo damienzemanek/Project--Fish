@@ -33,8 +33,10 @@ public interface IEntityConfig : IConfig
     [Serializable]
     public struct TakeDmg
     {
-        [field: SerializeField] public float invulnerablePeriod { get; private set; }
-        [field: FormerlySerializedAs("<pushForce>k__BackingField")] [field: SerializeField] public float pushForceX { get; set; }
+        [field: SerializeField] public float invulnerablePeriod { get; private set; } 
+        
+        // These two are set velocity directly for better feeling reactivity
+        [field: SerializeField] public float pushForceX { get; set; }
         [field: SerializeField] public float pushForceY { get; private set; }
     }
     [Serializable]
@@ -43,7 +45,14 @@ public interface IEntityConfig : IConfig
         [field: SerializeField] [field: Range(0, 1)] public float scalar { get; private set; }
         [field: SerializeField] public float period { get; private set; }
     }
+    [Serializable]
+    public struct ClampLateralMov
+    {
+        // Ensure this is bigger than TakeDmg.pushForceX because that sets velocity directly
+        [field: SerializeField] public float maxVelocityX { get; private set; }
+    }
     
+    public ClampLateralMov clampLateralMove { get; set; }
     public HitStop hitStop { get; set; }
     public TakeDmg takeDmg { get; set; }
 }
@@ -51,6 +60,26 @@ public interface IEntityConfig : IConfig
 
 public class SharedFMs
 {
+    
+    public class ClampLateralMovement<TFacade> : UnboundFunctionality<TFacade, IEntityCtx>,
+        UPDATE<IEntityCtx>
+    where TFacade : IEntityFacade
+    {
+        public ClampLateralMovement(TFacade facade) : base(facade) { }
+
+        IEntityConfig cfg => facade.API_Config<IEntityConfig>(); IEntityBlackboard bb => facade.API_Blackboard<IEntityBlackboard>(); IEntityCtx mutateCtx => facade.API_Context<IEntityCtx>();
+        public override PipelineBuilder<IEntityCtx> InjectSteps(PipelineBuilder<IEntityCtx> builder)
+            => builder.Add_ShortCircuit(new FuncCtxPredicate<IEntityCtx>(ctx => ctx.invulnerable));
+
+        public override void Execute(IEntityCtx ctx)
+        {
+            if (ctx.invulnerable) return;
+            float clampedX = Mathf.Clamp(bb.rb.linearVelocity.x, -cfg.clampLateralMove.maxVelocityX, cfg.clampLateralMove.maxVelocityX);
+            float currentY = bb.rb.linearVelocity.y;
+            bb.rb.linearVelocity = new Vector2(clampedX, currentY);
+        }
+    }
+    
     public class InjectCtxIntoBoundsChecker<TFacade> : UnboundFunctionality<TFacade, IEntityCtx>
         where TFacade : IEntityFacade
     {
@@ -99,24 +128,23 @@ public class SharedFMs
         {
             if (mutateCtx.invulnerable) return;
             if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
-            SetContext.AttackCtx.hitMsgReceiver.Value.InjectContext(SimpleMsg.SimpleAttackHit);
             
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
             
+            TimeManager.Instance.SlowTimeForSeconds(cfg.hitStop.period, cfg.hitStop.scalar, ApplyHitForce);
+            
+            postCb?.Invoke();
+        }
+
+        void ApplyHitForce()
+        {
             bb.rb.linearVelocity = new Vector2(0f, bb.rb.linearVelocity.y);
             Vector2 pushDir = SetContext.AttackCtx.attackerEntityCtx.facingDirection == IEntityCtx.FaceDirection.Right ? Vector2.right : Vector2.left;
             Vector2 lateral = pushDir * cfg.takeDmg.pushForceX;
             Vector2 upwards = Vector2.up * cfg.takeDmg.pushForceY;
-            
             bb.rb.linearVelocity = lateral + upwards;
-            
-            //TimeManager.Instance.SlowTimeForSeconds(cfg.hitStop.period, cfg.hitStop.scalar);
-            postCb?.Invoke();
-            
-            Debug.Log("[TakeDamage] push vec : " + pushDir + " combined: " + (pushDir * cfg.takeDmg.pushForceX));
-            Debug.Log("[TakeDamage] velocity after force: " + bb.rb.linearVelocity);
         }
 
         void NewHealthState(LivingEntity.BasicHealthThresholds newHealthState)

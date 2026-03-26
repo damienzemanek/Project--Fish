@@ -14,7 +14,6 @@ public class PlayerController : MonoFacade<
     PlayerController.ActionMap>,
         IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IContextInjectible<SimpleMsg>,
         IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
@@ -53,12 +52,5 @@ public class PlayerController : MonoFacade<
         Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
     }
-
-    public void InjectContext(SimpleMsg ctx)
-    {
-        switch (ctx)
-        {
-            case SimpleMsg.SimpleAttackHit: Actions.AttackHit.Publish(API_Context<PlayerContextData>()); break;
-        }
-    }
+    
 }

@@ -14,7 +14,6 @@ public class EnemyController : MonoFacade<
         ITimerUser, 
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IContextInjectible<SimpleMsg>,
         IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
@@ -44,16 +43,4 @@ public class EnemyController : MonoFacade<
         Debug.Log("Hit Compelte");
     }
     
-
-    public void InjectContext(SimpleMsg ctx)
-    {
-        Debug.Log("[Ctx Injectible] Injecting Context: " + ctx + "");
-        switch (ctx)
-        {
-            case SimpleMsg.SimpleAttackHit:
-                API_Blackboard<EnemyBlackboard>().rb.linearVelocity = Vector2.zero;
-                Debug.Log("[Ctx Injectible] Stopped Movement");
-                break;
-        }
-    }
 }

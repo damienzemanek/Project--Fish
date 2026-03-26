@@ -10,7 +10,6 @@ public class AttackingBoundsChecker : BoundsChecker<AttackCtx>
     public struct AttackCtx
     {
         public IEntityCtx attackerEntityCtx;
-        public InterfaceReference<IContextInjectible<SimpleMsg>, MonoBehaviour> hitMsgReceiver;
         public IDamageable.DamageInfo damageInfo;
     }
 }

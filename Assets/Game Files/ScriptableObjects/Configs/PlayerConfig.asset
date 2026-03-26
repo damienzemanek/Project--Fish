@@ -81,9 +81,12 @@ MonoBehaviour:
       animEnum: 6
       hash: 1443585033
     BlendTreeVariables: []
+  <clampLateralMove>k__BackingField:
+    <maxVelocityX>k__BackingField: 15
   <hitStop>k__BackingField:
     <scalar>k__BackingField: 0
     <period>k__BackingField: 0.2
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
-    <pushForce>k__BackingField: 25
+    <pushForceX>k__BackingField: 15
+    <pushForceY>k__BackingField: 1

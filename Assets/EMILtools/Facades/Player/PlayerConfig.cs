@@ -20,6 +20,7 @@ public class PlayerConfig : Config, IEntityConfig
     [SerializeField] public Fall fall;
     [SerializeField] public Facing facing;
     [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
+    [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.ClampLateralMov clampLateralMove { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
     
