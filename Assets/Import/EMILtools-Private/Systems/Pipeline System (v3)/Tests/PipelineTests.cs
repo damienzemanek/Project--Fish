@@ -10,7 +10,7 @@ using static EMILtools.Systems.PipelineExecutor<PipelineTests.TestCtx>;
 
 public class PipelineTests
 {
-    // Define a simple context for testing
+    // Simple context for testing
     public class TestCtx : IViewableCtx
     {
         public int Value;
@@ -99,21 +99,23 @@ public class PipelineTests
             .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 2),
                 shortCircuited: new IResolvable[] { new Callback(ShortCircuitCallback) })
             .InjectMainMethod(Jump);
+        void Jump(TestCtx ctx) { }
+        void ShortCircuitCallback() => failedStepCallbackExecuted = true;
+
         
         // Act
         await TryTo(jump, myctx);
         
-        void ShortCircuitCallback() => failedStepCallbackExecuted = true;
+        
         // Assert
         Assert.IsTrue(failedStepCallbackExecuted, "Short circuit callback should have been called.");
-        
-        void Jump(TestCtx ctx) { }
     }
 
     
     [Test]
     public async Task Test5_BeforeAndAfter_AllPass_ResolveContextCalled()
     {
+        // Arrange
         var myctx = new TestCtx(3);
         bool jumpCalled = false;
         bool beforecalled = false;
@@ -125,11 +127,13 @@ public class PipelineTests
                 after: new IResolvable[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
         
+        // Act
         await TryTo(jump, myctx);
         void Jump(TestCtx ctx) { jumpCalled = true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;
         
+        // Assert
         Assert.IsTrue(beforecalled, "Before callback should have been called.");
         Assert.IsTrue(aftercalled, "After callback should have been called.");
         Assert.IsTrue(jumpCalled, "Jump should have been called.");
@@ -139,6 +143,7 @@ public class PipelineTests
     [Test]
     public async Task Test6_BeforeAndAfter_BeforePassesOnly_DueToShortCircuit_ResolveContextCalled()
     {
+        // Arrange
         var myctx = new TestCtx(2);
         var jumpCalled = false;
         var beforecalled = false;
@@ -149,19 +154,18 @@ public class PipelineTests
                 before: new IResolvable[]{ new Callback(CallBefore) }, 
                 after: new IResolvable[]{ new Callback(CallAfter) })
             .InjectMainMethod(Jump);
-        
-        await TryTo(jump, myctx);
-        
-        
-        Assert.IsTrue(beforecalled, "Before callback should have been called.");
-        Assert.IsFalse(aftercalled, "After callback should NOT have been called.");
-        Assert.IsFalse(jumpCalled, "Jump should NOT have been called.");
-        return;
-
-        
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;
         void Jump(TestCtx ctx) { jumpCalled = true; }
+        
+        // Act
+        await TryTo(jump, myctx);
+        
+        
+        // Assert
+        Assert.IsTrue(beforecalled, "Before callback should have been called.");
+        Assert.IsFalse(aftercalled, "After callback should NOT have been called.");
+        Assert.IsFalse(jumpCalled, "Jump should NOT have been called.");
     }
 
     
@@ -187,11 +191,11 @@ public class PipelineTests
         
         // Assert
         Assert.AreEqual(jumpCalled, false, "Jump should not be called immediately.");
-        // Manually tick 900ms (0.9s)
+            // Manually tick 900ms (0.9s)
         TimerUtility.TickAllFixed(0.9f);
         TryTo(jump, myctx);
         Assert.AreEqual(jumpCalled, false, "Jump should not be called after 900ms.");
-        // Manually tick another 200ms (Total 1.1s)
+            // Manually tick another 200ms (Total 1.1s)
         TimerUtility.TickAllFixed(0.2f);
         TryTo(jump, myctx);
         Assert.AreEqual(jumpCalled, true, "Jump should be called after total 1100ms.");
@@ -219,12 +223,9 @@ public class PipelineTests
         
         // Assert
         Assert.AreEqual(jumpCalled, false, "Jump should not be called immediately.");
-        
         TimerUtility.TickAllFixed(1.2f);
         yield return new WaitUntil(() => task.IsCompleted);
-        
         Assert.AreEqual(jumpCalled, true, "Jump should be called after total 1100ms.");
-    
         yield return null;
     }
 
@@ -233,6 +234,7 @@ public class PipelineTests
     [Test]
     public async Task Test9_ShortCircuitCallbackCalled()
     {
+        // Arrange
         var myctx = new TestCtx(2);
         bool jumpCalled = false;
         bool beforecalled = false;
@@ -245,17 +247,22 @@ public class PipelineTests
                 after: new IResolvable[]{ new Callback(CallAfter) },
                 shortCircuited: new IResolvable[]{ new Callback(ShortCircuit) })
             .InjectMainMethod(Jump);
-        
-        await TryTo(jump, myctx);
         void Jump(TestCtx ctx) { jumpCalled = true; }
         void CallBefore() => beforecalled = true;
         void CallAfter() => aftercalled = true;
         void ShortCircuit() => shortCircuitCalled = true;
         
+        // Act
+        await TryTo(jump, myctx);
+        
+        // Assert
         Assert.IsTrue(beforecalled, "Before callback should have been called.");
         Assert.IsTrue(shortCircuitCalled, "Short circuit callback should have been called.");
         Assert.IsFalse(aftercalled, "After callback should NOT have been called.");
         Assert.IsFalse(jumpCalled, "Jump should NOT have been called.");
 
     }
+    
+    
+    
 }

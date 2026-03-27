@@ -1,4 +1,3 @@
-
 namespace EMILtools.Systems
 {
     /// <summary>

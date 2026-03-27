@@ -205,6 +205,9 @@ public class EnemyFunctionality : Functionalities<
         {
             PersistentAction computePath = new PersistentAction(() => bb.seeker.StartPath(bb.rb.position, bb.target.position, OnPathComplete));
             bb.computePath.InjectMethod(computePath);
+            
+            
+            
         }
         
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder

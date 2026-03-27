@@ -1,15 +1,9 @@
 ﻿using System;
 using EMILtools.Core;
-using EMILtools.Systems;
-using UnityEngine;
-
 
 namespace EMILtools.Systems
 {
     
-    
-    
-
     /// <summary>
     /// Represents a step in a pipeline,
     /// Defines the type of step, its execution logic, and its associated resolution contexts.

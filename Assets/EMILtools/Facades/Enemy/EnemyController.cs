@@ -23,12 +23,7 @@ public class EnemyController : MonoFacade<
         public readonly Publisher<bool> CanSeeTarget = new ();
         public readonly Publisher<AttackCtx> TakeDamage = new();
     }
-
-    protected void Awake()
-    {
-        InitializeFacade();
-    }
-
+    protected void Awake() => InitializeFacade();
     void OnEnable() => Functionality.Bind();
     void OnDisable() => Functionality.Unbind();
 
@@ -36,11 +31,8 @@ public class EnemyController : MonoFacade<
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
     
+    
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
-    {
-        Debug.Log("Hit");
-        Actions.TakeDamage.Publish(ctx);
-        Debug.Log("Hit Compelte");
-    }
+     => Actions.TakeDamage.Publish(ctx);
     
 }

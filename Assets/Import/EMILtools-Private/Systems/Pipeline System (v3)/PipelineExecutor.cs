@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using EMILtools.Core;
-using UnityEngine;
+﻿using System.Threading.Tasks;
 
 namespace EMILtools.Systems
 {
@@ -40,7 +37,6 @@ namespace EMILtools.Systems
         /// var jump = PipelineBuilder...
         /// TryTo(jump, jumpContext);
         /// ---------------------------------
-        /// Slightly more performant option via "in" keyword
         /// SRP: API
         /// </summary>
         /// <param name="pipeline"></param>
