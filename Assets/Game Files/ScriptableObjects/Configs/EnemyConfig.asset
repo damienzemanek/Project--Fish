@@ -34,12 +34,12 @@ MonoBehaviour:
     <mask>k__BackingField:
       serializedVersion: 2
       m_Bits: 8
-    <fallScalar>k__BackingField: 3000
+    <fallScalar>k__BackingField: 100
     <forceMode>k__BackingField: 0
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 4
   <jump>k__BackingField:
-    <jumpForceScalar>k__BackingField: 5
+    <jumpForceScalar>k__BackingField: 22
     <jumpDelay>k__BackingField:
       val: 1
   <viewRange>k__BackingField:
