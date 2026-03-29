@@ -16,7 +16,7 @@ public class Follow : MonoBehaviour
         }
     }
 
-    protected virtual void FixedUpdate()
+    protected virtual void Update()
     {
         if(follow) transform.position = follow.position;
     }

@@ -9,7 +9,6 @@ using Sirenix.OdinInspector;
 public class PlayerConfig : Config, IEntityConfig
 {
     public enum MouseZones { LeftScreen, RightScreen }
-    
     public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, AttackFront, AttackUp, AttackDown }
     public enum PlayerBlendVars { }
 
@@ -20,12 +19,20 @@ public class PlayerConfig : Config, IEntityConfig
     [SerializeField] public Fall fall;
     [SerializeField] public Facing facing;
     [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
+    [SerializeField] public Hook hook;
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.ClampLateralMov clampLateralMove { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
-    
 
-    
+
+
+    [Serializable]
+    public struct Hook
+    {
+        [field: SerializeField] public float hookMinDist { get; private set; }
+        [field: SerializeField] public float hookMaxDist { get; private set; }
+        [field: SerializeField] public float hookForce { get; private set; }
+    }
     
     [Serializable]
     public struct Facing

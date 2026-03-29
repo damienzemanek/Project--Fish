@@ -10,8 +10,7 @@ public class EnemyController : MonoFacade<
     EnemyFunctionality,
     EnemyConfig,
     EnemyStructure,
-    ActionMap>, 
-        ITimerUser, 
+    ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
         IEntityFacade

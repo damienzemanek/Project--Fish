@@ -18,6 +18,8 @@ public interface IPlayerContextView : IEntityCtx
     public bool landing { get; }
     public bool isAttacking { get; }
     public bool isMoving { get; }   
+    bool isHooking { get; }
+    Vector2 mousePos { get; }
 }
 
 [InlineProperty]
@@ -27,6 +29,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public ICurveValue JumpCurve => API_Blackboard<PlayerBlackboard>().jumpCurve;
     [ShowInInspector] public ReactiveIntercept<bool> isGrounded = new ReactiveIntercept<bool>();
     [ShowInInspector] public int jumps { get; set; }
+    [ShowInInspector] public Vector2 mousePos { get; set; }
     
     [ShowInInspector] public DelayBuffer<bool> fallingWithoutJumpingFirst { get; set; }
     [ShowInInspector] public IEntityCtx.FaceDirection facingDirection { get; set; }
@@ -36,6 +39,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public bool canJumpCoyote { get; set; }
     [ShowInInspector] public bool isAttacking { get; set; }
     [ShowInInspector] public bool isMoving { get; set; }
+    [ShowInInspector] public bool isHooking { get; set; }
     
     
     // API Distinct

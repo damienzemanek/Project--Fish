@@ -29,6 +29,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<bool> Jump = new();
         public readonly Publisher<Vector2> Look = new();
         public readonly Publisher<bool> Attack = new();
+        public readonly Publisher<bool> Hook = new();
     }
 
     public PlayerInputMap Input { get; set; }

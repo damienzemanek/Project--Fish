@@ -69,13 +69,7 @@ public class PlayerInputReader :
     {
         
     }
-
-    public void OnCrouch(InputAction.CallbackContext context)
-    {
-        
-    }
-
-
+    
 
     public void OnPrevious(InputAction.CallbackContext context)
     {
@@ -85,6 +79,15 @@ public class PlayerInputReader :
     public void OnNext(InputAction.CallbackContext context)
     {
         
+    }
+
+    public void OnHook(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed: Input.Hook.Publish(true); break;
+            case InputActionPhase.Canceled: Input.Hook.Publish(false); break;
+        }
     }
 
     public void OnSprint(InputAction.CallbackContext context)
