@@ -7,7 +7,8 @@ using UnityEngine;
 
 public class Hook : MonoBehaviour
 {
-    private bool isHooking;
+    public bool isHooking;
+    public bool hooked;
     public LayerMask worldMask;
     public LayerMask targetMask;
     public Rigidbody2D rb;
@@ -22,6 +23,7 @@ public class Hook : MonoBehaviour
 
     public float maxDistanceToAutoRecal = 8f;
     public int linePoints = 10;
+    public float lineLerpSpeed = 10f;
     
     Action attachedSignal;
 
@@ -39,6 +41,9 @@ public class Hook : MonoBehaviour
     void Update()
     {
         float dist = Vector3.Distance(transform.position, rodParent.position);
+        
+        if(isHooking && hooked) RecallHook();
+        
         int count = line.positionCount;
         float step = dist / (count - 1);
         Vector3 dir = (transform.position - rodParent.position);
@@ -47,7 +52,24 @@ public class Hook : MonoBehaviour
             Vector3 pos = line.transform.InverseTransformPoint(line.transform.position + dir * (step * i));
             pos = pos / dist;
             float distToHook = dist % maxDistanceToAutoRecal;
-            float scaledOffset = (distToHook / maxDistanceToAutoRecal) * verticalOffsetScalar;
+            float preScaledOffset = distToHook / maxDistanceToAutoRecal;
+            float scaledOffset = preScaledOffset;
+            if (preScaledOffset > 0.8f)
+            {
+                float minOffset = 0.8f;
+                float maxOffset = 1.0f;
+                float maxApproach = verticalOffsetScalar; // 3
+                float minApproach = 1f;
+
+                float t = (preScaledOffset - minOffset) / (maxOffset - minOffset); // 0 -> 1
+                float approachOne = Mathf.Lerp(maxApproach, minApproach, t);       // 3 -> 1
+
+                scaledOffset = preScaledOffset * approachOne;
+            }
+            else
+            {
+                scaledOffset = preScaledOffset * verticalOffsetScalar;
+            }
             float offset = (i != 0 && i != count - 1) ? scaledOffset : 1f;
             pos = pos.With(y: pos.y += (lineVerticalOffsetCurve.Evaluate(i / (float)count) * offset));
             line.SetPosition(i, pos);   
@@ -90,6 +112,7 @@ public class Hook : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
         hookCollider.enabled = false;
         rb.ResetVel2D();
+        hooked = true;
     }
 
     void AttachHook(Transform parent)
@@ -100,11 +123,13 @@ public class Hook : MonoBehaviour
         rb.ResetVel2D();
         attachedSignal?.Invoke();
         hookCollider.enabled = false;
+        hooked = true;
     }
 
-    void HookReachedMaxTime()
+    void HookReachedMaxDist()
     {
         joint.enabled = true;
+        hooked = false;
         joint.distance = Vector3.Distance(transform.position, rodParent.position);
     }
 
@@ -116,7 +141,7 @@ public class Hook : MonoBehaviour
             float dist = Vector3.Distance(transform.position, rodParent.position);
             if (dist > maxDistanceToAutoRecal)
             {
-                HookReachedMaxTime();
+                HookReachedMaxDist();
                 yield break;
             }
                 

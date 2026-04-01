@@ -4666,6 +4666,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e07e7baa5a114eb4e83cd7ec52101257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hook
+  isHooking: 0
+  hooked: 0
   worldMask:
     serializedVersion: 2
     m_Bits: 8
@@ -4676,15 +4678,71 @@ MonoBehaviour:
   rodParent: {fileID: 6087028401604899950}
   hookCollider: {fileID: 8329277125491337441}
   joint: {fileID: 1928372315126092833}
-  lineCurve:
+  lineVerticalOffsetCurve:
     serializedVersion: 2
-    m_Curve: []
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 8.957795
+      outSlope: 8.957795
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.18281534
+      value: 2.6376224
+      inSlope: 2.146619
+      outSlope: 2.146619
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.52799654
+    - serializedVersion: 3
+      time: 0.5046689
+      value: 2.8729496
+      inSlope: -0.6361693
+      outSlope: -0.6361693
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.47070843
+      outWeight: 0.32947794
+    - serializedVersion: 3
+      time: 0.856383
+      value: 0.5598974
+      inSlope: -7.381503
+      outSlope: -7.381503
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4565577
+      outWeight: 0.37271476
+    - serializedVersion: 3
+      time: 1.0463979
+      value: 0.029395401
+      inSlope: -Infinity
+      outSlope: -Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.1152347
+      value: 0.16038206
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  verticalOffsetScalar: 4
   line: {fileID: 4066093710809156480}
   maxDistanceToAutoRecal: 8
   linePoints: 10
+  lineLerpSpeed: 10
 --- !u!114 &6525483726381218756
 MonoBehaviour:
   m_ObjectHideFlags: 0
