@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EMILtools.Extensions;
 using EMILtools.Timers;
 using UnityEngine;
 
@@ -15,7 +16,8 @@ public class Hook : MonoBehaviour
     public Collider2D hookCollider;
     public DistanceJoint2D joint;
 
-    public AnimationCurve lineCurve;
+    public AnimationCurve lineVerticalOffsetCurve;
+    public float verticalOffsetScalar = 3f;
     public LineRenderer line;
 
     public float maxDistanceToAutoRecal = 8f;
@@ -44,6 +46,10 @@ public class Hook : MonoBehaviour
         {
             Vector3 pos = line.transform.InverseTransformPoint(line.transform.position + dir * (step * i));
             pos = pos / dist;
+            float distToHook = dist % maxDistanceToAutoRecal;
+            float scaledOffset = (distToHook / maxDistanceToAutoRecal) * verticalOffsetScalar;
+            float offset = (i != 0 && i != count - 1) ? scaledOffset : 1f;
+            pos = pos.With(y: pos.y += (lineVerticalOffsetCurve.Evaluate(i / (float)count) * offset));
             line.SetPosition(i, pos);   
         }
     }
