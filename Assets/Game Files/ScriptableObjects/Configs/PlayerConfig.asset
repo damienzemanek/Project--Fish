@@ -84,7 +84,7 @@ MonoBehaviour:
   hook:
     <hookMinDist>k__BackingField: 0.5
     <hookMaxDist>k__BackingField: 10
-    <hookForce>k__BackingField: 10
+    <hookForce>k__BackingField: 3
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 15
   <hitStop>k__BackingField:

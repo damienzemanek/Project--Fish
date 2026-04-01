@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using UnityEngine;
 
 public static class ExpressionEX 
 {
@@ -7,5 +8,14 @@ public static class ExpressionEX
     {
         if (a == null || b == null) return a == b;
         return a.ToString() == b.ToString();
+    }
+}
+
+public static class Rb2DEX
+{
+    public static void ResetVel2D(this Rigidbody2D rb)
+    {
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0;
     }
 }

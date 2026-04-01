@@ -18,9 +18,8 @@ public class PlayerBlackboard : Blackboard, IEntityBlackboard
     [field:SerializeField] [field:Required] public Bounds2D<AttackDir> attackBounds { get; private set; }
     [field:SerializeField] [field:Required] public Transform[] feetPoints { get; private set; }
     [field:SerializeField] [field:Required] public EnumTagged<AttackDir, Collider2D>[] attackColliders { get; private set; }
-    [field: SerializeField] [field:Required] public Rigidbody2D hook { get; private set; }
+    [field: SerializeField] [field:Required] public Hook hook { get; private set; }
     [field: SerializeField] [field:Required] public Transform hookStartPos { get; private set; }
-    [field: SerializeField] [field:Required] public DistanceJoint2D hookJoint { get; private set; }
     [field: SerializeField] [field:Required] public Transform hookAimPos { get; private set; }
     [field: SerializeField] public CountdownTimer invulnerableTimer { get; set; }
     [field: SerializeField] public CurveValue jumpCurve { get; private set; } = new();
