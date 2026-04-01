@@ -16,9 +16,9 @@ public class Hook : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Kinematic;
     }
 
-    bool InMask(Collision other, LayerMask mask) => (mask.value & (1 << other.gameObject.layer)) != 0;
+    bool InMask(Collision2D other, LayerMask mask) => (mask.value & (1 << other.gameObject.layer)) != 0;
     
-    private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         if(InMask(other, worldMask)) StopHookMovement();
         if(InMask(other, targetMask)) AttachHook(other.transform);
@@ -26,9 +26,9 @@ public class Hook : MonoBehaviour
 
     public void CastHook(Vector2 dirWithForce)
     {
+        rb.bodyType = RigidbodyType2D.Dynamic;
         Rb2DEX.ResetVel2D(rb);
         rb.AddForce(dirWithForce, ForceMode2D.Impulse);
-        rb.bodyType = RigidbodyType2D.Dynamic;
         transform.SetParent(null);
     }
 
@@ -40,11 +40,14 @@ public class Hook : MonoBehaviour
 
     void StopHookMovement()
     {
+        Debug.Log("HIT GROUND");
         rb.bodyType = RigidbodyType2D.Kinematic;
+        Rb2DEX.ResetVel2D(rb);
     }
 
     void AttachHook(Transform parent)
     {
+        Debug.Log("HOOK ATTACHING");
         rb.bodyType = RigidbodyType2D.Kinematic;
         transform.SetParent(parent);
         attachedSignal?.Invoke();
