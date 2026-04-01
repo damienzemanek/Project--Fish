@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using EMILtools.Timers;
 using UnityEngine;
 
-public class Hook : MonoBehaviour, TimerUtility.ITimerUser
+public class Hook : MonoBehaviour
 {
     private bool isHooking;
     public LayerMask worldMask;
@@ -13,25 +14,38 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public Transform rodParent;
     public Collider2D hookCollider;
     public DistanceJoint2D joint;
-    public CountdownTimer hookTimer;
 
-    public Ref<float> maxHookTime;
+    public AnimationCurve lineCurve;
+    public LineRenderer line;
 
     public float maxDistanceToAutoRecal = 8f;
+    public int linePoints = 10;
     
     Action attachedSignal;
-    
-    private void Awake()
+
+    void Awake()
     {
-        hookTimer = new CountdownTimer(maxHookTime);
-        hookTimer.OnTimerStop.Add(HookReachedMaxTime);
-        this.InitTimer(hookTimer, true);
+        line.positionCount = linePoints;
     }
 
     private void Start()
     {
         rb.bodyType = RigidbodyType2D.Kinematic;
         joint.enabled = false;
+    }
+
+    void Update()
+    {
+        float dist = Vector3.Distance(transform.position, rodParent.position);
+        int count = line.positionCount;
+        float step = dist / (count - 1);
+        Vector3 dir = (transform.position - rodParent.position);
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 pos = line.transform.InverseTransformPoint(line.transform.position + dir * (step * i));
+            pos = pos / dist;
+            line.SetPosition(i, pos);   
+        }
     }
 
     bool InMask(Collision2D other, LayerMask mask) => (mask.value & (1 << other.gameObject.layer)) != 0;
@@ -51,9 +65,9 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         rb.AddForce(dirWithForce, ForceMode2D.Impulse);
         transform.position = rodParent.position;
         transform.SetParent(null);
-        hookTimer.StartAndReset();
         isHooking = true;
         StartCoroutine(C_CheckIfHookDistanceIsTooFar());
+        
     }
 
     public void ResetHook()
@@ -93,9 +107,10 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         while (isHooking)
         {
             yield return null;
-            if (Vector3.Distance(transform.position, rodParent.position) > maxDistanceToAutoRecal)
+            float dist = Vector3.Distance(transform.position, rodParent.position);
+            if (dist > maxDistanceToAutoRecal)
             {
-                RecallHook();
+                HookReachedMaxTime();
                 yield break;
             }
                 

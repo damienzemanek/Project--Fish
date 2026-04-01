@@ -3005,8 +3005,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3663489959903985560}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 194.72939, y: 52.85506, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3593,6 +3593,7 @@ GameObject:
   m_Component:
   - component: {fileID: 461418614015465883}
   - component: {fileID: 4066093710809156480}
+  - component: {fileID: 4066093710809156481}
   m_Layer: 0
   m_Name: Hook Line
   m_TagString: Untagged
@@ -3722,7 +3723,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.2388897
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -3772,6 +3773,20 @@ LineRenderer:
   m_UseWorldSpace: 0
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &4066093710809156481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3663489959903985560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0191970fd9482164c9198a9cca4aff33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EMILtools::Follow
+  follow: {fileID: 6087028401604899950}
+  releaseFromParentOnSpawn: 1
 --- !u!114 &4147888267501706387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4546,9 +4561,9 @@ Transform:
   m_LocalScale: {x: 0.07309271, y: 0.077768035, z: 0.99742705}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 461418614015465883}
   - {fileID: 6375242072530715013}
   - {fileID: 5539493151478383652}
-  - {fileID: 461418614015465883}
   - {fileID: 3831823285571459346}
   m_Father: {fileID: 397855574616576867}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4661,8 +4676,15 @@ MonoBehaviour:
   rodParent: {fileID: 6087028401604899950}
   hookCollider: {fileID: 8329277125491337441}
   joint: {fileID: 1928372315126092833}
-  maxHookTime:
-    val: 1
+  lineCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  line: {fileID: 4066093710809156480}
+  maxDistanceToAutoRecal: 8
+  linePoints: 10
 --- !u!114 &6525483726381218756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5341,7 +5363,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
