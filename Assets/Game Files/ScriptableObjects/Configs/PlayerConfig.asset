@@ -83,7 +83,7 @@ MonoBehaviour:
     BlendTreeVariables: []
   hook:
     <hookMinDist>k__BackingField: 0.5
-    <hookMaxDist>k__BackingField: 10
+    <hookMaxDist>k__BackingField: 8
     <hookForce>k__BackingField: 25
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 15

@@ -138,7 +138,7 @@ GameObject:
   - component: {fileID: 8700191000906122506}
   - component: {fileID: 2949341036950860890}
   m_Layer: 0
-  m_Name: F1 Crab1 Body
+  m_Name: F1 Crab1 Body (And Mesh)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

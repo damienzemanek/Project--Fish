@@ -5,7 +5,7 @@ public class PauseOnMiddleClick : MonoBehaviour
     void Update()
     {
 #if UNITY_EDITOR
-        if (Input.GetMouseButtonDown(2)) // Middle mouse button
+        if (Input.GetMouseButtonDown(3)) 
         {
             Debug.Break();
         }

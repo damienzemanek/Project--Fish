@@ -20,6 +20,8 @@ public class PlayerBlackboard : Blackboard, IEntityBlackboard
     [field:SerializeField] [field:Required] public EnumTagged<AttackDir, Collider2D>[] attackColliders { get; private set; }
     [field: SerializeField] [field:Required] public Hook hook { get; private set; }
     [field: SerializeField] [field:Required] public Transform hookAimPos { get; private set; }
+    [field: SerializeField] [field: Required] public DamageFlasher damageFlasher { get; private set; }
     [field: SerializeField] public CountdownTimer invulnerableTimer { get; set; }
     [field: SerializeField] public CurveValue jumpCurve { get; private set; } = new();
+
 }

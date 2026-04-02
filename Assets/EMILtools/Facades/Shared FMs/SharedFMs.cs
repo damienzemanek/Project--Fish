@@ -26,6 +26,7 @@ public interface IEntityBlackboard : IBlackboard
     public LivingEntity livingEntity { get; }
     public Rigidbody2D rb { get; }
     public AttackingBoundsChecker[] attackingBoundsCheckers { get; }
+    public DamageFlasher damageFlasher { get; }
 }
 
 public interface IEntityConfig : IConfig
@@ -133,6 +134,7 @@ public class SharedFMs
             
             Debug.Log("TakingDmg: Passed All Guards");
             
+            bb.damageFlasher.Flash();
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);

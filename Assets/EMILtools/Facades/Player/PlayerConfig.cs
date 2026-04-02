@@ -29,8 +29,6 @@ public class PlayerConfig : Config, IEntityConfig
     [Serializable]
     public struct Hook
     {
-        [field: SerializeField] public float hookMinDist { get; private set; }
-        [field: SerializeField] public float hookMaxDist { get; private set; }
         [field: SerializeField] public float hookForce { get; private set; }
     }
     

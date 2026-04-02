@@ -34,25 +34,33 @@ namespace EMILtools.Extensions
         public static float Flip01(float val)
         => Mathf.Abs(val - 1f);
         
+        
         public static float Scaled(
-            this float preScaled,
-            Vector2 range,     // e.g. 0.8f
-            float approachStart,  // e.g. verticalOffsetScalar (3)
-            float approachEnd     // e.g. 1f
-        )
+            this float value,
+            Vector2 oldRange,
+            Vector2 newRange)
         {
-            // If outside the range, just return base value (or change this if needed)
-            if (preScaled <= range.x)
-                return preScaled;
-
-            // Normalize prog within the range
-            float prog = Mathf.InverseLerp(range.x, range.y, preScaled); // 0 -> 1
-
-            // Lerp the scaling factor
-            float approach = Mathf.Lerp(approachStart, approachEnd, prog);
-            //approach = Mathf.Clamp(approach, Mathf.Min(approachStart, approachEnd), Mathf.Max(approachStart, approachEnd));
-
-            return preScaled * approach;
+            float currLerpPos = Mathf.InverseLerp(oldRange.x, oldRange.y, value);
+            
+            float scale = Mathf.Lerp(newRange.x, newRange.y, currLerpPos);
+            float newLerpPos = Mathf.Clamp01(currLerpPos * scale);
+            
+            // Re-Map
+            return Mathf.Lerp(newRange.x, newRange.y, newLerpPos);
+        }
+        
+        public static float Scaled(
+            this float value,
+            (float min, float max) oldRange,
+            (float min, float max) newRange)
+        {
+            float currLerpPos = Mathf.InverseLerp(oldRange.min, oldRange.max, value);
+            
+            float scale = Mathf.Lerp(newRange.min, newRange.max, currLerpPos);
+            float newLerpPos = Mathf.Clamp01(currLerpPos * scale);
+            
+            // Re-Map
+            return Mathf.Lerp(newRange.min, newRange.max, newLerpPos);
         }
         
         
