@@ -164,6 +164,8 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         joint.enabled = false;
         phase = HookPhases.Recalling;
         withinRange = false;
+        for (int i = 0; i < linePoints; i++) line.SetPosition(i, rodParent.position);
+
     }
 
     void StopHookMovement()
