@@ -38,6 +38,7 @@ namespace EMILtools.Timers
         public override void StartAndReset()
         {
             if (oneShot && canRun) base.StartAndReset();
+            else if(!oneShot) base.StartAndReset();
         }
 
         public override void OnStop()

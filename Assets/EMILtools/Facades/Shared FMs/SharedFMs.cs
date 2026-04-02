@@ -131,6 +131,8 @@ public class SharedFMs
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dead) return;
             
+            Debug.Log("TakingDmg: Passed All Guards");
+            
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
@@ -138,6 +140,8 @@ public class SharedFMs
             TimeManager.Instance.SlowTimeForSeconds(cfg.hitStop.period, cfg.hitStop.scalar, ApplyHitForce);
             
             postCb?.Invoke();
+            
+            Debug.Log("Received Damage");
         }
 
         void ApplyHitForce()
@@ -154,7 +158,11 @@ public class SharedFMs
             Debug.Log("New Health State: " + newHealthState + "");
             mutateCtx.currentHealthState = newHealthState;
         }
-        
-        void InvulnerablitityEnd() => mutateCtx.invulnerable = false;
+
+        void InvulnerablitityEnd()
+        {
+            mutateCtx.invulnerable = false;
+            Debug.Log("Invulnerable End");
+        }
     }
 }

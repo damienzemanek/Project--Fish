@@ -45,8 +45,8 @@ public class PlayerContextData : ContextData, IPlayerContextView
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;
     public bool IsGrounded => isGrounded;
-    public bool FallingWithoutJumpingFirst => fallingWithoutJumpingFirst;
-    public float hp { get; set; }
-    public bool invulnerable { get; set; }
-    public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
+    [field:ShowInInspector] public bool FallingWithoutJumpingFirst => fallingWithoutJumpingFirst;
+    [field:ShowInInspector] public float hp { get; set; }
+    [field:ShowInInspector] public bool invulnerable { get; set; }
+    [field:ShowInInspector] public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
 }

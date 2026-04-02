@@ -49,7 +49,7 @@ public class PlayerController : MonoFacade<
 
     public void OnStayBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
     {
-        Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
+        Debug.Log($"Player try receive damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
     }
     
