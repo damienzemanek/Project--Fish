@@ -33,5 +33,55 @@ namespace EMILtools.Extensions
         /// <returns></returns>
         public static float Flip01(float val)
         => Mathf.Abs(val - 1f);
+        
+        public static float Scaled(
+            this float preScaled,
+            Vector2 range,     // e.g. 0.8f
+            float approachStart,  // e.g. verticalOffsetScalar (3)
+            float approachEnd     // e.g. 1f
+        )
+        {
+            // If outside the range, just return base value (or change this if needed)
+            if (preScaled <= range.x)
+                return preScaled;
+
+            // Normalize prog within the range
+            float prog = Mathf.InverseLerp(range.x, range.y, preScaled); // 0 -> 1
+
+            // Lerp the scaling factor
+            float approach = Mathf.Lerp(approachStart, approachEnd, prog);
+            //approach = Mathf.Clamp(approach, Mathf.Min(approachStart, approachEnd), Mathf.Max(approachStart, approachEnd));
+
+            return preScaled * approach;
+        }
+        
+        
+        public static float ProgressWhenApproaching(
+            this float value,
+            float start,
+            float target,
+            bool increasing // true = going up, false = going down
+        )
+        {
+            if (Mathf.Approximately(start, target))
+                return 1f;
+
+            float t;
+
+            if (increasing)
+            {
+                // value moves from start → target (ascending)
+                t = (value - start) / (target - start);
+            }
+            else
+            {
+                // value moves from start → target (descending)
+                t = (start - value) / (start - target);
+            }
+
+            return Mathf.Clamp01(t);
+        }
+        
+        
     }
 }

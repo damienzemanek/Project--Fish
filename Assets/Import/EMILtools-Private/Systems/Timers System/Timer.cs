@@ -76,7 +76,10 @@ namespace EMILtools.Timers
             isRunning = false;
             OnTimerStop?.Invoke();
             //this.Log("Stopped Timer");
+            OnStop();
         }
+        
+        public virtual void OnStop() { }
 
         public void Pause() => isRunning = false;
         public void Resume() => isRunning = true;

@@ -1770,15 +1770,6 @@ MonoBehaviour:
       <feetPoints>k__BackingField:
       - {fileID: 539075576}
       - {fileID: 41291135}
-      <jumpTimer>k__BackingField:
-        canRun: 0
-        oneShot: 0
-      <invulnerableTimer>k__BackingField:
-        canRun: 0
-        oneShot: 0
-      <dyingStateTimer>k__BackingField:
-        canRun: 0
-        oneShot: 0
       <faceDirTransform>k__BackingField: {fileID: 197626921}
       <livingEntity>k__BackingField: {fileID: 990602690}
       <viewRange>k__BackingField: {fileID: 1218048176}
@@ -2149,50 +2140,6 @@ MonoBehaviour:
   presetWithInitialSubordinate: 1
   InitialSubordinate:
     underlyingValue: {fileID: 6525483726381218756}
---- !u!1 &1554622967
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1554622969}
-  - component: {fileID: 1554622968}
-  m_Layer: 0
-  m_Name: DEV
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1554622968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554622967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 679d1ecfa1a55234da36cdcce036c0e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: EMILtools::PauseOnMiddleClick
---- !u!4 &1554622969
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554622967}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.43965, y: -3.32907, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1586382817
 GameObject:
   m_ObjectHideFlags: 0
@@ -4770,11 +4717,7 @@ MonoBehaviour:
   linePoints: 10
   lineLerpSpeed: 10
   dist: 0
-  remainingCurveWhenAtMaxDist:
-    val: 0.2
-  lineDroopTimer:
-    canRun: 0
-    oneShot: 0
+  remainingCurveWhenAtMaxDist: 0.5
   lineDroopTime: 0.5
 --- !u!114 &6525483726381218756
 MonoBehaviour:
@@ -4824,9 +4767,6 @@ MonoBehaviour:
         obj: {fileID: 730866716678183429}
       <hook>k__BackingField: {fileID: 6396101032666887810}
       <hookAimPos>k__BackingField: {fileID: 2205549771716184026}
-      <invulnerableTimer>k__BackingField:
-        canRun: 0
-        oneShot: 0
       <jumpCurve>k__BackingField:
         operation: 0
         curve:
@@ -5457,7 +5397,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -5606,4 +5546,3 @@ SceneRoots:
   - {fileID: 5255419494194767159}
   - {fileID: 195081126}
   - {fileID: 576072530}
-  - {fileID: 1554622969}

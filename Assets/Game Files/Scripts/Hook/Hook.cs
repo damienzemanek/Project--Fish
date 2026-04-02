@@ -5,10 +5,18 @@ using EMILtools.Extensions;
 using EMILtools.Timers;
 using UnityEngine;
 
-public class Hook : MonoBehaviour
+public class Hook : MonoBehaviour, TimerUtility.ITimerUser
 {
-    public bool isHooking;
-    public bool hooked;
+    public enum HookPhases
+    {
+        CastingOut,
+        HitMaxDistAndFalling,
+        HookedToSomething,
+        Drooping,
+        Recalling
+    }
+    public bool withinRange;
+    public HookPhases phase;
     public LayerMask worldMask;
     public LayerMask targetMask;
     public Rigidbody2D rb;
@@ -24,12 +32,24 @@ public class Hook : MonoBehaviour
     public float maxDistanceToAutoRecal = 8f;
     public int linePoints = 10;
     public float lineLerpSpeed = 10f;
+    public float dist;
+    public Ref<float> remainingCurveWhenAtMaxDist = 0.5f;
+
+    public CountdownTimer lineDroopTimer;
+    public Ref<float> lineDroopTime = 0.5f;
+    
+    public CountdownTimer snapToHookedTimer;
+    public Ref<float> snapTimeWhenHooked = 0.2f;
     
     Action attachedSignal;
 
     void Awake()
     {
         line.positionCount = linePoints;
+        lineDroopTimer = new CountdownTimer(lineDroopTime, true);
+        snapToHookedTimer = new CountdownTimer(snapTimeWhenHooked, true);
+        this.InitTimer(lineDroopTimer, true);
+        this.InitTimer(snapToHookedTimer, true);
     }
 
     private void Start()
@@ -40,39 +60,75 @@ public class Hook : MonoBehaviour
 
     void Update()
     {
-        float dist = Vector3.Distance(transform.position, rodParent.position);
-        
-        if(isHooking && hooked) RecallHook();
+        dist = Vector3.Distance(transform.position, rodParent.position);
+        withinRange = dist < maxDistanceToAutoRecal;
         
         int count = line.positionCount;
         float step = dist / (count - 1);
         Vector3 dir = (transform.position - rodParent.position);
         for (int i = 0; i < count; i++)
         {
-            Vector3 pos = line.transform.InverseTransformPoint(line.transform.position + dir * (step * i));
-            pos = pos / dist;
-            float distToHook = dist % maxDistanceToAutoRecal;
-            float preScaledOffset = distToHook / maxDistanceToAutoRecal;
-            float scaledOffset = preScaledOffset;
-            if (preScaledOffset > 0.8f)
+            Vector3 pos = (line.transform.InverseTransformPoint(line.transform.position + dir * (step * i))) / dist;
+            
+            
+            switch (phase)
             {
-                float minOffset = 0.8f;
-                float maxOffset = 1.0f;
-                float maxApproach = verticalOffsetScalar; // 3
-                float minApproach = 1f;
-
-                float t = (preScaledOffset - minOffset) / (maxOffset - minOffset); // 0 -> 1
-                float approachOne = Mathf.Lerp(maxApproach, minApproach, t);       // 3 -> 1
-
-                scaledOffset = preScaledOffset * approachOne;
+                case HookPhases.CastingOut: CastOut(); break;
+                case HookPhases.HitMaxDistAndFalling: HitMaxDistAndFalling(); break;
+                case HookPhases.HookedToSomething: HookedOntoSomething(); break;
             }
-            else
+
+
+            void CastOut()
             {
-                scaledOffset = preScaledOffset * verticalOffsetScalar;
+                float point = (float)i / (count - 1); 
+                float curvedScalar = verticalOffsetScalar * lineVerticalOffsetCurve.Evaluate(point);
+                
+                float distProg = dist.ProgressWhenApproaching(0f, maxDistanceToAutoRecal, true);
+                float distanceResponsiveScalar = curvedScalar * ((1f + remainingCurveWhenAtMaxDist) - distProg);
+
+                // Dont apply offset to end points
+                float nonEndPointsOffset = (i != 0 && i != count - 1) ? distanceResponsiveScalar : 1f;
+
+                
+                pos = pos.With(y: pos.y + nonEndPointsOffset);
+               // Debug.Log($"Curved: {distanceResponsiveScalar} Regular: {nonEndPointsOffset}, Dist Prog : {distProg}");
+                line.SetPosition(i, pos);
             }
-            float offset = (i != 0 && i != count - 1) ? scaledOffset : 1f;
-            pos = pos.With(y: pos.y += (lineVerticalOffsetCurve.Evaluate(i / (float)count) * offset));
-            line.SetPosition(i, pos);   
+            
+            void HitMaxDistAndFalling()
+            {
+                if(!lineDroopTimer.isRunning) lineDroopTimer.StartAndReset();
+
+                float remainingCurveWhenAtMaxDist_Falling = remainingCurveWhenAtMaxDist * (lineDroopTimer.Progress);
+                
+                float point = (float)i / (count - 1); 
+                float curvedScalar = verticalOffsetScalar * lineVerticalOffsetCurve.Evaluate(point);
+                
+                float distProg = dist.ProgressWhenApproaching(0f, maxDistanceToAutoRecal, true);
+                float distanceResponsiveScalar = curvedScalar * ((1f + remainingCurveWhenAtMaxDist_Falling) - distProg);
+
+                // Dont apply offset to end points
+                float nonEndPointsOffset = (i != 0 && i != count - 1) ? distanceResponsiveScalar : 1f;
+
+                
+                pos = pos.With(y: pos.y + nonEndPointsOffset);
+                //Debug.Log($"Curved: {distanceResponsiveScalar} Regular: {nonEndPointsOffset}, Dist Prog : {distProg}");
+                line.SetPosition(i, pos);
+            }
+
+            void HookedOntoSomething()
+            {
+                if(!snapToHookedTimer.isRunning) snapToHookedTimer.StartAndReset();
+                
+                Debug.Log("snap prog : " + (1-snapToHookedTimer.Progress));
+                
+                Vector2 oldPos = line.GetPosition(i);
+                Vector2 newPos = pos;
+                Vector2 lerpPos = Vector2.Lerp(oldPos, newPos, (1- snapToHookedTimer.Progress));
+                
+                line.SetPosition(i, lerpPos); 
+            }
         }
     }
 
@@ -93,7 +149,9 @@ public class Hook : MonoBehaviour
         rb.AddForce(dirWithForce, ForceMode2D.Impulse);
         transform.position = rodParent.position;
         transform.SetParent(null);
-        isHooking = true;
+        phase = HookPhases.CastingOut;
+        lineDroopTimer.canRun = true;
+        snapToHookedTimer.canRun = true;
         StartCoroutine(C_CheckIfHookDistanceIsTooFar());
         
     }
@@ -104,6 +162,8 @@ public class Hook : MonoBehaviour
         transform.position = rodParent.position;
         rb.bodyType = RigidbodyType2D.Kinematic;
         joint.enabled = false;
+        phase = HookPhases.Recalling;
+        withinRange = false;
     }
 
     void StopHookMovement()
@@ -111,8 +171,9 @@ public class Hook : MonoBehaviour
         Debug.Log("HIT GROUND");
         rb.bodyType = RigidbodyType2D.Kinematic;
         hookCollider.enabled = false;
-        rb.ResetVel2D();
-        hooked = true;
+        rb.ResetVel2D(); 
+        phase = HookPhases.HookedToSomething;
+        if(!lineDroopTimer.isRunning && phase != HookPhases.Drooping) lineDroopTimer.StartAndReset();
     }
 
     void AttachHook(Transform parent)
@@ -123,28 +184,27 @@ public class Hook : MonoBehaviour
         rb.ResetVel2D();
         attachedSignal?.Invoke();
         hookCollider.enabled = false;
-        hooked = true;
+        phase = HookPhases.HookedToSomething;
+        if(!lineDroopTimer.isRunning && phase != HookPhases.Drooping) lineDroopTimer.StartAndReset();
     }
 
     void HookReachedMaxDist()
     {
         joint.enabled = true;
-        hooked = false;
+        phase = HookPhases.HitMaxDistAndFalling;
         joint.distance = Vector3.Distance(transform.position, rodParent.position);
     }
 
     IEnumerator C_CheckIfHookDistanceIsTooFar()
     {
-        while (isHooking)
+        while (phase == HookPhases.CastingOut)
         {
             yield return null;
-            float dist = Vector3.Distance(transform.position, rodParent.position);
-            if (dist > maxDistanceToAutoRecal)
-            {
-                HookReachedMaxDist();
-                yield break;
-            }
-                
+            dist = Vector3.Distance(transform.position, rodParent.position);
+            if (!(dist > maxDistanceToAutoRecal)) continue;
+            HookReachedMaxDist();
+            yield break;
+
         }
     }
 
