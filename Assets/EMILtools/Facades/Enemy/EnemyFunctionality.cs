@@ -20,6 +20,7 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new Stunnable(facade.Actions.Stun, f));
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
         AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null));
@@ -41,6 +42,38 @@ public class EnemyFunctionality : Functionalities<
         
         fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholds.Dying), "Dying");
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholds.Dying), "Not Dying");
+        
+        fsm.AddAnyTransition<Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isStunned), "Stunned");
+        fsm.AddTransition<Stunnable, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isStunned), "Not Stunned");
+    }
+    
+    class Stunnable : BoundSetFunctionality<EnemyController, IEnemyContextView, Stunnable.Setter>,
+        FSM_STATE_ENTER<IEnemyContextView>,
+        ON_SET
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public class Setter : DataSetter<bool>
+        {
+            [ShowInInspector] public bool isStunned => Get;
+        }
+
+        public Stunnable(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+
+        protected override void Awake()
+        {
+            bb.stunnedTimer = new CountdownTimer(cfg.stunned.stunnedPeriod);
+            bb.stunnedTimer.OnTimerStop.Add(() => mutateCtx.isStunned = false);
+            facade.InitTimer(bb.stunnedTimer, true);
+        }
+        
+        public void OnEnterState(IEnemyContextView ctx)
+        {
+            Debug.Log("Entered Stun State");
+            bb.stunnedTimer.StartAndReset();
+            mutateCtx.isStunned = true;
+            bb.rb.linearVelocity = new Vector2(0, bb.rb.linearVelocity.y);
+        }
+        public void MutateUsingNewSetValues() => mutateCtx.isStunned = SetContext.isStunned;
     }
     
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,

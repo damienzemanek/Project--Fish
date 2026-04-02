@@ -32,7 +32,9 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     [FoldoutGroup("Context")] [ShowIf("enter")] [SerializeField] public TContext enterContext;
     [FoldoutGroup("Context")] [ShowIf("stay")]  [SerializeField] public TContext stayContext;
     [FoldoutGroup("Context")] [ShowIf("exit")]  [SerializeField] public TContext exitContext;
+    [FoldoutGroup("Context")] [ShowIf("exitOnDisableEvenIfExitFalse")]  [SerializeField] public TContext disableContext;
 
+    
     [HideInInspector] public IPredicate injectedEnterPredicate;
     [HideInInspector] public IPredicate injectedExitPredicate;
     [HideInInspector] public IPredicate injectedStayPredicate;
@@ -122,7 +124,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
             }
 
             if (SelectedReceiver)
-                selectedReceiver2D.Value?.OnExitBounds(null, this, exitContext);
+                selectedReceiver2D.Value?.OnExitBounds(null, this, disableContext);
         }
         else
         {
@@ -134,7 +136,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
             }
             
             if (SelectedReceiver)
-                selectedReceiver3D.Value?.OnExitBounds(null, this, exitContext);
+                selectedReceiver3D.Value?.OnExitBounds(null, this, disableContext);
         }
     }
 

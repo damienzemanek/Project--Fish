@@ -5,20 +5,21 @@ using UnityEngine;
 
 public interface IEnemyContextView : IEntityCtx
 {
-    public Path path { get; }
-    public int currentWaypointIndex { get; }
     public bool reachedEndOfPath { get; }
     public bool isGrounded { get; }
+    public bool isStunned { get; }
+    public bool invulnerable { get; }
+    public bool travelAngleTooCloseToVertical { get; }
+    public DelayBuffer<bool> canSeeTarget { get; }
     public Vector2 pos { get; }
     public Vector2 nextWaypoint { get; }
     public Vector2 dirToNextWaypoint { get; }
     public Vector2 force { get; }
+    public Path path { get; }
     public float distToNextWaypoint { get; }
     public float distToEndNode { get; }   
-    public bool travelAngleTooCloseToVertical { get; }
-    public DelayBuffer<bool> canSeeTarget { get; }
-    public bool invulnerable { get; }
     public float hp { get; }
+    public int currentWaypointIndex { get; }
     public LivingEntity.BasicHealthThresholds currentHealthState { get; }
     public IEntityCtx.FaceDirection facingDirection { get; set; }
 }
@@ -28,6 +29,7 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool reachedEndOfPath { get; set; }
     [field: ShowInInspector] public bool isGrounded { get; set; }
     [field: ShowInInspector] public bool travelAngleTooCloseToVertical { get; set; }
+    [field: ShowInInspector] public bool isStunned { get; set; }
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
     [field: ShowInInspector] public bool invulnerable { get; set; }
     [field: ShowInInspector] public float hp { get; set; }

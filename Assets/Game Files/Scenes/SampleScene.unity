@@ -988,6 +988,109 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 6273429967756374590, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
   m_PrefabInstance: {fileID: 6097560684514792482}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &433639130
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 433639131}
+  - component: {fileID: 433639133}
+  - component: {fileID: 433639132}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &433639131
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433639130}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5539493151478383652}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &433639132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433639130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d9b6ac8f161454eb728a07afdec38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HookBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 1
+  SelectedReceiver: 0
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 0}
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 0
+  <stay>k__BackingField: 0
+  exitOnDisableEvenIfExitFalse: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  enterContext:
+    isHooked: 1
+  stayContext:
+    isHooked: 0
+  exitContext:
+    isHooked: 0
+  disableContext:
+    isHooked: 0
+--- !u!58 &433639133
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433639130}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0000076293945, y: -7.66453e-16}
+  m_Radius: 0.70299965
 --- !u!1 &443863708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1642,6 +1745,11 @@ MonoBehaviour:
       dmg: 0
       location: 0
       type: 0
+  disableContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!60 &968118878
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1799,6 +1907,9 @@ MonoBehaviour:
         canRun: 0
         oneShot: 0
       <dyingStateTimer>k__BackingField:
+        canRun: 0
+        oneShot: 0
+      <stunnedTimer>k__BackingField:
         canRun: 0
         oneShot: 0
       <faceDirTransform>k__BackingField: {fileID: 197626921}
@@ -2186,6 +2297,8 @@ MonoBehaviour:
   stayContext:
     canSeeTarget: 0
   exitContext:
+    canSeeTarget: 0
+  disableContext:
     canSeeTarget: 0
 --- !u!1 &1237382218
 GameObject:
@@ -3332,7 +3445,7 @@ GameObject:
   - component: {fileID: 8619312571624325355}
   - component: {fileID: 8329277125491337441}
   - component: {fileID: 6396101032666887810}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4046,6 +4159,11 @@ MonoBehaviour:
       dmg: 0
       location: 0
       type: 0
+  disableContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!1001 &4199387720669903657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4462,6 +4580,11 @@ MonoBehaviour:
       dmg: 0
       location: 0
       type: 0
+  disableContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!1 &5128579065949563534
 GameObject:
   m_ObjectHideFlags: 0
@@ -4616,7 +4739,8 @@ Transform:
   m_LocalPosition: {x: -0.78, y: -0.54, z: 0}
   m_LocalScale: {x: 1.461572, y: 1.3849671, z: 0.10755674}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 433639131}
   m_Father: {fileID: 6087028401604899950}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5857629833164874872
@@ -4656,6 +4780,11 @@ MonoBehaviour:
       location: 0
       type: 0
   exitContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+  disableContext:
     damageInfo:
       dmg: 0
       location: 0
@@ -5654,8 +5783,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0000076293945, y: 0}
-  m_Radius: 0.97
+  m_Offset: {x: -0.0000076293945, y: -7.66453e-16}
+  m_Radius: 0.70299965
 --- !u!4 &8399190768216509220
 Transform:
   m_ObjectHideFlags: 0

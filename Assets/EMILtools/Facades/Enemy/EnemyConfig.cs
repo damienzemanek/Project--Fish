@@ -20,7 +20,14 @@ public class EnemyConfig : Config, IEntityConfig
     [field: SerializeField] public DyingState dyingState { get; private set; }
     [field: FormerlySerializedAs("<timeSlowTakeDmg>k__BackingField")] [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
-
+    [field: SerializeField] public Stunned stunned { get; private set; }
+    
+    [Serializable]
+    public struct Stunned
+    {
+        [field: SerializeField] public Ref<float> stunnedPeriod { get; private set; }
+    }
+    
     [Serializable]
     public struct DyingState
     {
@@ -28,7 +35,6 @@ public class EnemyConfig : Config, IEntityConfig
         [field: SerializeField] public float outOfDeathStateHealAmount { get; private set; }
 
     }
-    
 
     [Serializable]
     public struct ViewRange

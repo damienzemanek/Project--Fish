@@ -121,7 +121,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
             {
                 if(!snapToHookedTimer.isRunning) snapToHookedTimer.StartAndReset();
                 
-                Debug.Log("snap prog : " + (1-snapToHookedTimer.Progress));
+                //Debug.Log("snap prog : " + (1-snapToHookedTimer.Progress));
                 
                 Vector2 oldPos = line.GetPosition(i);
                 Vector2 newPos = pos;

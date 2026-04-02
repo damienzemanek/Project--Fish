@@ -55,3 +55,6 @@ MonoBehaviour:
     <invulnerablePeriod>k__BackingField: 0.2
     <pushForceX>k__BackingField: 3
     <pushForceY>k__BackingField: 1
+  <stunned>k__BackingField:
+    <stunnedPeriod>k__BackingField:
+      val: 1
