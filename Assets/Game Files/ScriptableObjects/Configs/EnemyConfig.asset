@@ -58,3 +58,6 @@ MonoBehaviour:
   <stunned>k__BackingField:
     <stunnedPeriod>k__BackingField:
       val: 1
+  <finishable>k__BackingField:
+    <finishTime>k__BackingField:
+      val: 1

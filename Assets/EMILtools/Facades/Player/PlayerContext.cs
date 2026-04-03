@@ -22,6 +22,7 @@ public interface IPlayerContextView : IEntityCtx
     bool isHookLatchedOntoTarget { get; }
     Vector2 mousePos { get; }
     Publisher<bool> targetStunPublisher { get; }
+    public bool isFinishing { get; }
 }
 
 [InlineProperty]
@@ -43,6 +44,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public bool isMoving { get; set; }
     [ShowInInspector] public bool isHooking { get; set; }
     [ShowInInspector] public bool isHookLatchedOntoTarget { get; set; }
+    [ShowInInspector] public bool isFinishing { get; set; }
     [ShowInInspector] public Publisher<bool> targetStunPublisher { get; set; }
     
     // API Distinct

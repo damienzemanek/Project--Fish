@@ -5056,7 +5056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hook
   withinRange: 0
-  phase: 0
+  phase: 4
   worldMask:
     serializedVersion: 2
     m_Bits: 8
@@ -5103,6 +5103,7 @@ MonoBehaviour:
   verticalOffsetScalar: 4
   line: {fileID: 4066093710809156480}
   maxDistanceToAutoRecal: 7
+  maxDistanceToBreak: 12
   linePoints: 30
   lineLerpSpeed: 10
   dist: 0
@@ -5179,6 +5180,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  breakingColor: {r: 6.3396225, g: 0, b: 0, a: 1}
 --- !u!114 &6525483726381218756
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,6 +21,7 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new Hooked(facade.Actions.isHookedBySomething, f));
         AddModule(new Stunnable(facade.Actions.Stun, f));
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
@@ -46,6 +47,40 @@ public class EnemyFunctionality : Functionalities<
         
         fsm.AddAnyTransition<Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isStunned), "Stunned");
         fsm.AddTransition<Stunnable, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isStunned), "Not Stunned");
+    }
+
+    class Hooked : BoundSetFunctionality<EnemyController, IEnemyContextView, Hooked.Setter>,
+        ON_SET
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public class Setter : DataSetter<(bool, Publisher<(bool, CountdownTimer, PersistentAction)>)>
+        {
+            [ShowInInspector] public bool isHooked => Get.Item1;
+            [ShowInInspector] public Publisher<(bool, CountdownTimer, PersistentAction)> hookingEntityResponse => Get.Item2;
+        }
+
+        private PersistentAction hookingEntity_HookedBreakoutCallback = new();
+        
+        protected override void Awake()
+        {
+            bb.finishTimer = new CountdownTimer(cfg.finishable.finishTime);
+            bb.finishTimer.OnTimerStop.Add(HookedBreakoutDyingState);
+            facade.InitTimer(bb.finishTimer, true);
+        }
+
+        public Hooked(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        public void MutateUsingNewSetValues()
+        {
+            if (facade.FSM.CurrentStateType != typeof(DyingState)) return;
+            SetContext.hookingEntityResponse.Publish((SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback));
+        }
+
+        void HookedBreakoutDyingState()
+        {
+            bb.dyingStateTimer.Time = 0;
+            hookingEntity_HookedBreakoutCallback.Invoke();
+            Debug.Log("Finisher: Hooked Breakout Dying State");
+        }
     }
     
     class Stunnable : BoundSetFunctionality<EnemyController, IEnemyContextView, Stunnable.Setter>,

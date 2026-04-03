@@ -1,6 +1,8 @@
 using System;
+using EMILtools.Core;
 using EMILtools.Extensions;
 using EMILtools.Systems;
+using EMILtools.Timers;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using static AttackingBoundsChecker;
@@ -24,6 +26,7 @@ public class PlayerController : MonoFacade<
     {
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
+        public readonly Publisher<(bool, CountdownTimer, PersistentAction)> Finisher = new();
     }
 
     public class PlayerInputMap : InputMap
@@ -56,18 +59,29 @@ public class PlayerController : MonoFacade<
         Actions.TakeDamage.Publish(ctx);
     }
 
+    /// <summary>
+    /// When the player hooks onto a target
+    /// </summary>
+    /// <param name="collidedWith"></param>
+    /// <param name="sender"></param>
+    /// <param name="ctx"></param>
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
-        API_Context<PlayerContextData>().targetStunPublisher = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>().Stun;
+        var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
+        API_Context<PlayerContextData>().targetStunPublisher = targetActions.Stun;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;
+        targetActions.isHookedBySomething.Publish((true, Actions.Finisher));
     }
 
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
+        var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
+        targetActions.isHookedBySomething.Publish((true, null));
+
         Debug.Log("HOOK UNATTACHED");
     }
 }

@@ -1,4 +1,7 @@
-﻿public interface IActionMap
+﻿using System;
+
+public interface IActionMap
 {
     
 }
+

@@ -33,6 +33,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public LineRenderer line;
 
     public float maxDistanceToAutoRecal = 8f;
+    public float maxDistanceToBreak = 12f;
     public int linePoints = 10;
     public float lineLerpSpeed = 10f;
     public float dist;
@@ -51,14 +52,18 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public Ref<float> hookAttackSnapSpeed = 0.2f;
 
     public AnimationCurve hookAttackCurve;
+
+    Gradient cachedLineColor;
     
-    
+    [ColorUsage(true, true)]
+    public Color breakingColor;
     
     Action attachedSignal;
     Action hookAttackFinished;
 
     void Awake()
     {
+        cachedLineColor = line.colorGradient;
         line.positionCount = linePoints;
         lineDroopTimer = new CountdownTimer(lineDroopTime, true);
         snapToHookedTimer = new CountdownTimer(snapTimeWhenHooked, true);
@@ -111,6 +116,8 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
 
             void CastOut()
             {
+                line.colorGradient = cachedLineColor;
+                
                 float point = (float)i / (count - 1); 
                 float curvedScalar = verticalOffsetScalar * lineVerticalOffsetCurve.Evaluate(point);
                 
@@ -157,7 +164,26 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
                 Vector2 newPos = pos;
                 Vector2 lerpPos = Vector2.Lerp(oldPos, newPos, (1- snapToHookedTimer.Progress));
                 
-                line.SetPosition(i, lerpPos); 
+                line.SetPosition(i, lerpPos);
+
+                if (dist > maxDistanceToBreak)
+                {
+                    ResetHook();
+                    hookAttackFinished?.Invoke();
+                }
+                else
+                {
+                    float lerpPoint = Mathf.InverseLerp(maxDistanceToAutoRecal, maxDistanceToBreak, dist);
+
+                    Color newColor = Color.Lerp(
+                        cachedLineColor.Evaluate(lerpPoint),
+                        breakingColor,
+                        lerpPoint
+                    );
+                    
+                    line.startColor = newColor;
+                    line.endColor = newColor;
+                }
             }
             
             void HookAttacking()
