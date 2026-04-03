@@ -3,20 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using EMILtools.Extensions;
 using EMILtools.Timers;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Hook : MonoBehaviour, TimerUtility.ITimerUser
 {
     public enum HookPhases
     {
+        Held,
         CastingOut,
         HitMaxDistAndFalling,
         HookedToSomething,
-        Drooping,
-        Recalling
+        HookAttacking,
+        HookSnapping,
+        Drooping
     }
     public bool withinRange;
-    public HookPhases phase;
+    public HookPhases phase = HookPhases.Held;
     public LayerMask worldMask;
     public LayerMask targetMask;
     public Rigidbody2D rb;
@@ -41,15 +44,39 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public CountdownTimer snapToHookedTimer;
     public Ref<float> snapTimeWhenHooked = 0.2f;
     
+    public CountdownTimer hookAttackTimer;
+    public Ref<float> hookAttackTimerSpeed = 0.2f;
+    
+    public CountdownTimer hookAttackSnapTimer;
+    public Ref<float> hookAttackSnapSpeed = 0.2f;
+
+    public AnimationCurve hookAttackCurve;
+    
+    
+    
     Action attachedSignal;
+    Action hookAttackFinished;
 
     void Awake()
     {
         line.positionCount = linePoints;
         lineDroopTimer = new CountdownTimer(lineDroopTime, true);
         snapToHookedTimer = new CountdownTimer(snapTimeWhenHooked, true);
+        hookAttackSnapTimer = new CountdownTimer(hookAttackSnapSpeed);
+        hookAttackTimer = new CountdownTimer(hookAttackTimerSpeed);
+        
+        hookAttackTimer.OnTimerStop.Add(() => {
+            phase = HookPhases.HookSnapping;
+        });
+        hookAttackSnapTimer.OnTimerStop.Add(() => {
+            hookAttackFinished?.Invoke();
+            phase = HookPhases.Held;
+        });
+        
         this.InitTimer(lineDroopTimer, true);
         this.InitTimer(snapToHookedTimer, true);
+        this.InitTimer(hookAttackTimer, true);
+        this.InitTimer(hookAttackSnapTimer, true);
     }
 
     private void Start()
@@ -73,9 +100,12 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
             
             switch (phase)
             {
+                case HookPhases.Held: line.SetPosition(i, rodParent.position); continue;
                 case HookPhases.CastingOut: CastOut(); break;
                 case HookPhases.HitMaxDistAndFalling: HitMaxDistAndFalling(); break;
                 case HookPhases.HookedToSomething: HookedOntoSomething(); break;
+                case HookPhases.HookAttacking: HookAttacking(); break;
+                case HookPhases.HookSnapping: HookSnapping(); break;
             }
 
 
@@ -129,6 +159,41 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
                 
                 line.SetPosition(i, lerpPos); 
             }
+            
+            void HookAttacking()
+            {
+                if (!hookAttackTimer.isRunning)
+                    hookAttackTimer.StartAndReset();
+
+                float progress = Mathf.Clamp01(1- hookAttackTimer.Progress);
+                float pointT = (linePoints <= 1) ? 0f : (float)i / (linePoints - 1);
+
+                if (pointT <= progress)
+                {
+                    // 0..1 along only the traversed part
+                    float localT = (progress > 0f) ? pointT / progress : 0f;
+
+                    // continuous pattern 
+                    float yOffset = hookAttackCurve.Evaluate(localT);
+                    pos = pos.With(y: pos.y + yOffset);
+                }
+
+                line.SetPosition(i, pos);
+            }
+
+            void HookSnapping()
+            {
+                if(!hookAttackSnapTimer.isRunning) hookAttackSnapTimer.StartAndReset();
+                
+                //Debug.Log("snap prog : " + (1-snapToHookedTimer.Progress));
+                
+                Vector2 oldPos = line.GetPosition(i);
+                Vector2 newPos = pos;
+                Vector2 lerpPos = Vector2.Lerp(oldPos, newPos, (1- hookAttackSnapTimer.Progress));
+                
+                line.SetPosition(i, lerpPos); 
+            }
+            
         }
     }
 
@@ -138,6 +203,13 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     {
         if(InMask(other, worldMask)) StopHookMovement();
         if(InMask(other, targetMask)) AttachHook(other.transform);
+    }
+
+    [Button]
+    public void HookAttack()
+    {
+        hookAttackTimer.StartAndReset();
+        phase = HookPhases.HookAttacking;
     }
 
     public void CastHook(Vector2 dirWithForce)
@@ -155,17 +227,20 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         StartCoroutine(C_CheckIfHookDistanceIsTooFar());
         
     }
+    
+    public void SetupHookAttackFinishedSignal(Action signal) => hookAttackFinished = signal;
 
-    public void ResetHook()
+    public bool ResetHook()
     {
+        if(phase == HookPhases.HookAttacking) return false;
         transform.SetParent(rodParent);
         transform.position = rodParent.position;
         rb.bodyType = RigidbodyType2D.Kinematic;
         joint.enabled = false;
-        phase = HookPhases.Recalling;
+        phase = HookPhases.Held;
         withinRange = false;
         for (int i = 0; i < linePoints; i++) line.SetPosition(i, rodParent.position);
-
+        return true;
     }
 
     void StopHookMovement()

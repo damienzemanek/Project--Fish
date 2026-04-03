@@ -39,6 +39,7 @@ namespace EMILtools.Systems
             if(module == null) Debug.LogWarning("Did not find module of type " + typeof(T));
             return null;
         }
+        
 
         protected void InitializeFacade(TConfig injectConfig = null)
         {
@@ -102,5 +103,7 @@ namespace EMILtools.Systems
         {
             if(Functionality is TFunctionalityType functionality) return functionality; throw new InvalidCastException();
         }
+        
+        public TActionMap1 API_Actions<TActionMap1>() where TActionMap1 : class, IActionMap => Actions as TActionMap1;
     }
 }

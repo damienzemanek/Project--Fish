@@ -263,6 +263,35 @@ public class PipelineTests
 
     }
     
+    [Test]
+    public async Task Test10_ShortCirtcuit()
+    {
+        // Arrange
+        var myctx = new TestCtx(2);
+        var shortCircuitChecked = false;
+        var shortCircuitSucceeded = false;
+        var jumpCalled = false;
+        var jump = new PipelineBuilder<TestCtx>()
+            .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx => ctx.Value == 1))
+            .Add_ShortCircuit(new FuncCtxPredicate<TestCtx>(ctx =>
+                {
+                    shortCircuitChecked = true;
+                    return ctx.Value == 2;
+                }), 
+                shortCircuited: new IResolvable[] { new Callback(ShortCircuits) }) 
+            .InjectMainMethod(Jump);
+        void ShortCircuits() => shortCircuitSucceeded = true;
+        void Jump(TestCtx ctx) { jumpCalled = true; }
+        
+        // Act
+        await TryTo(jump, myctx);
+        
+        
+        // Assert
+        Assert.IsTrue(shortCircuitChecked, "Before callback should have been called.");
+        Assert.IsTrue(shortCircuitSucceeded, "After callback should NOT have been called.");
+        Assert.IsFalse(jumpCalled, "Jump should NOT have been called.");
+    }
     
     
 }

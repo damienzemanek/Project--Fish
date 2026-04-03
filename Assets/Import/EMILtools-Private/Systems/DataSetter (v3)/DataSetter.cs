@@ -30,7 +30,8 @@ namespace EMILtools.Systems
     {
         // Values
         public T1 Get { get; private set; }
-
+        public void ExplicitSet(T1 val) => Get = val;
+        
         // Template Call 
         readonly SubResolvableCtx<T1> subscriber_TemplateCall;
         public ISubscriber Subscriber => subscriber_TemplateCall;

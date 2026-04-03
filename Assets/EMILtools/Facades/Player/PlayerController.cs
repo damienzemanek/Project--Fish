@@ -1,4 +1,5 @@
 using System;
+using EMILtools.Extensions;
 using EMILtools.Systems;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -14,7 +15,8 @@ public class PlayerController : MonoFacade<
     PlayerController.ActionMap>,
         IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IEntityFacade
+        IBoundsCheckMsgReceiver<Collider2D, HookBoundsChecker.HookContext>,
+    IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
 
@@ -53,5 +55,19 @@ public class PlayerController : MonoFacade<
         Debug.Log($"Player try receive damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
     }
-    
+
+    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
+        HookBoundsChecker.HookContext ctx)
+    {
+        API_Context<PlayerContextData>().targetStunPublisher = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>().Stun;
+        API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;
+    }
+
+    public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
+        HookBoundsChecker.HookContext ctx)
+    {
+        API_Context<PlayerContextData>().targetStunPublisher = null;
+        API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
+        Debug.Log("HOOK UNATTACHED");
+    }
 }

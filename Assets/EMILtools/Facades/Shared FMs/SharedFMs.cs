@@ -134,7 +134,7 @@ public class SharedFMs
             
             Debug.Log("TakingDmg: Passed All Guards");
             
-            bb.damageFlasher.Flash();
+            bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);

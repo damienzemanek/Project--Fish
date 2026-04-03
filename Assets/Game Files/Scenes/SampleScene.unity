@@ -1000,7 +1000,7 @@ GameObject:
   - component: {fileID: 433639133}
   - component: {fileID: 433639132}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Hook Attack Bounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1034,14 +1034,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HookBoundsChecker
   is2D: 1
-  ThingCollidedWith: 1
-  SelectedReceiver: 0
+  ThingCollidedWith: 0
+  SelectedReceiver: 1
   selectedReceiver3D:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
-    underlyingValue: {fileID: 0}
+    underlyingValue: {fileID: 6525483726381218756}
   <enter>k__BackingField: 1
-  <exit>k__BackingField: 0
+  <exit>k__BackingField: 1
   <stay>k__BackingField: 0
   exitOnDisableEvenIfExitFalse: 1
   layerMask:
@@ -1090,7 +1090,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.0000076293945, y: -7.66453e-16}
-  m_Radius: 0.70299965
+  m_Radius: 3
 --- !u!1 &443863708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2058,50 +2058,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3795515dffc42044b80f3973816f984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageFlasher
-  flashTime: 0.2
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -3.7275834
-      outSlope: -3.7275834
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.16200651
-      value: 0.39610723
-      inSlope: -1.4938357
-      outSlope: -1.4938357
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.21462218
-    - serializedVersion: 3
-      time: 0.78581816
-      value: 0.058127735
-      inSlope: -0.23908146
-      outSlope: -0.23908146
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.68108916
-      outWeight: 1
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.2713943
-      outSlope: -0.2713943
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  flashData:
+  - flashType: 0
+    flashTime: 0.2
+    flashColor: {r: 0.9245283, g: 0.15263437, b: 0.15263437, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 1
+    flashTime: 0.2
+    flashColor: {r: 0.16521744, g: 0.7924528, b: 0.063545756, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 2
+    flashTime: 0.2
+    flashColor: {r: 0.5377358, g: 0.4672281, b: 0.012682447, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   sprites:
   - {fileID: 7787852488593914810}
 --- !u!212 &1039784108 stripped
@@ -5065,7 +5103,7 @@ MonoBehaviour:
   verticalOffsetScalar: 4
   line: {fileID: 4066093710809156480}
   maxDistanceToAutoRecal: 7
-  linePoints: 10
+  linePoints: 30
   lineLerpSpeed: 10
   dist: 0
   remainingCurveWhenAtMaxDist:
@@ -5080,6 +5118,67 @@ MonoBehaviour:
     oneShot: 0
   snapTimeWhenHooked:
     val: 0.2
+  hookAttackTimer:
+    canRun: 0
+    oneShot: 0
+  hookAttackTimerSpeed:
+    val: 0.2
+  hookAttackSnapTimer:
+    canRun: 0
+    oneShot: 0
+  hookAttackSnapSpeed:
+    val: 0.25
+  hookAttackCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 15.496092
+      outSlope: 15.496092
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.21375003
+      value: 4.31229
+      inSlope: -33.264187
+      outSlope: -33.264187
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 1
+    - serializedVersion: 3
+      time: 0.4913652
+      value: -10.013817
+      inSlope: 0.18523
+      outSlope: 0.18523
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.45549938
+    - serializedVersion: 3
+      time: 0.7889365
+      value: 15.009365
+      inSlope: 7.382719
+      outSlope: 7.382719
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.7473354
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: -66.37512
+      outSlope: -66.37512
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &6525483726381218756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5458,50 +5557,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3795515dffc42044b80f3973816f984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageFlasher
-  flashTime: 0.2
-  flashColor: {r: 1, g: 1, b: 1, a: 1}
-  flashCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -3.7275834
-      outSlope: -3.7275834
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.16200651
-      value: 0.39610723
-      inSlope: -1.4938357
-      outSlope: -1.4938357
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.21462218
-    - serializedVersion: 3
-      time: 0.78581816
-      value: 0.058127735
-      inSlope: -0.23908146
-      outSlope: -0.23908146
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.68108916
-      outWeight: 1
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -0.2713943
-      outSlope: -0.2713943
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  flashData:
+  - flashType: 0
+    flashTime: 0.2
+    flashColor: {r: 0.9245283, g: 0.15263437, b: 0.15263437, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 1
+    flashTime: 0.2
+    flashColor: {r: 0.16521744, g: 0.7924528, b: 0.063545756, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 2
+    flashTime: 0.2
+    flashColor: {r: 0.5377358, g: 0.4672281, b: 0.012682447, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   sprites:
   - {fileID: 1827662873}
   - {fileID: 1039784108}
@@ -5784,7 +5921,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: -0.0000076293945, y: -7.66453e-16}
-  m_Radius: 0.70299965
+  m_Radius: 1.2
 --- !u!4 &8399190768216509220
 Transform:
   m_ObjectHideFlags: 0

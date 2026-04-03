@@ -1,3 +1,4 @@
+using System;
 using EMILtools.Core;
 using EMILtools.Systems;
 using EMILtools.Timers;
@@ -72,8 +73,10 @@ public class EnemyFunctionality : Functionalities<
             bb.stunnedTimer.StartAndReset();
             mutateCtx.isStunned = true;
             bb.rb.linearVelocity = new Vector2(0, bb.rb.linearVelocity.y);
+            bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
         }
         public void MutateUsingNewSetValues() => mutateCtx.isStunned = SetContext.isStunned;
+
     }
     
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,
@@ -246,6 +249,7 @@ public class EnemyFunctionality : Functionalities<
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(DyingState)))
+                .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Stunnable)))
                 .Add_Middleware(_ => bb.computePath.RateLimitedUpdateTick())
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.path == null))
                 .Add_Middleware(GrabVariables)

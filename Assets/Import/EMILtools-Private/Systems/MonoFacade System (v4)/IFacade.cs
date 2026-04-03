@@ -12,6 +12,8 @@ namespace EMILtools.Systems
         public TFunctionalityType API_Functionality<TFunctionalityType>() where TFunctionalityType : IFunctionality;
         public IFSM FSM { get; }
         public Transform transform { get; }
+        public T GetFunctionality<T>() where T : class, IAPI_Module;
+        public TActionMap API_Actions<TActionMap>() where TActionMap : class, IActionMap;
     }
 
 }

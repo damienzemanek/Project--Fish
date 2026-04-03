@@ -14,7 +14,6 @@ public class EnemyController : MonoFacade<
     ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IBoundsCheckMsgReceiver<Collider2D, HookContext>,
 
 IEntityFacade
 {
@@ -36,10 +35,5 @@ IEntityFacade
     
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
      => Actions.TakeDamage.Publish(ctx);
-
-    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender, HookContext ctx)
-    {
-        if(ctx.isHooked) Actions.Stun.Publish(true);
-    }
 
 }

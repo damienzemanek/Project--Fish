@@ -6,7 +6,6 @@ using UnityEngine;
 
 public abstract class BoundsChecker<TContext> : MonoBehaviour
 {
-    
     [Header("What type of Bounds Checker?")]
     public bool is2D;
 
@@ -209,18 +208,28 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     {
         if (!is2D || !PassesLayerMask(other.gameObject)) return;
 
-        if (ThingCollidedWith)
+        if (ThingCollidedWith && !SelectedReceiver)
         {
             if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> receiver)) return;
             if (!collisions2D.Remove(receiver)) return;
             if (!exit) return;
             receiver.OnExitBounds(other, this, exitContext);
         }
-
-        if (!exit) return;
-
-        if (SelectedReceiver)
+        else if (ThingCollidedWith && SelectedReceiver)
+        {
+            if (!other.TryGetComponent(out IBoundsCheckMsgReceiver<Collider2D, TContext> receiver)) return;
+            if (!collisions2D.Remove(receiver)) return;
+            if (!exit) return;
+            receiver.OnExitBounds(other, this, exitContext);
             selectedReceiver2D.Value?.OnExitBounds(other, this, exitContext);
+        }
+        else if (!ThingCollidedWith && SelectedReceiver)
+        {
+            if (!exit) return;
+            selectedReceiver2D.Value?.OnExitBounds(other, this, exitContext);
+        }
+        else
+            Debug.Log("BoundsChecker: OnTriggerExit2D called with no receiver or thing collided with");
     }
 
     private void OnTriggerStay2D(Collider2D other)

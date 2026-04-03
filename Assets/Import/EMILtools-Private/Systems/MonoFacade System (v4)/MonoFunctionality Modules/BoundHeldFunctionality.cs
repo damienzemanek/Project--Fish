@@ -11,6 +11,8 @@ namespace EMILtools.Systems
         public void Unbind();
     }
     
+    
+    
     /// <summary>
     /// Binds a functionality to a Publisher
     /// - Only to be used with PersistentAction (No Args)
@@ -25,13 +27,21 @@ namespace EMILtools.Systems
         where TViewCtx : class, IContextViewImmutable
     {
         [NonSerialized] readonly Publisher<TViewCtx> publisher; // Lazy (Injected)
+
         protected BoundFunctionality(Publisher<TViewCtx> publisher, TFacade facade) : base(facade)
-            => this.publisher = publisher;
-        
+        {
+            this.publisher = publisher;
+            Debug.Log($"Bound {typeof(TFacade).Name} Established Publisher : {publisher.GetType().Name} for functionality");
+        }
+
         /// <summary>
         /// Binds the EXECUTION PIPELINE to the BOUND ACTION
         /// </summary>
-        public virtual void Bind() => publisher.Add(exeSub);
+        public virtual void Bind()
+        {
+            publisher.Add(exeSub);
+            Debug.Log($"Bound {typeof(TFacade).Name} functionality to publisher");
+        }
         public virtual void Unbind() => publisher.Remove(exeSub);
     }
 
@@ -39,6 +49,7 @@ namespace EMILtools.Systems
 
     /// <summary>d
     /// Binds a functionality to a Publisher
+    /// - Pipeline Injection ONLY FOR TICKFM EXECUTION, does not work with the setter
     /// - Set Args with SettableTemplate
     /// - Tracks: isActive
     /// </summary>
@@ -48,8 +59,9 @@ namespace EMILtools.Systems
     public abstract class BoundSetFunctionality<
             TFacade,
             TViewCtx, 
-            DataSetter> 
-            : UnboundFunctionality<TFacade, TViewCtx>, IBindable
+            DataSetter> :
+        UnboundFunctionality<TFacade, TViewCtx>,
+        IBindable
         where TFacade : IFacade
         where DataSetter : class, IDataSetter, new()
         where TViewCtx : class, IContextViewImmutable

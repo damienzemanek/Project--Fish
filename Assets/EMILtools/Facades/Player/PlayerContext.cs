@@ -19,7 +19,9 @@ public interface IPlayerContextView : IEntityCtx
     public bool isAttacking { get; }
     public bool isMoving { get; }   
     bool isHooking { get; }
+    bool isHookLatchedOntoTarget { get; }
     Vector2 mousePos { get; }
+    Publisher<bool> targetStunPublisher { get; }
 }
 
 [InlineProperty]
@@ -40,7 +42,8 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public bool isAttacking { get; set; }
     [ShowInInspector] public bool isMoving { get; set; }
     [ShowInInspector] public bool isHooking { get; set; }
-    
+    [ShowInInspector] public bool isHookLatchedOntoTarget { get; set; }
+    [ShowInInspector] public Publisher<bool> targetStunPublisher { get; set; }
     
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;
