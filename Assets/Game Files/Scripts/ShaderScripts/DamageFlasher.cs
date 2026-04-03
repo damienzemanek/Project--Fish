@@ -50,9 +50,6 @@ public class DamageFlasher : MonoBehaviour
 
         var length = System.Enum.GetValues(typeof(FlashType)).Length;
         if(flashData.Length != length) Debug.LogError($"Flash Data Length {flashData.Length} does not match Flash Type Length {length}");
-
-        for (int i = 0; i < length; i++) SetFlashColor((FlashType)i);
-        
     }
 
     public int GetFlashDataFromEnum(FlashType flashType)
@@ -69,26 +66,25 @@ public class DamageFlasher : MonoBehaviour
 
     IEnumerator C_Flash(FlashType flashType)
     {
-        Debug.Log("Flashing");
         int i = GetFlashDataFromEnum(flashType);
-        float currAmount = 0f;
+        if (i < 0) yield break;
+
+        SetFlashColor(i);
+
         float elapsedTime = 0f;
-        while(elapsedTime < flashData[i].flashTime)
+        while (elapsedTime < flashData[i].flashTime)
         {
             elapsedTime += Time.deltaTime;
             float eval = Mathf.Clamp01(elapsedTime / flashData[i].flashTime);
-            currAmount = flashData[i].flashCurve.Evaluate(eval);
+            float currAmount = flashData[i].flashCurve.Evaluate(eval);
             SetFlashAmount(currAmount);
             yield return null;
         }
     }
 
-    void SetFlashColor(FlashType flashType)
+    void SetFlashColor(int flashindex)
     {
-        int dataIndex = GetFlashDataFromEnum(flashType);
-        if (dataIndex < 0) return;
-
-        Color color = flashData[dataIndex].flashColor;
+        Color color = flashData[flashindex].flashColor;
         for (int i = 0; i < sprites.Length; i++)
             mats[i].SetColor(FlashColor, color);
     }
