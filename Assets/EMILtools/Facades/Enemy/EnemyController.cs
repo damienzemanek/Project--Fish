@@ -26,6 +26,7 @@ public class EnemyController : MonoFacade<
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<bool> Stun = new();
         public readonly Publisher<(bool, Publisher<(bool, CountdownTimer, PersistentAction)>)> isHookedBySomething = new();
+        public IContextViewImmutable ctx { get; }
     }
     protected void Awake() => InitializeFacade();
     void OnEnable() => Functionality.Bind();

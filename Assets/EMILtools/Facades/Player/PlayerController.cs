@@ -27,6 +27,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
         public readonly Publisher<(bool, CountdownTimer, PersistentAction)> Finisher = new();
+        public IContextViewImmutable ctx { get; }
     }
 
     public class PlayerInputMap : InputMap
@@ -36,6 +37,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<Vector2> Look = new();
         public readonly Publisher<bool> Attack = new();
         public readonly Publisher<bool> Hook = new();
+        public readonly Publisher<bool> FinishInput = new();
     }
 
     public PlayerInputMap Input { get; set; }

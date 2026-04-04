@@ -10,28 +10,30 @@ using static PlayerController;
 using UnityEditor;
 #endif
 
+
 public class PlayerInputReader :
+    IActionsAware,
     IPlayerActions,
     IInputReaderSubordinate<PlayerInputMap, Subordinates>
 {
-    public IA_Player ia;
+     readonly IA_Player ia = new();
 
-    public void Init()
+     public void Init()
     {
-        if(ia == null) ia = new IA_Player();
         ia.Player.Disable();
         ia.Player.SetCallbacks(this);
         ia.Player.Enable();
     }
 
+    public ActionMap Actions { get; private set; }
     public PlayerInputMap Input => subordinate.Input;
     public IInputSubordinate<PlayerInputMap, Subordinates> subordinate { get; set; }
     public void OnAuthorityChange() { }
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if(ia.Player.Move.IsPressed() && context.ReadValue<UnityEngine.Vector2>().x != 0)
-            Input.Move.Publish((true, context.ReadValue<UnityEngine.Vector2>().x));
+        if(ia.Player.Move.IsPressed() && context.ReadValue<Vector2>().x != 0)
+            Input.Move.Publish((true, context.ReadValue<Vector2>().x));
         else
             Input.Move.Publish((false, NumEX.ZeroF));
     }
@@ -90,8 +92,15 @@ public class PlayerInputReader :
         }
     }
 
-    public void OnSprint(InputAction.CallbackContext context)
+    public void OnFinishInput(InputAction.CallbackContext context)
     {
-        
+        Debug.Log("Finish Input: " + context.phase);
+        switch (context.phase)
+        {
+            case InputActionPhase.Performed: Input.FinishInput.Publish(true); break;
+            case InputActionPhase.Canceled: Input.FinishInput.Publish(false); break;
+        }
     }
+
+    public void InjectActions(IActionMap actions) => Actions = (ActionMap)actions;
 }
