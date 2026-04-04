@@ -70,19 +70,26 @@ public class PlayerController : MonoFacade<
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
-        var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
-        API_Context<PlayerContextData>().targetStunPublisher = targetActions.Stun;
+        if(collidedWith == null) return;
+        if (!collidedWith.TryGetComponent<EnemyController>(out var targetActions)) return;
+        var map = targetActions.API_Actions<EnemyController.ActionMap>();
+        API_Context<PlayerContextData>().targetStunPublisher = map.Stun;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;
-        targetActions.isHookedBySomething.Publish((true, Actions.Finisher));
+        map.isHookedBySomething.Publish((true, Actions.Finisher));
     }
 
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
-        var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
-        targetActions.isHookedBySomething.Publish((true, null));
+        if(collidedWith == null) return;
+        var hasCont = collidedWith.TryGetComponent<EnemyController>(out var targetActions);
+        if (hasCont)
+        {
+             targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething.Publish((true, null));
+        }
+
 
         Debug.Log("HOOK UNATTACHED");
     }
