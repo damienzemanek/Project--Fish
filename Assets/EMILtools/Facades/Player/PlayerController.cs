@@ -79,10 +79,14 @@ public class PlayerController : MonoFacade<
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
-        var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
-        targetActions.isHookedBySomething.Publish((true, null));
+        if(collidedWith.Get<EnemyController>())
+        {
+            var targetActions = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>();
+            targetActions.isHookedBySomething.Publish((true, null));
+        }
+
 
         Debug.Log("HOOK UNATTACHED");
     }
