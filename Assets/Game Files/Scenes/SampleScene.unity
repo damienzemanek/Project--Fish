@@ -946,6 +946,38 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &383877102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 383877103}
+  m_Layer: 7
+  m_Name: Finisher Event Slot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &383877103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 383877102}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1059281344}
+  m_Father: {fileID: 990602683}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &386642706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,7 +1943,7 @@ Transform:
   - {fileID: 41291135}
   - {fileID: 1213963158}
   - {fileID: 1218048174}
-  - {fileID: 1059281344}
+  - {fileID: 383877103}
   m_Father: {fileID: 195081126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &990602685
@@ -1988,6 +2020,7 @@ MonoBehaviour:
       <hookSlider>k__BackingField: {fileID: 1945046063}
       <livingEntity>k__BackingField: {fileID: 990602690}
       <viewRange>k__BackingField: {fileID: 1218048176}
+      <finisherEventSlot>k__BackingField: {fileID: 383877102}
 --- !u!50 &990602688
 Rigidbody2D:
   serializedVersion: 5
@@ -2430,7 +2463,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1059281344}
   m_Layer: 7
-  m_Name: Finisher Slider
+  m_Name: Finisher Event Basic
   m_TagString: Untagged
   m_Icon: {fileID: 7422848464349959988, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2444,14 +2477,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1059281343}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.9685401, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.9685402, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1543644039}
   - {fileID: 429623842}
-  m_Father: {fileID: 990602683}
+  m_Father: {fileID: 383877103}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1213963157
 GameObject:
@@ -3893,6 +3926,14 @@ PrefabInstance:
     - target: {fileID: 7150858989621047036, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786321480229197485, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: breakingColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7786321480229197485, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: maxDistanceToBreak
+      value: 9.5
       objectReference: {fileID: 0}
     - target: {fileID: 8008494068151331907, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_Name

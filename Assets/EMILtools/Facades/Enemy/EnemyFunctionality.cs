@@ -96,10 +96,10 @@ public class EnemyFunctionality : Functionalities<
             bb.finishTimer = new CountdownTimer(cfg.finishable.finishTime);
             bb.finishTimer.OnTimerStop.Add(HookedBreakoutDyingState);
             facade.InitTimer(bb.finishTimer, true);
+            bb.finisherEventSlot.SetActive(false);
         }
 
         public Hooked(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-        
         
         public void MutateUsingNewSetValues()
         {
@@ -109,6 +109,7 @@ public class EnemyFunctionality : Functionalities<
         
         public void OnEnterState(IEnemyContextView ctx)
         {
+            bb.finisherEventSlot.SetActive(true);
             Debug.Log("AA" + SetContext.hookingEntityResponse);   
             SetContext.hookingEntityResponse.Publish((SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
             bb.hookSlider.Restart(autoplay: true);
@@ -117,6 +118,8 @@ public class EnemyFunctionality : Functionalities<
         
         void HookedBreakoutDyingState()
         {
+            if(bb.livingEntity.isDead) return;
+            bb.finisherEventSlot.SetActive(false);
             bb.dyingStateTimer.Time = 0;
             hookingEntity_HookedBreakoutCallback.Invoke();
             Debug.Log("Finisher: Hooked Breakout Dying State");
