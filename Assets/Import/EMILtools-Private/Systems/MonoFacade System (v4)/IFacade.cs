@@ -14,6 +14,7 @@ namespace EMILtools.Systems
         public Transform transform { get; }
         public T GetFunctionality<T>() where T : class, IAPI_Module;
         public TActionMap API_Actions<TActionMap>() where TActionMap : class, IActionMap;
+        public IActionMap GetActions { get; }
     }
 
 }

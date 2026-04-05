@@ -1,6 +1,8 @@
 using System;
+using EMILtools.Core;
 using UnityEngine;
 using EMILtools.Systems;
+using EMILtools.Timers;
 using static AttackingBoundsChecker;
 using static CanSeeBoundsChecker;
 using static EMILtools.Timers.TimerUtility;
@@ -14,8 +16,7 @@ public class EnemyController : MonoFacade<
     ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-
-IEntityFacade
+    IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
     public class ActionMap : IActionMap
@@ -24,6 +25,8 @@ IEntityFacade
         public readonly Publisher<bool> CanSeeTarget = new ();
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<bool> Stun = new();
+        public readonly Publisher<(bool, Publisher<(bool, CountdownTimer, PersistentAction)>)> isHookedBySomething = new();
+        public IContextViewImmutable ctx { get; }
     }
     protected void Awake() => InitializeFacade();
     void OnEnable() => Functionality.Bind();
@@ -32,8 +35,8 @@ IEntityFacade
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
-    
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
      => Actions.TakeDamage.Publish(ctx);
+
 
 }

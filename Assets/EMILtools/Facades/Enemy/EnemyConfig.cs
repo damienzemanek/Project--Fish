@@ -21,6 +21,13 @@ public class EnemyConfig : Config, IEntityConfig
     [field: FormerlySerializedAs("<timeSlowTakeDmg>k__BackingField")] [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
     [field: SerializeField] public Stunned stunned { get; private set; }
+    [field: SerializeField] public Finishable finishable { get; private set; }
+
+    [Serializable]
+    public struct Finishable
+    {
+        [field: SerializeField] public Ref<float> finishTime { get; private set; }
+    }
     
     [Serializable]
     public struct Stunned

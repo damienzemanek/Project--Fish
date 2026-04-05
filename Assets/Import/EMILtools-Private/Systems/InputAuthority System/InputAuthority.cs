@@ -33,9 +33,14 @@ namespace EMILtools.Systems
         {
             Reader.subordinate = subordinate;
           
-            if(!initializedReader) {
+            if(!initializedReader) 
+            {
                 Reader.Init();
-                initializedReader = true; }
+                if (Reader is IActionsAware aware && subordinate is IFacade facade)
+                    aware.InjectActions(facade.GetActions);
+
+                initializedReader = true; 
+            }
           
             Reader.OnAuthorityChange();
         }

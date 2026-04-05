@@ -1,6 +1,8 @@
 using System;
+using EMILtools.Core;
 using EMILtools.Extensions;
 using EMILtools.Systems;
+using EMILtools.Timers;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using static AttackingBoundsChecker;
@@ -25,6 +27,8 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
+        public readonly Publisher<(bool, CountdownTimer, PersistentAction)> Finisher = new();
+        public IContextViewImmutable ctx { get; }
     }
 
     public class PlayerInputMap : InputMap
@@ -34,6 +38,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<Vector2> Look = new();
         public readonly Publisher<bool> Attack = new();
         public readonly Publisher<bool> Hook = new();
+        public readonly Publisher<bool> FinishInput = new();
     }
 
     public PlayerInputMap Input { get; set; }
@@ -57,11 +62,21 @@ public class PlayerController : MonoFacade<
         Actions.TakeDamage.Publish(ctx);
     }
 
+    /// <summary>
+    /// When the player hooks onto a target
+    /// </summary>
+    /// <param name="collidedWith"></param>
+    /// <param name="sender"></param>
+    /// <param name="ctx"></param>
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
         HookBoundsChecker.HookContext ctx)
     {
-        API_Context<PlayerContextData>().targetStunPublisher = collidedWith.Get<EnemyController>().API_Actions<EnemyController.ActionMap>().Stun;
+        if(collidedWith == null) return;
+        if (!collidedWith.TryGetComponent<EnemyController>(out var targetActions)) return;
+        var map = targetActions.API_Actions<EnemyController.ActionMap>();
+        API_Context<PlayerContextData>().targetStunPublisher = map.Stun;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;
+        map.isHookedBySomething.Publish((true, Actions.Finisher));
     }
 
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
@@ -69,6 +84,14 @@ public class PlayerController : MonoFacade<
     {
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
+        if(collidedWith == null) return;
+        var hasCont = collidedWith.TryGetComponent<EnemyController>(out var targetActions);
+        if (hasCont)
+        {
+             targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething.Publish((true, null));
+        }
+
+
         Debug.Log("HOOK UNATTACHED");
     }
 }

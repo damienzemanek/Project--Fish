@@ -6,7 +6,7 @@ namespace EMILtools.Systems
     public interface IInputReader<TInputMap> : IInitializable
         where TInputMap : class, IInputMap, new()
     {
-    
+        
     }
 
 

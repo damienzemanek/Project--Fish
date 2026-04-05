@@ -1,7 +1,13 @@
 ﻿using System;
+using EMILtools.Systems;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+
+public interface IActionsAware
+{
+    public void InjectActions(IActionMap actions);
+}
 
 namespace EMILtools.Systems
 {
@@ -40,6 +46,7 @@ namespace EMILtools.Systems
             return null;
         }
         
+
 
         protected void InitializeFacade(TConfig injectConfig = null)
         {
@@ -104,6 +111,11 @@ namespace EMILtools.Systems
             if(Functionality is TFunctionalityType functionality) return functionality; throw new InvalidCastException();
         }
         
-        public TActionMap1 API_Actions<TActionMap1>() where TActionMap1 : class, IActionMap => Actions as TActionMap1;
+        public TActionMap1 API_Actions<TActionMap1>() where TActionMap1 : class, IActionMap
+        {
+            if(Actions is TActionMap1 actions) return actions; throw new InvalidCastException();
+        }
+
+        public IActionMap GetActions => Actions;
     }
 }

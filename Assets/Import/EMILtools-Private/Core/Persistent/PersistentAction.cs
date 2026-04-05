@@ -104,6 +104,7 @@ namespace EMILtools.Core
 
         // ------------ Core ------------ 
         [NonSerialized] Action _action = delegate { };
+        public void Clear() => _action = delegate { };
         public void Invoke() => _action.Invoke();
         public int Count => _action.GetInvocationList().Length;
         public void PrintInvokeListNames()

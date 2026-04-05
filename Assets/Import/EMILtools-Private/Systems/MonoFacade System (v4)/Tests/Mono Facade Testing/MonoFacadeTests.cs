@@ -32,6 +32,7 @@ public class MonoFacadeTests
         {
             // Add Available Actions here as PersistentActions
             // Actions are separate from InputActions
+            public IContextViewImmutable ctx { get; }
         }
 
         // If using InputAuthority, put InitializeFacade in InitSubordinate
