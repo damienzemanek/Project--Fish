@@ -12,15 +12,15 @@ using static HookBoundsChecker;
 
 
 public class PlayerController : MonoFacade<
-    PlayerFunctionality,
-    PlayerConfig,
-    PlayerStructure,
-    PlayerController.ActionMap>,
-        IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
-        IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IBoundsCheckMsgReceiver<Collider2D, HookContext>,
+        PlayerFunctionality,
+        PlayerConfig,
+        PlayerStructure,
+        PlayerController.ActionMap>,
+    IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
+    IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
+    IBoundsCheckMsgReceiver<Collider2D, HookContext>,
 
-IEntityFacade
+    IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
 
@@ -29,14 +29,15 @@ IEntityFacade
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
-        
+
         public readonly Publisher<(
-            bool finisherActive,
-            CountdownTimer finisherTimer,
-            PersistentAction HookedBreakout,
-            Ref<bool> finisherInputAvaliable, 
-            IDamageable damageable)> 
-        Finisher = new();
+                bool finisherActive,
+                CountdownTimer finisherTimer,
+                PersistentAction HookedBreakout,
+                Ref<bool> finisherInputAvaliable,
+                IDamageable damageable)>
+            Finisher = new();
+
         public IContextViewImmutable ctx { get; }
     }
 
@@ -51,10 +52,13 @@ IEntityFacade
     }
 
     public PlayerInputMap Input { get; set; }
-    [field: SerializeField] [field: PropertyOrder(-1)]
+
+    [field: SerializeField]
+    [field: PropertyOrder(-1)]
     public SubordinateContext inputSubordinateContext { get; set; }
+
     public PlayerInputMap InjectInputMap() => new PlayerInputMap();
-    public void InitSubordinate() =>  InitializeFacade();
+    public void InitSubordinate() => InitializeFacade();
     public void OnAuthorityReceived() => Functionality.Bind();
     public void OnAuthorityLost() => Functionality.Unbind();
 
@@ -80,7 +84,7 @@ IEntityFacade
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender,
         HookContext ctx)
     {
-        if(collidedWith == null) return;
+        if (collidedWith == null) return;
         if (!collidedWith.TryGetComponent<EnemyController>(out var targetActions)) return;
         var map = targetActions.API_Actions<EnemyController.ActionMap>();
         API_Context<PlayerContextData>().targetStunPublisher = map.Stun;
@@ -99,14 +103,16 @@ IEntityFacade
     {
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
-        if(collidedWith == null) return;
+        if (collidedWith == null) return;
         var hasCont = collidedWith.TryGetComponent<EnemyController>(out var targetActions);
         if (hasCont)
-            targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething.Publish((false, Actions.Finisher));
+            targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething
+                .Publish((false, Actions.Finisher));
     }
-
-
 }
+
+
+
 
 
 
