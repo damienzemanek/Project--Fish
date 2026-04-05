@@ -13,12 +13,14 @@ public class DamageFlasher : MonoBehaviour
         [Range(0, 1)] public float flashTime; // 0.5f
         [ColorUsage(true, true)] public Color flashColor; // white
         public AnimationCurve flashCurve;
+        public AnimationCurve alphaCurve;
     }
 
-    public enum FlashType { Damage, Heal, Stun }
+    public enum FlashType { Damage, Heal, Stun, Invunerable }
     
     static readonly int FlashColor = Shader.PropertyToID("_FlashColor");
     static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");
+    static readonly int AlphaScalar = Shader.PropertyToID("_AlphaScalar");
 
     public FlashData[] flashData;
     public SpriteRenderer[] sprites;
@@ -36,6 +38,7 @@ public class DamageFlasher : MonoBehaviour
             flashData[i].flashTime = 0.5f;
             flashData[i].flashColor = Color.white;
             flashData[i].flashCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+            flashData[i].alphaCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
         }
     }
 
@@ -62,6 +65,7 @@ public class DamageFlasher : MonoBehaviour
         return -1;
     }
 
+    [Button]
     public void Flash(FlashType flashType) => flashCoroutine = StartCoroutine(C_Flash(flashType));
 
     IEnumerator C_Flash(FlashType flashType)
@@ -77,7 +81,9 @@ public class DamageFlasher : MonoBehaviour
             elapsedTime += Time.deltaTime;
             float eval = Mathf.Clamp01(elapsedTime / flashData[i].flashTime);
             float currAmount = flashData[i].flashCurve.Evaluate(eval);
+            float alpha = flashData[i].alphaCurve.Evaluate(eval);
             SetFlashAmount(currAmount);
+            SetAlpha(alpha);
             yield return null;
         }
     }
@@ -93,5 +99,11 @@ public class DamageFlasher : MonoBehaviour
     {
         for(int i = 0; i < sprites.Length; i++)
             mats[i].SetFloat(FlashAmount, currAmount);
+    }
+
+    void SetAlpha(float alpha)
+    {
+        for(int i = 0; i < sprites.Length; i++)
+            mats[i].SetFloat(AlphaScalar, alpha);
     }
 }

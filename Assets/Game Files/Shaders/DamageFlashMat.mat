@@ -58,6 +58,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaScalar: 1
     - _EnableExternalAlpha: 0
     - _FlashAmount: 0
     - _QueueControl: 0
@@ -66,7 +67,7 @@ Material:
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FlashColor: {r: 5.5467677, g: 2.851876, b: 2.851876, a: 1}
+    - _FlashColor: {r: 5.379374, g: 2.816559, b: 2.816559, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

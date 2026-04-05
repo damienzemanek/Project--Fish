@@ -23,6 +23,7 @@ public class PlayerController : MonoFacade<
     public class ActionMap : IActionMap
     {
         public readonly Publisher<AttackCtx> TakeDamage = new();
+        public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
     }
 

@@ -138,12 +138,15 @@ public class SharedFMs
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
-            
-            TimeManager.Instance.SlowTimeForSeconds(cfg.hitStop.period, cfg.hitStop.scalar, ApplyHitForce);
-            
-            postCb?.Invoke();
+            SlowTime();
             
             Debug.Log("Received Damage");
+        }
+
+        async void SlowTime()
+        {
+            await TimeManager.Instance.SlowTimeForSeconds(cfg.hitStop.period, cfg.hitStop.scalar, ApplyHitForce);
+            postCb?.Invoke();
         }
 
         void ApplyHitForce()
