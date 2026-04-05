@@ -6,6 +6,12 @@ using UnityEngine;
 /// </summary>
 public class DestroyAfter : MonoBehaviour
 {
+    public bool destroyOnStart = true;
     public float time;
-    void Start() => Destroy(gameObject, time);
+    void Start()
+    {
+        if (destroyOnStart) Destroy();
+    }
+    
+    public void Destroy() => Destroy(gameObject, time);
 }

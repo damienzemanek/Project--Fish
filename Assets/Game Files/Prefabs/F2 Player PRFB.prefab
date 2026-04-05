@@ -993,6 +993,11 @@ MonoBehaviour:
       dmg: 0
       location: 0
       type: 0
+  disableContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!1 &5273675759794601938
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,6 +1115,11 @@ MonoBehaviour:
       location: 0
       type: 0
   exitContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+  disableContext:
     damageInfo:
       dmg: 0
       location: 0
@@ -1712,6 +1722,11 @@ MonoBehaviour:
       dmg: 0
       location: 0
       type: 0
+  disableContext:
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!1 &6914203776653452962
 GameObject:
   m_ObjectHideFlags: 0
@@ -2004,6 +2019,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e07e7baa5a114eb4e83cd7ec52101257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hook
+  withinRange: 0
+  phase: 0
   worldMask:
     serializedVersion: 2
     m_Bits: 8
@@ -2014,7 +2031,48 @@ MonoBehaviour:
   rodParent: {fileID: 3808889137247454279}
   hookCollider: {fileID: 1384035565490903240}
   joint: {fileID: 0}
-  maxHookTime: 1
+  lineVerticalOffsetCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  verticalOffsetScalar: 3
+  line: {fileID: 0}
+  maxDistanceToAutoRecal: 8
+  maxDistanceToBreak: 12
+  linePoints: 10
+  lineLerpSpeed: 10
+  dist: 0
+  remainingCurveWhenAtMaxDist:
+    val: 0.5
+  lineDroopTimer:
+    canRun: 0
+    oneShot: 0
+  lineDroopTime:
+    val: 0.5
+  snapToHookedTimer:
+    canRun: 0
+    oneShot: 0
+  snapTimeWhenHooked:
+    val: 0.2
+  hookAttackTimer:
+    canRun: 0
+    oneShot: 0
+  hookAttackTimerSpeed:
+    val: 0.2
+  hookAttackSnapTimer:
+    canRun: 0
+    oneShot: 0
+  hookAttackSnapSpeed:
+    val: 0.2
+  hookAttackCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  breakingColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &7964437274524877470
 GameObject:
   m_ObjectHideFlags: 0
@@ -2188,6 +2246,7 @@ GameObject:
   - component: {fileID: 254960295840764355}
   - component: {fileID: 4192200934562876397}
   - component: {fileID: 2774835385014492110}
+  - component: {fileID: 7592261624253112017}
   m_Layer: 6
   m_Name: F2 Player PRFB
   m_TagString: Untagged
@@ -2328,6 +2387,10 @@ MonoBehaviour:
         obj: {fileID: 7675843513420311084}
       <hook>k__BackingField: {fileID: 4062555180510168747}
       <hookAimPos>k__BackingField: {fileID: 9095357810177439731}
+      <damageFlasher>k__BackingField: {fileID: 7592261624253112017}
+      <invulnerableTimer>k__BackingField:
+        canRun: 0
+        oneShot: 0
       <jumpCurve>k__BackingField:
         operation: 0
         curve:
@@ -2437,6 +2500,20 @@ MonoBehaviour:
       animEnum: 0
       hash: 1654612129
     BlendTreeVariables: []
+--- !u!114 &7592261624253112017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9078375535934440036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3795515dffc42044b80f3973816f984, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageFlasher
+  flashData: []
+  sprites: []
 --- !u!1001 &3764023349307597835
 PrefabInstance:
   m_ObjectHideFlags: 0

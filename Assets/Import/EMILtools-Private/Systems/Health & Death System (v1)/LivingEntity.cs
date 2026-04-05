@@ -37,6 +37,7 @@ public class LivingEntity : Entity,
     [FoldoutGroup("Settings")] [SerializeField] int hitLayer = 2; 
     
     [FoldoutGroup("Death")] public bool destroyOnDeath = false;
+    [FoldoutGroup("Death")] [ShowIf("destroyOnDeath")] public float destroyOnDeathTime = 2f;
     [FoldoutGroup("Death")] [Required] public Rigidbody2D rb;
     [FoldoutGroup("Death")] [Required] public Collider2D deathFloorCollider;
     [FoldoutGroup("Death")] public List<GameObject> enableOnDeathAndUnparents = new();
@@ -115,7 +116,7 @@ public class LivingEntity : Entity,
 
     IEnumerator DestroyOnDeath()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(destroyOnDeathTime);
         Destroy(gameObject);   
     }
     

@@ -1,4 +1,5 @@
 using EMILtools.Systems;
+using EMILtools.Timers;
 using Pathfinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -10,6 +11,8 @@ public interface IEnemyContextView : IEntityCtx
     public bool isStunned { get; }
     public bool invulnerable { get; }
     public bool travelAngleTooCloseToVertical { get; }
+    public bool isBeingFinished { get; }
+    public Ref<bool> isFinisherInputAvaliable { get; }
     public DelayBuffer<bool> canSeeTarget { get; }
     public Vector2 pos { get; }
     public Vector2 nextWaypoint { get; }
@@ -30,8 +33,10 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool isGrounded { get; set; }
     [field: ShowInInspector] public bool travelAngleTooCloseToVertical { get; set; }
     [field: ShowInInspector] public bool isStunned { get; set; }
+    [field: ShowInInspector] public bool isBeingFinished { get; set; }
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
     [field: ShowInInspector] public bool invulnerable { get; set; }
+    [field: ShowInInspector] public Ref<bool> isFinisherInputAvaliable { get; set; } = new(false);
     [field: ShowInInspector] public float hp { get; set; }
     [field: ShowInInspector] public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
     [field: ShowInInspector] public IEntityCtx.FaceDirection facingDirection { get; set; }

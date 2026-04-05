@@ -71,26 +71,35 @@ public class StateMachine<TViewCtx> : IFSM
 
     async Task<ITransition> TryResolveAndGetTransition()
     {
+        var current = CurrentNode?.State;
         
-        for(int i = 0; i < AnyTransitions.Count; i++)
+        for (int i = 0; i < AnyTransitions.Count; i++)
+        {
+            var t = AnyTransitions[i];
+            //if (current == t.To) continue;
             if (await Resolver<TViewCtx>.ResolveContainer(
-                    AnyTransitions[i].Resolves,
-                    AnyTransitions[i].Condition,
-                    canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false
+                    t.Resolves,
+                    t.Condition,
+                    canShortCircuit: true,
                     Context))
             {
-                return AnyTransitions[i];
+                return t;
             }
-        
-        for(int i = 0; i < CurrentNode.Transitions.Count; i++)
-            if(await Resolver<TViewCtx>.ResolveContainer(
-                   CurrentNode.Transitions[i].Resolves,
-                   CurrentNode.Transitions[i].Condition,
-                   canShortCircuit: true, // this is what enables the transition to be skipped if the condition is false
-                   Context))
+        }
+
+        for (int i = 0; i < CurrentNode.Transitions.Count; i++)
+        {
+            var t = CurrentNode.Transitions[i];
+            //if (current == t.To) continue;
+            if (await Resolver<TViewCtx>.ResolveContainer(
+                    t.Resolves,
+                    t.Condition,
+                    canShortCircuit: true,
+                    Context))
             {
-                return CurrentNode.Transitions[i];
+                return t;
             }
+        }
 
         return null;
     }

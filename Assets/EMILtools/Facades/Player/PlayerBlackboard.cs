@@ -4,6 +4,7 @@ using EMILtools.Timers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Splines;
 
 [Serializable]
 public class PlayerBlackboard : Blackboard, IEntityBlackboard

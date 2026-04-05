@@ -990,8 +990,9 @@ GameObject:
   - component: {fileID: 429623845}
   - component: {fileID: 429623844}
   - component: {fileID: 429623843}
-  m_Layer: 7
-  m_Name: Square
+  - component: {fileID: 429623846}
+  m_Layer: 5
+  m_Name: HookFinisherBoundsChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1031,10 +1032,10 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 223
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -1052,10 +1053,10 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 223
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -1130,12 +1131,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 926387321
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9056604, g: 0.14097545, b: 0.14097545, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1144,6 +1145,40 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &429623846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429623841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e00facadcec7cc34fac2212a10e20cfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HookFinisherBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 0
+  SelectedReceiver: 1
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 990602687}
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 1
+  <stay>k__BackingField: 0
+  exitOnDisableEvenIfExitFalse: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 32
+  enterContext:
+    inside: 1
+  stayContext:
+    inside: 0
+  exitContext:
+    inside: 0
+  disableContext:
+    inside: 0
 --- !u!1 &443863708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1519,7 +1554,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000076bdcdd276be15dfd62fa13ebe0563ca3b40042
+  m_ApplyToSortingLayers: 00000000076bdcdd276be15dfd62fa13ebe0563ca3b40042798c3737
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1950,7 +1985,7 @@ MonoBehaviour:
         canRun: 0
         oneShot: 0
       <faceDirTransform>k__BackingField: {fileID: 197626921}
-      <hookSlider>k__BackingField: {fileID: 0}
+      <hookSlider>k__BackingField: {fileID: 1945046063}
       <livingEntity>k__BackingField: {fileID: 990602690}
       <viewRange>k__BackingField: {fileID: 1218048176}
 --- !u!50 &990602688
@@ -1996,7 +2031,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -2040,7 +2075,8 @@ MonoBehaviour:
       threshold: 0
   deathLayer: 2
   hitLayer: 1
-  destroyOnDeath: 0
+  destroyOnDeath: 1
+  destroyOnDeathTime: 2
   rb: {fileID: 990602688}
   deathFloorCollider: {fileID: 1213963159}
   enableOnDeathAndUnparents: []
@@ -2133,6 +2169,30 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   - flashType: 1
     flashTime: 0.2
     flashColor: {r: 0.16521744, g: 0.7924528, b: 0.063545756, a: 1}
@@ -2154,6 +2214,30 @@ MonoBehaviour:
         inSlope: 0
         outSlope: 0
         tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0
@@ -2196,6 +2280,144 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 3
+    flashTime: 0.6
+    flashColor: {r: 1, g: 1, b: 1, a: 0}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -11.118971
+        outSlope: -11.118971
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.08993638
+        value: 0
+        inSlope: 0.0039750426
+        outSlope: 0.0039750426
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.37160966
+      - serializedVersion: 3
+        time: 0.16710877
+        value: 1
+        inSlope: -0.012462797
+        outSlope: -0.012462797
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.3410409
+        value: 0
+        inSlope: 1.0099074
+        outSlope: 1.0099074
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.39166358
+        value: 1
+        inSlope: -0.012317583
+        outSlope: -0.012317583
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.63036364
+        value: 0
+        inSlope: 0.34162772
+        outSlope: 0.34162772
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.68029785
+        value: 1
+        inSlope: -0.005991266
+        outSlope: -0.005991266
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.8439015
+        value: 0
+        inSlope: -0.3242937
+        outSlope: -0.3242937
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 6.406212
+        outSlope: 6.406212
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   sprites:
   - {fileID: 7787852488593914810}
 --- !u!1 &1059281343
@@ -2207,7 +2429,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1059281344}
-  - component: {fileID: 1059281345}
   m_Layer: 7
   m_Name: Finisher Slider
   m_TagString: Untagged
@@ -2232,19 +2453,6 @@ Transform:
   - {fileID: 429623842}
   m_Father: {fileID: 990602683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1059281345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059281343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f9c84de83104164bb068c395191f246, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FinisherSlider
-  indicator: {fileID: 1945046063}
 --- !u!1 &1213963157
 GameObject:
   m_ObjectHideFlags: 0
@@ -2679,35 +2887,35 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -0.5135887
+        z: -0.45000002
       TangentOut:
         x: 0
         y: 0
-        z: 0.5135887
+        z: 0.45000002
       Rotation:
         value:
-          x: 0.5
-          y: -0.5
-          z: 0.50000006
-          w: -0.49999994
+          x: 0.5000007
+          y: -0.49999928
+          z: 0.5000007
+          w: -0.49999928
     - Position:
-        x: 5.135887
-        y: -0.00000047683716
+        x: 4.5
+        y: 0
         z: 0
       TangentIn:
         x: -0
         y: -0
-        z: -0.5135887
+        z: -0.45000002
       TangentOut:
         x: 0
         y: 0
-        z: 0.5135887
+        z: 0.45000002
       Rotation:
         value:
-          x: 0.5
-          y: -0.5
-          z: 0.50000006
-          w: -0.49999994
+          x: 0.50000066
+          y: -0.49999934
+          z: 0.50000066
+          w: -0.49999934
     m_MetaData:
     - Mode: 0
       Tension: 0.5
@@ -3175,7 +3383,7 @@ GameObject:
   - component: {fileID: 1945046064}
   - component: {fileID: 1945046063}
   - component: {fileID: 1945046065}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Press Indicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3190,7 +3398,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945046061}
   serializedVersion: 2
-  m_LocalRotation: {x: 1, y: -0.000000059604645, z: 0, w: 0.000000059604645}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3210,15 +3418,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineAnimate
   m_Target: {fileID: 1543644040}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_LoopMode: 0
   m_Method: 0
-  m_Duration: 1
-  m_MaxSpeed: 5.135887
+  m_Duration: 2
+  m_MaxSpeed: 2.25
   m_EasingMode: 0
-  m_AlignmentMode: 1
-  m_ObjectForwardAxis: 0
-  m_ObjectUpAxis: 2
+  m_AlignmentMode: 3
+  m_ObjectForwardAxis: 2
+  m_ObjectUpAxis: 1
   m_StartOffset: 0
 --- !u!212 &1945046064
 SpriteRenderer:
@@ -3265,12 +3473,12 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 926387321
+  m_SortingLayer: 5
+  m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.30423072, g: 1, b: 0.0990566, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -3642,6 +3850,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 561394516383815133, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 7150858989621047036, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -12.15

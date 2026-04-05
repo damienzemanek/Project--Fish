@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
 using static AttackingBoundsChecker;
 using static PrimaryInputAuthority;
 using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,PrimaryInputAuthority.Subordinates>;
+using static HookBoundsChecker;
 
 
 public class PlayerController : MonoFacade<
@@ -17,8 +18,9 @@ public class PlayerController : MonoFacade<
     PlayerController.ActionMap>,
         IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IBoundsCheckMsgReceiver<Collider2D, HookBoundsChecker.HookContext>,
-    IEntityFacade
+        IBoundsCheckMsgReceiver<Collider2D, HookContext>,
+
+IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
 
@@ -27,7 +29,14 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
-        public readonly Publisher<(bool, CountdownTimer, PersistentAction)> Finisher = new();
+        
+        public readonly Publisher<(
+            bool finisherActive,
+            CountdownTimer finisherTimer,
+            PersistentAction HookedBreakout,
+            Ref<bool> finisherInputAvaliable, 
+            IDamageable damageable)> 
+        Finisher = new();
         public IContextViewImmutable ctx { get; }
     }
 
@@ -68,8 +77,8 @@ public class PlayerController : MonoFacade<
     /// <param name="collidedWith"></param>
     /// <param name="sender"></param>
     /// <param name="ctx"></param>
-    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
-        HookBoundsChecker.HookContext ctx)
+    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender,
+        HookContext ctx)
     {
         if(collidedWith == null) return;
         if (!collidedWith.TryGetComponent<EnemyController>(out var targetActions)) return;
@@ -79,19 +88,52 @@ public class PlayerController : MonoFacade<
         map.isHookedBySomething.Publish((true, Actions.Finisher));
     }
 
-    public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookBoundsChecker.HookContext> sender,
-        HookBoundsChecker.HookContext ctx)
+    /// <summary>
+    /// When the player unhooks from a target
+    /// </summary>
+    /// <param name="collidedWith"></param>
+    /// <param name="sender"></param>
+    /// <param name="ctx"></param>
+    public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender,
+        HookContext ctx)
     {
         API_Context<PlayerContextData>().targetStunPublisher = null;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
         if(collidedWith == null) return;
         var hasCont = collidedWith.TryGetComponent<EnemyController>(out var targetActions);
         if (hasCont)
-        {
-             targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething.Publish((true, null));
-        }
-
-
-        Debug.Log("HOOK UNATTACHED");
+            targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething.Publish((false, Actions.Finisher));
     }
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

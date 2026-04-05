@@ -21,6 +21,8 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new FinisherInputAvaliable(facade.Actions.FinisherInputAvaliable, f));
+        AddModule(new Hooked(facade.Actions.isHookedBySomething, f));
         AddModule(new Stunnable(facade.Actions.Stun, f));
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
@@ -41,12 +43,86 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<Idle, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget), "Can See Target");
         fsm.AddTransition<Follow, Idle>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget), "Can't See Target");
         
-        fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholds.Dying), "Dying");
+        fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholds.Dying && !ctx.isBeingFinished), "Dying");
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholds.Dying), "Not Dying");
         
         fsm.AddAnyTransition<Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isStunned), "Stunned");
         fsm.AddTransition<Stunnable, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isStunned), "Not Stunned");
+        
+        fsm.AddTransition<DyingState, Hooked>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isBeingFinished), "Being Finished");
+        fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
     }
+    
+    class FinisherInputAvaliable : BoundSetFunctionality<EnemyController, IEnemyContextView, FinisherInputAvaliable.Setter>, 
+        ON_SET
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public class Setter : DataSetter<bool>
+        {
+            [ShowInInspector] public bool finisherInputAvaliable => Get;
+        }
+        public FinisherInputAvaliable(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+
+        public void MutateUsingNewSetValues()
+        {
+            mutateCtx.isFinisherInputAvaliable.Set(SetContext.finisherInputAvaliable);
+            Debug.Log("Finisher Input Available: " + SetContext.finisherInputAvaliable);
+        }
+    }
+    
+    
+    class Hooked : BoundSetFunctionality<EnemyController, IEnemyContextView, Hooked.Setter>,
+        ON_SET,
+        FSM_STATE_ENTER<IEnemyContextView>
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public class Setter : DataSetter<(bool isHooked, 
+            Publisher<(bool finisherActive, CountdownTimer finisherTimer, PersistentAction HookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)>)>
+        {
+            [ShowInInspector] public bool isHooked => Get.isHooked;
+            [ShowInInspector] public Publisher<(
+                bool finisherActive,
+                CountdownTimer finisherTimer,
+                PersistentAction HookedBreakout ,
+                Ref<bool> finisherInputAvaliable,
+                IDamageable damageable
+                                                 )> hookingEntityResponse => Get.Item2;
+        }
+
+        PersistentAction hookingEntity_HookedBreakoutCallback = new();
+        
+        protected override void Awake()
+        {
+            bb.finishTimer = new CountdownTimer(cfg.finishable.finishTime);
+            bb.finishTimer.OnTimerStop.Add(HookedBreakoutDyingState);
+            facade.InitTimer(bb.finishTimer, true);
+        }
+
+        public Hooked(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        
+        
+        public void MutateUsingNewSetValues()
+        {
+            if (facade.FSM.CurrentStateType != typeof(DyingState)) return;
+            mutateCtx.isBeingFinished = SetContext.isHooked;
+        }
+        
+        public void OnEnterState(IEnemyContextView ctx)
+        {
+            Debug.Log("AA" + SetContext.hookingEntityResponse);   
+            SetContext.hookingEntityResponse.Publish((SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
+            bb.hookSlider.Restart(autoplay: true);
+            Debug.Log("Hooked");
+        }
+        
+        void HookedBreakoutDyingState()
+        {
+            bb.dyingStateTimer.Time = 0;
+            hookingEntity_HookedBreakoutCallback.Invoke();
+            Debug.Log("Finisher: Hooked Breakout Dying State");
+        }
+    }
+
     
     class Stunnable : BoundSetFunctionality<EnemyController, IEnemyContextView, Stunnable.Setter>,
         FSM_STATE_ENTER<IEnemyContextView>,
@@ -102,10 +178,12 @@ public class EnemyFunctionality : Functionalities<
 
         void StopDyingAfterCertainTime()
         {
+            if(bb.livingEntity.isDead) return;
             Debug.Log("Stopped Dying");
             bb.livingEntity.Heal(cfg.dyingState.outOfDeathStateHealAmount, out var newState);
             mutateCtx.currentHealthState = newState;
             bb.viewRange.enabled = true;
+            mutateCtx.isBeingFinished = false;
         }
     }
     
@@ -248,6 +326,7 @@ public class EnemyFunctionality : Functionalities<
         
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
+                .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Hooked)))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(DyingState)))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Stunnable)))
                 .Add_Middleware(_ => bb.computePath.RateLimitedUpdateTick())
