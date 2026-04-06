@@ -25,7 +25,7 @@ public class EnemyController : MonoFacade<
         public readonly Publisher<bool> CanSeeTarget = new ();
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<bool> Stun = new();
-        public readonly Publisher<(bool isHooked, Publisher<(bool isHooked, CountdownTimer HookedTimer, PersistentAction HookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)>)> isHookedBySomething = new();
+        public readonly Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> isHookedBySomething = new();
         public readonly Publisher<bool> FinisherInputAvaliable = new();
         public IContextViewImmutable ctx { get; }
     }

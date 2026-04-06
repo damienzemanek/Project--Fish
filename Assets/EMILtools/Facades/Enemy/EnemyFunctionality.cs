@@ -77,16 +77,10 @@ public class EnemyFunctionality : Functionalities<
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public class Setter : DataSetter<(bool isHooked, 
-            Publisher<(bool finisherActive, CountdownTimer finisherTimer, PersistentAction HookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)>)>
+            Publisher<global::Hook.FinisherContext>)>
         {
             [ShowInInspector] public bool isHooked => Get.isHooked;
-            [ShowInInspector] public Publisher<(
-                bool finisherActive,
-                CountdownTimer finisherTimer,
-                PersistentAction HookedBreakout ,
-                Ref<bool> finisherInputAvaliable,
-                IDamageable damageable
-                                                 )> hookingEntityResponse => Get.Item2;
+            [ShowInInspector] public Publisher<global::Hook.FinisherContext> hookingEntityResponse => Get.Item2;
         }
 
         PersistentAction hookingEntity_HookedBreakoutCallback = new();
@@ -111,7 +105,7 @@ public class EnemyFunctionality : Functionalities<
         {
             bb.finisherEventSlot.SetActive(true);
             Debug.Log("AA" + SetContext.hookingEntityResponse);   
-            SetContext.hookingEntityResponse.Publish((SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
+            SetContext.hookingEntityResponse.Publish(new global::Hook.FinisherContext(SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
             bb.hookSlider.Restart(autoplay: true);
             Debug.Log("Hooked");
         }

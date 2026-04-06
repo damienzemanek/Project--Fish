@@ -23,7 +23,7 @@ public interface IPlayerContextView : IEntityCtx
     IDamageable currentFinishingTarget { get; }
     Vector2 mousePos { get; }
     Publisher<bool> targetStunPublisher { get; } 
-    Publisher<(bool isHooked, Publisher<(bool isHooked, CountdownTimer HookedTimer, PersistentAction HookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)>)> targetIsHookedBySomething { get; }
+    Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> targetIsHookedBySomething { get; }
     public FaceDirection facingDirection { get; }
     public PlayerBlackboard.AttackDir attackDir { get; }
 
@@ -50,7 +50,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public bool isFinishing { get; set; }
     [ShowInInspector] public Publisher<bool> targetStunPublisher { get; set; }
     [ShowInInspector] public Ref<bool> targetIsFinishInputAvaliable { get; set; } = new(false);
-    [ShowInInspector] public Publisher<(bool isHooked, Publisher<(bool isHooked, CountdownTimer HookedTimer, PersistentAction HookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)>)> targetIsHookedBySomething { get; set; }
+    [ShowInInspector] public Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> targetIsHookedBySomething { get; set; }
     [ShowInInspector] public IDamageable currentFinishingTarget { get; set; }
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;

@@ -1,13 +1,33 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EMILtools.Core;
 using EMILtools.Extensions;
+using EMILtools.Systems;
 using EMILtools.Timers;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class Hook : MonoBehaviour, TimerUtility.ITimerUser
 {
+    public struct FinisherContext
+    {
+        public bool finisherActive;
+        public CountdownTimer finisherTimer;
+        public PersistentAction HookedBreakout;
+        public Ref<bool> finisherInputAvaliable;
+        public IDamageable damageable;
+
+        public FinisherContext(bool finisherActive, CountdownTimer finisherTimer, PersistentAction hookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)
+        {
+            this.finisherActive = finisherActive;
+            this.finisherTimer = finisherTimer;
+            HookedBreakout = hookedBreakout;
+            this.finisherInputAvaliable = finisherInputAvaliable;
+            this.damageable = damageable;
+        }
+    }
+
     public enum HookPhases
     {
         Held,
@@ -252,7 +272,6 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         //Debug.Log("[CH] mousePos: " +  mousePos + ", inv Trans: " + rodParent.InverseTransformDirection(mousePos).normalized + " dist: " + addY);
 
         
-
         rb.AddForce(dir, ForceMode2D.Impulse);
         transform.position = rodParent.position;
         transform.SetParent(null);
@@ -260,7 +279,6 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         lineDroopTimer.canRun = true;
         snapToHookedTimer.canRun = true;
         StartCoroutine(C_CheckIfHookDistanceIsTooFar());
-        
     }
     
     public void SetupHookAttackFinishedSignal(Action signal) => hookAttackFinished = signal;

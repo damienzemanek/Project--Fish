@@ -30,13 +30,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
 
-        public readonly Publisher<(
-                bool finisherActive,
-                CountdownTimer finisherTimer,
-                PersistentAction HookedBreakout,
-                Ref<bool> finisherInputAvaliable,
-                IDamageable damageable)>
-            Finisher = new();
+        public readonly Publisher<Hook.FinisherContext> Finisher = new();
 
         public IContextViewImmutable ctx { get; }
     }
