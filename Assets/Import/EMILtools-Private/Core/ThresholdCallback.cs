@@ -71,6 +71,21 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         return highest;
     }
     
+    public TEnum GetHighestThresholdLabel()
+    {
+        float highest = float.MinValue;
+        TEnum label = default;
+        foreach (var entry in entries)
+        {
+            if (entry.threshold > highest)
+            {
+                highest = entry.threshold;
+                label = entry.label;
+            }
+        }
+        return label;
+    }
+    
     public bool GetNearestLastThreshold(float value, out TEnum label, out TDelegator returnCallback)
     {
         if (entries == null || entries.Length == 0)

@@ -12,10 +12,10 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
     [FoldoutGroup("Who will receive the Message?")] [SerializeField] private bool ThingCollidedWith;
     [FoldoutGroup("Who will receive the Message?")] [SerializeField] private bool SelectedReceiver;
 
-    [FoldoutGroup("Who will receive the Message?")] [SerializeField, ShowIf("@SelectedReceiver && !is2D")]
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField][ShowIf("@SelectedReceiver && !is2D")]
     private InterfaceReference<IBoundsCheckMsgReceiver<Collider, TContext>, MonoBehaviour> selectedReceiver3D;
 
-    [FoldoutGroup("Who will receive the Message?")] [SerializeField, ShowIf("@SelectedReceiver && is2D")]
+    [FoldoutGroup("Who will receive the Message?")] [SerializeField][ShowIf("@SelectedReceiver && is2D")]
     private InterfaceReference<IBoundsCheckMsgReceiver<Collider2D, TContext>, MonoBehaviour> selectedReceiver2D;
 
     [field: FoldoutGroup("Which trigger callbacks are active?")] [field: SerializeField] public bool enter { get; private set; } = true;

@@ -238,13 +238,22 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         phase = HookPhases.HookAttacking;
     }
 
-    public void CastHook(Vector2 dirWithForce)
+    public void CastHook(Vector2 mousePos, float forceScalar)
     {
         hookCollider.enabled = true;
         joint.enabled = false;
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.ResetVel2D();
-        rb.AddForce(dirWithForce, ForceMode2D.Impulse);
+        // as mouse pos approaches 0 from left and right, make the dir go higher
+            float addY = (mousePos - (Vector2)rodParent.position).magnitude * 0.13f;
+            mousePos = mousePos.With(y: mousePos.y + addY);
+        Vector3 worldDir = (mousePos - (Vector2)rodParent.position).normalized;
+        Vector2 dir = worldDir * forceScalar;       
+        //Debug.Log("[CH] mousePos: " +  mousePos + ", inv Trans: " + rodParent.InverseTransformDirection(mousePos).normalized + " dist: " + addY);
+
+        
+
+        rb.AddForce(dir, ForceMode2D.Impulse);
         transform.position = rodParent.position;
         transform.SetParent(null);
         phase = HookPhases.CastingOut;

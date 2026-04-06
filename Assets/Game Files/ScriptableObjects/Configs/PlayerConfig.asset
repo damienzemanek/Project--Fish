@@ -82,7 +82,7 @@ MonoBehaviour:
       hash: 1443585033
     BlendTreeVariables: []
   hook:
-    <hookForce>k__BackingField: 25
+    <hookForce>k__BackingField: 27
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 15
   <hitStop>k__BackingField:

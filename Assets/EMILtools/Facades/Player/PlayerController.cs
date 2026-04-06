@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 using static AttackingBoundsChecker;
 using static PrimaryInputAuthority;
 using static EMILtools.Systems.IInputSubordinate<PlayerController.PlayerInputMap,PrimaryInputAuthority.Subordinates>;
-using static HookBoundsChecker;
+using static HookCollisionChecker;
 
 
 public class PlayerController : MonoFacade<
@@ -18,7 +18,7 @@ public class PlayerController : MonoFacade<
         PlayerController.ActionMap>,
     IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
     IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-    IBoundsCheckMsgReceiver<Collider2D, HookContext>,
+    ICollisionCheckMsgReceiver<Collider2D, HookContext>,
 
     IEntityFacade
 {
@@ -81,34 +81,43 @@ public class PlayerController : MonoFacade<
     /// <param name="collidedWith"></param>
     /// <param name="sender"></param>
     /// <param name="ctx"></param>
-    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender,
-        HookContext ctx)
+    public void OnEnterBounds(Collider2D collidedWith, CollisionChecker<HookContext> sender, HookContext ctx)
     {
-        if (collidedWith == null) return;
-        if (!collidedWith.TryGetComponent<EnemyController>(out var targetActions)) return;
-        var map = targetActions.API_Actions<EnemyController.ActionMap>();
-        API_Context<PlayerContextData>().targetStunPublisher = map.Stun;
+        Debug.Log("1");
+        if (collidedWith == null)
+        {
+            Debug.Log("1.1");
+            ResetHook();
+            return;
+        }
+        Debug.Log("2");
+        if (collidedWith.Has<LivingEntity>(out var livingEntity) && livingEntity.isDead)
+        {
+            Debug.Log("2.1");
+            ResetHook();
+            return;
+        }
+        Debug.Log("3");
+        if (!collidedWith.TryGetComponent<EnemyController>(out var enemyCont))
+        {
+            Debug.Log("3.1");
+            ResetHook();
+            return;
+        }
+        Debug.Log("4");
+        var actionMap = enemyCont.API_Actions<EnemyController.ActionMap>();
+        API_Context<PlayerContextData>().targetStunPublisher = actionMap.Stun;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;
-        map.isHookedBySomething.Publish((true, Actions.Finisher));
+        API_Context<PlayerContextData>().targetIsHookedBySomething = actionMap.isHookedBySomething;
+        API_Context<PlayerContextData>().targetIsHookedBySomething.Publish((true, Actions.Finisher));
+        void ResetHook()
+        {
+            API_Blackboard<PlayerBlackboard>().hook.ResetHook();
+            API_Context<PlayerContextData>().isHooking = false;
+        }
     }
 
-    /// <summary>
-    /// When the player unhooks from a target
-    /// </summary>
-    /// <param name="collidedWith"></param>
-    /// <param name="sender"></param>
-    /// <param name="ctx"></param>
-    public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookContext> sender,
-        HookContext ctx)
-    {
-        API_Context<PlayerContextData>().targetStunPublisher = null;
-        API_Context<PlayerContextData>().isHookLatchedOntoTarget = false;
-        if (collidedWith == null) return;
-        var hasCont = collidedWith.TryGetComponent<EnemyController>(out var targetActions);
-        if (hasCont)
-            targetActions.API_Actions<EnemyController.ActionMap>().isHookedBySomething
-                .Publish((false, Actions.Finisher));
-    }
+
 }
 
 

@@ -5,9 +5,7 @@ using EMILtools.Systems;
 using EMILtools.Timers;
 using static AttackingBoundsChecker;
 using static CanSeeBoundsChecker;
-using static EMILtools.Timers.TimerUtility;
 using static EnemyController;
-using static HookBoundsChecker;
 using static HookFinisherBoundsChecker;
 
 public class EnemyController : MonoFacade<

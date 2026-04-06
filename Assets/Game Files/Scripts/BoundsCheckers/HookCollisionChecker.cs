@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class HookBoundsChecker : BoundsChecker<HookBoundsChecker.HookContext>
+public class HookCollisionChecker : CollisionChecker<HookCollisionChecker.HookContext>
 {
     [Serializable]
     public struct HookContext

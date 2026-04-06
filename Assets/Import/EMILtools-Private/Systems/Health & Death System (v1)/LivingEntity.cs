@@ -41,7 +41,6 @@ public class LivingEntity : Entity,
     [FoldoutGroup("Death")] [Required] public Rigidbody2D rb;
     [FoldoutGroup("Death")] [Required] public Collider2D deathFloorCollider;
     [FoldoutGroup("Death")] public List<GameObject> enableOnDeathAndUnparents = new();
-    [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
 
     
     [FoldoutGroup("Animation")] [Required] public Animator animator;
@@ -50,6 +49,9 @@ public class LivingEntity : Entity,
 
     public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
     public PersistentAction<DeathType> OnDeath { get; set; } = new();
+    [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
+    [FoldoutGroup("Death")] public UnityEvent OnDestroyUnityEvent = new();
+
     
     void Awake()
     {
@@ -108,6 +110,7 @@ public class LivingEntity : Entity,
         isDead = true;
         deathStatus = DeathType.Regular;
         OnDeath.Invoke(deathStatus);
+        OnDeathUnityEvent.Invoke();
         deathAnimHandle.PlayWeightSet(animator, deathStatus, 1, deathLayer, FromBeginning);
         deathFloorCollider.enabled = true;
         foreach (var g in enableOnDeathAndUnparents) g.SetActiveThen(true).transform.parent = null;
@@ -117,6 +120,7 @@ public class LivingEntity : Entity,
     IEnumerator DestroyOnDeath()
     {
         yield return new WaitForSeconds(destroyOnDeathTime);
+        OnDestroyUnityEvent.Invoke();
         Destroy(gameObject);   
     }
     
