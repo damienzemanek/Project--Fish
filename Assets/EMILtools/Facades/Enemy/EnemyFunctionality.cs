@@ -90,7 +90,6 @@ public class EnemyFunctionality : Functionalities<
             bb.finishTimer = new CountdownTimer(cfg.finishable.finishTime);
             bb.finishTimer.OnTimerStop.Add(HookedBreakoutDyingState);
             facade.InitTimer(bb.finishTimer, true);
-            bb.finisherEventSlot.SetActive(false);
         }
 
         public Hooked(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
@@ -99,21 +98,23 @@ public class EnemyFunctionality : Functionalities<
         {
             if (facade.FSM.CurrentStateType != typeof(DyingState)) return;
             mutateCtx.isBeingFinished = SetContext.isHooked;
+
+            // Hooking Stopped
+            if (!SetContext.isHooked) bb.finisherEvent.StopEarly();
         }
         
         public void OnEnterState(IEnemyContextView ctx)
         {
-            bb.finisherEventSlot.SetActive(true);
             Debug.Log("AA" + SetContext.hookingEntityResponse);   
             SetContext.hookingEntityResponse.Publish(new global::Hook.FinisherContext(SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
-            bb.hookSlider.Restart(autoplay: true);
+            bb.finisherEvent.StartEvent();
             Debug.Log("Hooked");
         }
         
         void HookedBreakoutDyingState()
         {
             if(bb.livingEntity.isDead) return;
-            bb.finisherEventSlot.SetActive(false);
+            bb.finisherEvent.Stop();
             bb.dyingStateTimer.Time = 0;
             hookingEntity_HookedBreakoutCallback.Invoke();
             Debug.Log("Finisher: Hooked Breakout Dying State");

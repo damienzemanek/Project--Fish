@@ -4,5 +4,4 @@
     {
         public void InjectContext(TCtx ctx);
     }
-
 }

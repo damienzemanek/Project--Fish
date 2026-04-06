@@ -15,7 +15,7 @@ public class EnemyController : MonoFacade<
     ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        IBoundsCheckMsgReceiver<Collider2D, HookFinisherContext>,
+        ISignalReceiverTaggedContext<bool>,
     IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
@@ -38,26 +38,11 @@ public class EnemyController : MonoFacade<
     void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
      => Actions.TakeDamage.Publish(ctx);
-    
-    
-    /// <summary>
-    /// When Finisher Spline is in Finisher Bounds
-    /// </summary>
-    /// <param name="collidedWith"></param>
-    /// <param name="sender"></param>
-    /// <param name="ctx"></param>
-    public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookFinisherContext> sender, HookFinisherContext ctx) 
-        => Actions.FinisherInputAvaliable.Publish(true);
-    
-    /// <summary>
-    /// When Finisher Spline is out of Finisher Bounds
-    /// </summary>
-    /// <param name="collidedWith"></param>
-    /// <param name="sender"></param>
-    /// <param name="ctx"></param>
-    public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookFinisherContext> sender, HookFinisherContext ctx) 
-        => Actions.FinisherInputAvaliable.Publish(false);
-    
 
 
+    public void ReceiveSignal(string senderTag, bool ctx)
+    {
+        if (senderTag != "FINISHER") return;
+        Actions.FinisherInputAvaliable.Publish(ctx);
+    }
 }
