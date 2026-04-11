@@ -12,6 +12,7 @@ public class FinisherChoice :
     [Required] public SplineAnimate splineAnimate;
     public FinisherEvent events;
     WaitForSeconds waitTime;
+    public bool successfull = false;
 
     void Awake()
     {
@@ -22,28 +23,59 @@ public class FinisherChoice :
     
     IEnumerator C_PlayEvent()
     {
+        successfull = false;
         splineAnimate.Restart(autoplay: true);
         yield return waitTime;
         events.OnExit();
     }
-    
-    // /// <summary>
-    // /// When Finisher Spline is in Finisher Bounds
-    // /// </summary>
-    // /// <param name="collidedWith"></param>
-    // /// <param name="sender"></param>
-    // /// <param name="ctx"></param>
-    // public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<HookFinisherBoundsChecker.HookFinisherContext> sender, HookFinisherBoundsChecker.HookFinisherContext ctx) 
-    //     => receiver.Send("FINISHER", true);
-    //
-    // /// <summary>
-    // /// When Finisher Spline is out of Finisher Bounds
-    // /// </summary>
-    // /// <param name="collidedWith"></param>
-    // /// <param name="sender"></param>
-    // /// <param name="ctx"></param>
-    // public void OnExitBounds(Collider2D collidedWith, BoundsChecker<HookFinisherBoundsChecker.HookFinisherContext> sender, HookFinisherBoundsChecker.HookFinisherContext ctx) 
-    //     => receiver.Send("FINISHER", false);
+
+    public int Hit()
+    {
+        Debug.Log("HIT");
+        gameObject.SetActive(false);
+        successfull = true;
+        return --events.currentChoiceList.currentNeededActionsToComplete;
+    }
+
+    public void Miss()
+    {
+        Debug.Log("MISS");
+    }
+
+    /// <summary>
+    /// When Finisher Spline is in Finisher Bounds
+    /// </summary>
+    /// <param name="collidedWith"></param>
+    /// <param name="sender"></param>
+    /// <param name="ctx"></param>
+    public void OnEnterBounds(Collider2D collidedWith,
+        BoundsChecker<HookFinisherBoundsChecker.HookFinisherContext> sender,
+        HookFinisherBoundsChecker.HookFinisherContext ctx)
+    {
+        if(events == null) return;
+        events.currentAvaliableChoices.Add(this);
+        events.finisherSignalReceiver.Value.Send("FINISHER", (true, this));
+    }
+
+    /// <summary>
+    /// When Finisher Spline is out of Finisher Bounds
+    /// </summary>
+    /// <param name="collidedWith"></param>
+    /// <param name="sender"></param>
+    /// <param name="ctx"></param>
+    public void OnExitBounds(Collider2D collidedWith,
+        BoundsChecker<HookFinisherBoundsChecker.HookFinisherContext> sender,
+        HookFinisherBoundsChecker.HookFinisherContext ctx)
+
+    {
+        if(events == null) return;
+        if(events.currentAvaliableChoices.Contains(this))
+        {
+            events.currentAvaliableChoices.Remove(this);
+            events.finisherSignalReceiver.Value.Send("FINISHER", (false, this));
+        }
+        if(!successfull) Miss();
+    }
     
 
 }

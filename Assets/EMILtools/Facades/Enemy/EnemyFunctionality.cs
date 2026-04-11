@@ -106,7 +106,7 @@ public class EnemyFunctionality : Functionalities<
         public void OnEnterState(IEnemyContextView ctx)
         {
             Debug.Log("AA" + SetContext.hookingEntityResponse);   
-            SetContext.hookingEntityResponse.Publish(new global::Hook.FinisherContext(SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity));
+            SetContext.hookingEntityResponse.Publish(new global::Hook.FinisherContext(SetContext.isHooked, bb.finishTimer, hookingEntity_HookedBreakoutCallback, mutateCtx.isFinisherInputAvaliable, bb.livingEntity, bb.finisherEvent));
             bb.finisherEvent.StartEvent();
             Debug.Log("Hooked");
         }

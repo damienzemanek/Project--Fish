@@ -15,16 +15,18 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         public bool finisherActive;
         public CountdownTimer finisherTimer;
         public PersistentAction HookedBreakout;
+        public FinisherEvent finisherEvent;
         public Ref<bool> finisherInputAvaliable;
         public IDamageable damageable;
 
-        public FinisherContext(bool finisherActive, CountdownTimer finisherTimer, PersistentAction hookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable)
+        public FinisherContext(bool finisherActive, CountdownTimer finisherTimer, PersistentAction hookedBreakout, Ref<bool> finisherInputAvaliable, IDamageable damageable, FinisherEvent finisherEvent = null)
         {
             this.finisherActive = finisherActive;
             this.finisherTimer = finisherTimer;
             HookedBreakout = hookedBreakout;
             this.finisherInputAvaliable = finisherInputAvaliable;
             this.damageable = damageable;
+            this.finisherEvent = finisherEvent;
         }
     }
 

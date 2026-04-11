@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class FinisherEvent : MonoBehaviour
 {
+    public List<FinisherChoice> currentAvaliableChoices = new();
+    public ChoiceList currentChoiceList = null;
+    
     public bool active = false;
     public enum Traversal
     {
@@ -14,12 +17,14 @@ public class FinisherEvent : MonoBehaviour
     }
 
     [Serializable]
-    public struct Spawns
+    public class ChoiceList
     {
         public List<Spawn> spawns;
-        public float neededActionsToComplete;
+        public int neededActionsToComplete;
+        public int currentNeededActionsToComplete;
         
-        public void CalculateNeddedActionsToComplete() => neededActionsToComplete = spawns.Count;
+        public void CalculateNeddedActionsToComplete() =>
+            currentNeededActionsToComplete = neededActionsToComplete = spawns.Count;
     }
 
     [Serializable]
@@ -29,34 +34,32 @@ public class FinisherEvent : MonoBehaviour
         public Vector3 offset;
         public float spawnDelay;
     }
-
-    public InterfaceReference<ISignalReceiverTaggedContext<bool>, MonoBehaviour> finisherSignalReceiver;
-    public List<Spawns> prefabChoices;
+    
+    public InterfaceReference<ISignalReceiverTaggedContext<(bool, FinisherChoice)>, MonoBehaviour> finisherSignalReceiver;
+    public List<ChoiceList> choiceList;
     public Transform spawnPoint;
     public Traversal traversal;
     
     [ReadOnly] public Ref<bool> stopEarly = new Ref<bool>(false);
     [ReadOnly] public int current = 0;
     [ReadOnly] public List<GameObject> currentlySpawned = new();
-
-
+    
     Coroutine finisherEvent;
 
     void Awake()
     {
-        if (prefabChoices == null || prefabChoices.Count <= 0)
+        if (choiceList == null || choiceList.Count <= 0)
             Debug.LogError("Prefab choices cannot be null or empty!");
-        CalculateNeededActionsToComplete();
     }
 
     [Button]
     public void CalculateNeededActionsToComplete()
     {
-        for (var index = 0; index < prefabChoices.Count; index++)
+        for (var index = 0; index < choiceList.Count; index++)
         {
-            var spawns = prefabChoices[index];
+            var spawns = choiceList[index];
             spawns.CalculateNeddedActionsToComplete();
-            prefabChoices[index] = spawns;
+            choiceList[index] = spawns;
         }
     }
     
@@ -64,27 +67,29 @@ public class FinisherEvent : MonoBehaviour
     
     IEnumerator C_StartEvent()
     {
+        currentAvaliableChoices.Clear();
         active = true;
         stopEarly.val = false;
         currentlySpawned.Clear();
-        Spawns spawns = prefabChoices[current];
-
-        foreach (Spawn spawn in spawns.spawns)
+        CalculateNeededActionsToComplete();
+        currentChoiceList = choiceList[current];
+        foreach (Spawn spawn in currentChoiceList.spawns)
         {
             if(stopEarly.val) yield break;
             yield return new WaitForSeconds(spawn.spawnDelay);
             if(stopEarly.val) yield break;
-            
-            var newObj = Instantiate(spawn.prefab, spawnPoint);
+
+            var newObj = Instantiate(spawn.prefab, spawnPoint).SetActiveThen(false);
             newObj.transform.localPosition += spawn.offset;
             var choice = newObj.GetComponent<FinisherChoice>();
             choice.events = this;
+            newObj.SetActive(true);
             choice.PlayEvent();
             currentlySpawned.Add(newObj);
         }
         
         current++;
-        if(current >= prefabChoices.Count) current = 0;
+        if(current >= choiceList.Count) current = 0;
     }
     
     public void StopEarly()

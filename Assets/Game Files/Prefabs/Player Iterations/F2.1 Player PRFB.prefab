@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 125292883209616801}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.2, y: -6.6, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -519,6 +519,7 @@ GameObject:
   - component: {fileID: 8199095219035362584}
   - component: {fileID: 4031513335625370991}
   - component: {fileID: 7786321480229197485}
+  - component: {fileID: 2144687085631154149}
   m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
@@ -538,8 +539,7 @@ Transform:
   m_LocalPosition: {x: -1.3140469, y: 0.35533804, z: 0}
   m_LocalScale: {x: 0.10727997, y: 0.107279986, z: 0.10728}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 490306710644604497}
+  m_Children: []
   m_Father: {fileID: 7150858989621047036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1424211788134006973
@@ -802,6 +802,37 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   breakingColor: {r: 6.3396225, g: 0, b: 0, a: 1}
+--- !u!114 &2144687085631154149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2260243455507241335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d9b6ac8f161454eb728a07afdec38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HookBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 0
+  SelectedReceiver: 1
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 5932286161570280673}
+  enter: 1
+  exit: 1
+  stay: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  enterContext:
+    isHooked: 1
+  stayContext:
+    isHooked: 0
+  exitContext:
+    isHooked: 0
 --- !u!1 &3479579656000955469
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,7 +1024,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 0.9793747
+  m_Distance: 0.97937506
   m_MaxDistanceOnly: 0
 --- !u!1 &3928251075175174206
 GameObject:
@@ -1725,109 +1756,6 @@ Transform:
   - {fileID: 2014890533184845115}
   m_Father: {fileID: 7150858989621047036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5862994403123723561
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 490306710644604497}
-  - component: {fileID: 4306703061984635513}
-  - component: {fileID: 2004330827548418521}
-  m_Layer: 0
-  m_Name: Hook Attack Bounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &490306710644604497
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5862994403123723561}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1713128766598091900}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &4306703061984635513
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5862994403123723561}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 64
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: -0.0000076293945, y: -7.66453e-16}
-  m_Radius: 3
---- !u!114 &2004330827548418521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5862994403123723561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10d9b6ac8f161454eb728a07afdec38e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HookBoundsChecker
-  is2D: 1
-  ThingCollidedWith: 0
-  SelectedReceiver: 1
-  selectedReceiver3D:
-    underlyingValue: {fileID: 0}
-  selectedReceiver2D:
-    underlyingValue: {fileID: 5932286161570280673}
-  <enter>k__BackingField: 1
-  <exit>k__BackingField: 1
-  <stay>k__BackingField: 0
-  exitOnDisableEvenIfExitFalse: 1
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 128
-  enterContext:
-    isHooked: 1
-  stayContext:
-    isHooked: 0
-  exitContext:
-    isHooked: 0
-  disableContext:
-    isHooked: 0
 --- !u!1 &6197752463275291427
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using EMILtools.Core;
 using EMILtools.Systems;
 using EMILtools.Timers;
@@ -52,6 +53,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public Ref<bool> targetIsFinishInputAvaliable { get; set; } = new(false);
     [ShowInInspector] public Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> targetIsHookedBySomething { get; set; }
     [ShowInInspector] public IDamageable currentFinishingTarget { get; set; }
+    [ShowInInspector] public FinisherEvent currentEnemyFinisherEvent { get; set;}
     // API Distinct
     public ICountdownTimer CoyoteTimer => coyoteTimer;
     public bool IsGrounded => isGrounded;

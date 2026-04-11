@@ -15,7 +15,7 @@ public class EnemyController : MonoFacade<
     ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        ISignalReceiverTaggedContext<bool>,
+        ISignalReceiverTaggedContext<(bool, FinisherChoice)>,
     IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
@@ -38,11 +38,10 @@ public class EnemyController : MonoFacade<
     void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
      => Actions.TakeDamage.Publish(ctx);
-
-
-    public void ReceiveSignal(string senderTag, bool ctx)
+    
+    public void ReceiveSignal(string tag, (bool, FinisherChoice) ctx)
     {
-        if (senderTag != "FINISHER") return;
-        Actions.FinisherInputAvaliable.Publish(ctx);
+        if (tag != "FINISHER") return;
+        Actions.FinisherInputAvaliable.Publish(ctx.Item1);
     }
 }
