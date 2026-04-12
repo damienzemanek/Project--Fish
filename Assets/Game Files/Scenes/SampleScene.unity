@@ -1426,13 +1426,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1911274004864236606, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+    - target: {fileID: 1210150785554434805, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_SortingOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1911274004864236606, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3307254246002061790, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_SortingOrder
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4685449736302390540, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840615952677212317, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840615952677212317, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840615952677212317, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8836357
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840615952677212317, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.46817514
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840615952677212317, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 55.832
       objectReference: {fileID: 0}
     - target: {fileID: 5932286161570280673, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: structure.Blackboard.<attackDirIndicator>k__BackingField
