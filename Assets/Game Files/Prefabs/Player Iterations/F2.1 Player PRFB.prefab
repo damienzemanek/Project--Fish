@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 125292883209616801}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.2, y: -8.34, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1024,7 +1024,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 0.9793747
+  m_Distance: 2.0703375
   m_MaxDistanceOnly: 0
 --- !u!1 &3928251075175174206
 GameObject:
@@ -2434,7 +2434,7 @@ MonoBehaviour:
       - {fileID: 2692052011199496874}
       <livingEntity>k__BackingField: {fileID: 182527405575838724}
       <facingBody>k__BackingField: {fileID: 8554118557808651297}
-      <attackDirIndicator>k__BackingField: {fileID: 2107560446314127417}
+      <attackDirIndicator>k__BackingField: {fileID: 7102761138446207376}
       <animator>k__BackingField: {fileID: 3497128293693878074}
       <attackBounds>k__BackingField:
         colliders:
@@ -2527,8 +2527,6 @@ MonoBehaviour:
       threshold: 99
     - label: 2
       threshold: 0
-  deathLayer: 2
-  hitLayer: 1
   destroyOnDeath: 0
   destroyOnDeathTime: 2
   rb: {fileID: 5440876091878206333}
@@ -2538,12 +2536,14 @@ MonoBehaviour:
   deathAnimHandle:
     States:
     - name: Die
+      layer: 3
       animEnum: 0
       hash: 20298039
     BlendTreeVariables: []
   damageLocationAnimHandle:
     States:
     - name: Hit
+      layer: 2
       animEnum: 0
       hash: 1654612129
     BlendTreeVariables: []
@@ -2895,9 +2895,45 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8554118557808651297}
     m_Modifications:
+    - target: {fileID: 195176146197223695, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1477123136689171558, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1810701974758728132, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3162652993031787389, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3162652993031787389, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 3162652993031787389, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8836357
+      objectReference: {fileID: 0}
+    - target: {fileID: 3162652993031787389, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.46817514
+      objectReference: {fileID: 0}
+    - target: {fileID: 3162652993031787389, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 55.832
+      objectReference: {fileID: 0}
     - target: {fileID: 3918535794727923391, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
       propertyPath: m_Name
       value: F2 Player MODEL
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317833643716390636, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.02
       objectReference: {fileID: 0}
     - target: {fileID: 5875019171166697485, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2938,6 +2974,22 @@ PrefabInstance:
     - target: {fileID: 5875019171166697485, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6268742283735269815, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6273429967756374590, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6947995341076348894, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647491351886661909, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3012,15 +3064,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea51fcf48e9fb4e46ab36c5a2f440054, type: 3}
   m_Name: 
   m_EditorClassIdentifier: EMILtools::EMILtools_Private.Core.SignalSenderTcBool
-  tag: ATTACKANIM
   receiver:
-    underlyingValue: {fileID: 8008494068151331907}
+    underlyingValue: {fileID: 5932286161570280673}
   presetData: 0
   presets:
   - tag: ATTACKANIM
     data: 1
   - tag: ATTACKANIM
     data: 0
+--- !u!4 &7102761138446207376 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1763188906707864176, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+  m_PrefabInstance: {fileID: 8856901957809488864}
+  m_PrefabAsset: {fileID: 0}
 --- !u!212 &7190822253287039524 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 1810701974758728132, guid: 191cea6a667f9b94896f877007c00d27, type: 3}

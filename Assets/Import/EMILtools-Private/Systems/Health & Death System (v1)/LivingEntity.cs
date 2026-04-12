@@ -33,8 +33,6 @@ public class LivingEntity : Entity,
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
     
     [FoldoutGroup("Settings")] public Threshold<BasicHealthThresholds, PersistentAction<BasicHealthThresholds>> healthThresholds = new();
-    [FoldoutGroup("Settings")] [SerializeField] int deathLayer = 3;
-    [FoldoutGroup("Settings")] [SerializeField] int hitLayer = 2; 
     
     [FoldoutGroup("Death")] public bool destroyOnDeath = false;
     [FoldoutGroup("Death")] [ShowIf("destroyOnDeath")] public float destroyOnDeathTime = 2f;
@@ -70,10 +68,21 @@ public class LivingEntity : Entity,
     
     public float TakeDamage(DamageInfo info)
     {
-        Debug.Log($"{gameObject.name} Taking Damage");
+        Debug.Log($"[DMG] {gameObject.name} Taking Damage: {info.dmg}, health is currently: {health.Value}");
         var newhp = health.Value -= info.dmg;
-        if(healthThresholds.WasThresholdReached(newhp, out var healthState, out var cb)) 
+        Debug.Log("[DMG] New hp should be " + newhp + "");
+
+        // Debug all health states compared to new hp
+        healthThresholds.LogThresholds(newhp);
+
+        // Use while loop to ensure multiple thresholds are caught if passed at once
+        while (healthThresholds.WasThresholdReached(newhp, out var healthState, out var cb))
+        {
+            Debug.Log($"[DMG] Threshold Triggered: {healthState} at {newhp} HP");
             cb.Invoke(healthState);
+        }
+    
+        Debug.Log("[DMG] Finished Taking Damage, final hp is " + health.Value + "");
         return newhp;
     }
     
@@ -100,7 +109,6 @@ public class LivingEntity : Entity,
             DamageLocation.Body,
             initialWeight: 1, 
             endWeight: ZeroF, 
-            hitLayer, 
             RestartAnimation);
     
     void Die()
@@ -111,7 +119,7 @@ public class LivingEntity : Entity,
         deathStatus = DeathType.Regular;
         OnDeath.Invoke(deathStatus);
         OnDeathUnityEvent.Invoke();
-        deathAnimHandle.PlayWeightSet(animator, deathStatus, 1, deathLayer, FromBeginning);
+        deathAnimHandle.PlayWeightSet(animator, deathStatus, 1, FromBeginning);
         deathFloorCollider.enabled = true;
         foreach (var g in enableOnDeathAndUnparents) g.SetActiveThen(true).transform.parent = null;
         if (destroyOnDeath) StartCoroutine(DestroyOnDeath());

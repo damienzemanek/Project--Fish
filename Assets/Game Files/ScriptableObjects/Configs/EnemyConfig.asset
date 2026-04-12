@@ -15,12 +15,15 @@ MonoBehaviour:
   <animHandle>k__BackingField:
     States:
     - name: Idle
+      layer: 0
       animEnum: 0
       hash: 2081823275
     - name: Walk
+      layer: 0
       animEnum: 2
       hash: 765711723
     - name: Dying
+      layer: 0
       animEnum: 3
       hash: 315139327
     BlendTreeVariables: []

@@ -15,12 +15,14 @@ public struct AnimState<TAnimEnum>
     where TAnimEnum : Enum
 {
     public string name;
+    public int layer;
     public TAnimEnum animEnum;
     [ReadOnly] public int hash;
-    public AnimState(string name, TAnimEnum animEnum)
+    public AnimState(string name, TAnimEnum animEnum, int layer = 0)
     {
         this.name = name;
         this.animEnum = animEnum;
+        this.layer = layer;
         hash = Animator.StringToHash(name);
     }
     public void CalculateHash() => hash = Animator.StringToHash(name);
@@ -52,7 +54,7 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
     [FormerlySerializedAs("states")] [LabelWidth(150)] public AnimState<TAnimEnum>[] States;
     [FormerlySerializedAs("blendTreeVariables")] [LabelWidth(150)] public BlendTreeVariable<TAnimBlendEnum>[] BlendTreeVariables;
 
-    Dictionary<TAnimEnum, int> states;
+    Dictionary<TAnimEnum, (int hash, int layer)> states;
     Dictionary<TAnimBlendEnum, int> blendTreeVariables;
     
     [Button, PropertyOrder(-1)]
@@ -78,16 +80,17 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
 
     void Initialize()
     {
-        states = new Dictionary<TAnimEnum, int>();
+        states = new Dictionary<TAnimEnum, (int hash, int layer)>();
         blendTreeVariables = new Dictionary<TAnimBlendEnum, int>();
-        foreach (var state in States) states.Add(state.animEnum, state.hash);
+        foreach (var state in States) states.Add(state.animEnum, (state.hash, state.layer));
         foreach (var blendTreeVariable in BlendTreeVariables) blendTreeVariables.Add(blendTreeVariable.blendEnum, blendTreeVariable.hash);
     }
 
-    int GetHash(TAnimEnum animEnum)     
+    (int hash, int layer) GetAnimInfo(TAnimEnum animEnum)     
     {
-        if (states.TryGetValue(animEnum, out var hash)) return hash;
-        return -1;
+        if (states == null) Initialize(); // Add this line
+        if (states.TryGetValue(animEnum, out var info)) return info;
+        return (-1, -1);
     }
 
     public void UpdateAnimBlendFloat(Animator animator, TAnimBlendEnum blendEnum, float value)
@@ -108,21 +111,20 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
     public bool Play(
         Animator animator, 
         TAnimEnum animEnum, 
-        int layer = 0, 
         float normalizedTime = NegativeInfinity)
     {
         if (states == null) Initialize();
         if (animator == null) { Debug.LogWarning("Animator Null"); return false;}
         if (States == null) { Debug.LogError("States Null"); return false;}
-        if (layer < 0 || layer >= animator.layerCount)  { Debug.LogError("Layer Out of Index Range"); return false;}
         if(states == null) { Debug.LogError("States Dictionary Null"); return false;}
-        if(!states.TryGetValue(animEnum, out var hash))
+        if(!states.TryGetValue(animEnum, out var info))
         {
             Debug.LogError($"AnimHandle: No state mapped for enum {animEnum}");
             return false;
         }
-        if(hash == 0) { Debug.LogError($"AnimHandle: Hash for enum {animEnum} is 0, Please Recalculate Hashes"); return false;}
-        animator.Play(hash, layer, normalizedTime);
+        if (info.layer < 0 || info.layer >= animator.layerCount)  { Debug.LogError("Layer Out of Index Range"); return false;}
+        if(info.hash == 0) { Debug.LogError($"AnimHandle: Hash for enum {animEnum} is 0, Please Recalculate Hashes"); return false;}
+        animator.Play(info.hash, info.layer, normalizedTime);
         return true;
     }
     
@@ -130,23 +132,21 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         Animator animator,
         TAnimEnum animEnum,
         Action onEnd,
-        int layer = 0,
         float normalizedTime = NegativeInfinity)
     {
-        if (!Play(animator, animEnum, layer, normalizedTime))
+        if (!Play(animator, animEnum, normalizedTime))
             return false;
 
-        PlayThenOnEndAsync(animator, animEnum, onEnd, layer).Forget("AnimHandle: PlayThenOnEnd");
+        PlayThenOnEndAsync(animator, animEnum, onEnd).Forget("AnimHandle: PlayThenOnEnd");
         return true;
 
         async Task PlayThenOnEndAsync(
             Animator _animator,
             TAnimEnum _animEnum,
-            Action _OnEnd,
-            int _layer)
+            Action _OnEnd)
         {
-            int hash = GetHash(_animEnum);
-            if (hash == -1 || _animator == null || _layer < 0 || _layer >= _animator.layerCount)
+            var info = GetAnimInfo(_animEnum);
+            if (info.hash == -1 || _animator == null || info.layer < 0 || info.layer >= _animator.layerCount)
                 return;
 
             const float timeoutSeconds = 1.5f;
@@ -157,15 +157,15 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
             {
                 if (_animator == null) return;
 
-                var s = _animator.GetCurrentAnimatorStateInfo(_layer);
-                bool inTarget = s.shortNameHash == hash || s.fullPathHash == hash;
+                var s = _animator.GetCurrentAnimatorStateInfo(info.layer);
+                bool inTarget = s.shortNameHash == info.hash || s.fullPathHash == info.hash;
 
-                if (!_animator.IsInTransition(_layer) && inTarget)
+                if (!_animator.IsInTransition(info.layer) && inTarget)
                     break;
 
                 if (Time.time - start > timeoutSeconds)
                 {
-                    Debug.LogWarning($"AnimHandle: Timeout waiting to ENTER {_animEnum} on layer {_layer}.");
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to ENTER {_animEnum} on layer {info.layer}.");
                     _OnEnd?.Invoke();
                     return;
                 }
@@ -178,20 +178,20 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
             {
                 if (_animator == null) return;
 
-                var s = _animator.GetCurrentAnimatorStateInfo(_layer);
-                bool stillTarget = s.shortNameHash == hash || s.fullPathHash == hash;
+                var s = _animator.GetCurrentAnimatorStateInfo(info.layer);
+                bool stillTarget = s.shortNameHash == info.hash || s.fullPathHash == info.hash;
 
                 // If we already left target state, treat as ended
                 if (!stillTarget)
                     break;
 
                 // End condition for non-looping state
-                if (!s.loop && !_animator.IsInTransition(_layer) && s.normalizedTime >= 1f)
+                if (!s.loop && !_animator.IsInTransition(info.layer) && s.normalizedTime >= 1f)
                     break;
 
                 if (Time.time - start > timeoutSeconds)
                 {
-                    Debug.LogWarning($"AnimHandle: Timeout waiting to FINISH {_animEnum} on layer {_layer}.");
+                    Debug.LogWarning($"AnimHandle: Timeout waiting to FINISH {_animEnum} on layer {info.layer}.");
                     return;
                 }
 
@@ -207,26 +207,27 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         TAnimEnum animEnum,
         float initialWeight,
         float endWeight,
-        int layer = 0,
         float normalizedTime = NegativeInfinity)
     {
         Animator lclAnimator = animator;
-        animator.SetLayerWeight(layer, initialWeight);
-        if(!PlayThenOnEnd(animator, animEnum, SetWeightTo1, layer, normalizedTime)) return false;
+        var info = GetAnimInfo(animEnum);
+        if (info.layer < 0 || info.layer >= animator.layerCount) return false; 
+        animator.SetLayerWeight(info.layer, initialWeight);
+        if(!PlayThenOnEnd(animator, animEnum, SetWeightTo1, normalizedTime)) return false;
         return true;
-        void SetWeightTo1() => lclAnimator.SetLayerWeight(layer, endWeight);
+        void SetWeightTo1() => lclAnimator.SetLayerWeight(info.layer, endWeight);
     }
     
     public bool PlayWeightSet(
         Animator animator,
         TAnimEnum animEnum,
         float weight,
-        int layer = 0,
         float normalizedTime = NegativeInfinity)
     {
         Animator lclAnimator = animator;
-        animator.SetLayerWeight(layer, weight);
-        if(!Play(animator, animEnum, layer, normalizedTime)) return false;
+        var info = GetAnimInfo(animEnum);
+        animator.SetLayerWeight(info.layer, weight);
+        if(!Play(animator, animEnum, normalizedTime)) return false;
         return true;
     }
     
@@ -236,15 +237,15 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         float initialWeight,
         float endWeight,
         Action onEnd,
-        int layer = 0,
         float normalizedTime = NegativeInfinity)
     {
         Animator lclAnimator = animator;
         Action lclOnEnd = onEnd;
-        animator.SetLayerWeight(layer, initialWeight);
-        if(!PlayThenOnEnd(animator, animEnum, SetWeightTo1, layer, normalizedTime)) return false;
+        var info = GetAnimInfo(animEnum);
+        animator.SetLayerWeight(info.layer, initialWeight);
+        if(!PlayThenOnEnd(animator, animEnum, SetWeightTo1, normalizedTime)) return false;
         return true;
-        void SetWeightTo1() {lclAnimator.SetLayerWeight(layer, endWeight); lclOnEnd?.Invoke();}
+        void SetWeightTo1() {lclAnimator.SetLayerWeight(info.layer, endWeight); lclOnEnd?.Invoke();}
     }
 
 }

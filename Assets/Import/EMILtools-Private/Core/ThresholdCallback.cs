@@ -164,4 +164,22 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
 
         index = next; 
     }
+    
+    public void LogThresholds(float currentValue)
+    {
+        if (entries == null || entries.Length == 0)
+        {
+            Debug.Log("No thresholds configured.");
+            return;
+        }
+
+        string log = $"[Threshold Debug] Current HP: {currentValue}\n";
+        for (int i = 0; i < entries.Length; i++)
+        {
+            var entry = entries[i];
+            string status = (i < index) ? "[REACHED]" : (i == index ? "[NEXT]" : "[PENDING]");
+            log += $"{status} {entry.label}: {entry.threshold} (Index: {i})\n";
+        }
+        Debug.Log(log);
+    }
 }

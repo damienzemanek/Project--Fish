@@ -57,27 +57,35 @@ MonoBehaviour:
   animHandle:
     States:
     - name: Idle
+      layer: 0
       animEnum: 0
       hash: 2081823275
     - name: Move
+      layer: 0
       animEnum: 1
       hash: 1326225478
     - name: JumpInAir
+      layer: 0
       animEnum: 3
       hash: 1563475750
     - name: JumpStart
+      layer: 0
       animEnum: 2
       hash: 819769265
     - name: Land
+      layer: 0
       animEnum: 4
       hash: 137525990
     - name: AttackFront
+      layer: 1
       animEnum: 5
       hash: 328758227
     - name: AttackDown
+      layer: 1
       animEnum: 7
       hash: -949119557
     - name: AttackUp
+      layer: 1
       animEnum: 6
       hash: 1443585033
     BlendTreeVariables: []
