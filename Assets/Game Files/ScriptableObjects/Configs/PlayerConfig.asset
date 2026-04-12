@@ -88,6 +88,22 @@ MonoBehaviour:
       layer: 1
       animEnum: 6
       hash: 1443585033
+    - name: Cast
+      layer: 1
+      animEnum: 8
+      hash: -1299573048
+    - name: Casting
+      layer: 1
+      animEnum: 9
+      hash: 514229196
+    - name: CastPull
+      layer: 1
+      animEnum: 10
+      hash: 2054080663
+    - name: CastBreakoff
+      layer: 1
+      animEnum: 11
+      hash: -910330368
     BlendTreeVariables: []
   hook:
     <hookForce>k__BackingField: 27

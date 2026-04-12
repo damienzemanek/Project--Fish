@@ -9,7 +9,8 @@ using Sirenix.OdinInspector;
 public class PlayerConfig : Config, IEntityConfig
 {
     public enum MouseZones { LeftScreen, RightScreen }
-    public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, AttackFront, AttackUp, AttackDown }
+    public enum PlayerAnimations { Idle, Move, JumpStart, JumpInAir, Land, AttackFront, AttackUp, AttackDown, 
+        Cast, Casting, CastPull, CastBreakoff }
     public enum PlayerBlendVars { }
 
     
