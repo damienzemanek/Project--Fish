@@ -9,13 +9,13 @@ public interface ISignalReceiver { }
 /// Typed Polymorphic Signal
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface ISignalReceiverContext<T> : ISignalReceiver { } 
+public interface ISignalReceiverC<T> : ISignalReceiver { } 
 
 
 /// <summary>
 /// Tagged Signal
 /// </summary>
-public interface ISignalReceiverTagged : ISignalReceiver
+public interface ISignalReceiverT : ISignalReceiver
 {
     string tag { get; }
     void Send(string senderTag) => ReceiveSignal(senderTag);
@@ -26,7 +26,7 @@ public interface ISignalReceiverTagged : ISignalReceiver
 /// <summary>
 /// Tagged Signal
 /// </summary>
-public interface ISignalReceiverTaggedContext<T> : ISignalReceiver, ISignalReceiverContext<T>
+public interface ISignalReceiverTC<T> : ISignalReceiver, ISignalReceiverC<T>
 {
     string tag { get; }
     void Send(string senderTag, T ctx) => ReceiveSignal(senderTag, ctx);

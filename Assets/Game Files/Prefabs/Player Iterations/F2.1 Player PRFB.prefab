@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 125292883209616801}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -9.2, y: -8.34, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1024,7 +1024,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 0.97937506
+  m_Distance: 0.9793747
   m_MaxDistanceOnly: 0
 --- !u!1 &3928251075175174206
 GameObject:
@@ -2945,7 +2945,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1208299372693688542, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2940870464367149937}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3918535794727923391, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2222780129946640812}
   m_SourcePrefab: {fileID: 100100000, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
 --- !u!212 &1204627715184680841 stripped
 SpriteRenderer:
@@ -2992,6 +2995,32 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 4818990797328855648, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
   m_PrefabInstance: {fileID: 8856901957809488864}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5515615336098655583 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3918535794727923391, guid: 191cea6a667f9b94896f877007c00d27, type: 3}
+  m_PrefabInstance: {fileID: 8856901957809488864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2222780129946640812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5515615336098655583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea51fcf48e9fb4e46ab36c5a2f440054, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EMILtools::EMILtools_Private.Core.SignalSenderTcBool
+  tag: ATTACKANIM
+  receiver:
+    underlyingValue: {fileID: 8008494068151331907}
+  presetData: 0
+  presets:
+  - tag: ATTACKANIM
+    data: 1
+  - tag: ATTACKANIM
+    data: 0
 --- !u!212 &7190822253287039524 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 1810701974758728132, guid: 191cea6a667f9b94896f877007c00d27, type: 3}

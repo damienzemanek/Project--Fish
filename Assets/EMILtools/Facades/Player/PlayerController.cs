@@ -19,6 +19,7 @@ public class PlayerController : MonoFacade<
     IInputSubordinate<PlayerController.PlayerInputMap, Subordinates>,
     IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
     ICollisionCheckMsgReceiver<Collider2D, HookContext>,
+    ISignalReceiverTC<bool>,
 
     IEntityFacade
 {
@@ -29,6 +30,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
+        public readonly Publisher<bool> AttackColliderSetActive = new();
 
         public readonly Publisher<Hook.FinisherContext> Finisher = new();
 
@@ -112,6 +114,11 @@ public class PlayerController : MonoFacade<
     }
 
 
+    public void ReceiveSignal(string tag, bool ctx)
+    {
+        if (tag != "ATTACKANIM") return;
+        Actions.AttackColliderSetActive.Publish(ctx);
+    }
 }
 
 

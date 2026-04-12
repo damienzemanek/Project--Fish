@@ -35,7 +35,7 @@ public class FinisherEvent : MonoBehaviour
         public float spawnDelay;
     }
     
-    public InterfaceReference<ISignalReceiverTaggedContext<(bool, FinisherChoice)>, MonoBehaviour> finisherSignalReceiver;
+    public InterfaceReference<ISignalReceiverTC<(bool, FinisherChoice)>, MonoBehaviour> finisherSignalReceiver;
     public List<ChoiceList> choiceList;
     public Transform spawnPoint;
     public Traversal traversal;

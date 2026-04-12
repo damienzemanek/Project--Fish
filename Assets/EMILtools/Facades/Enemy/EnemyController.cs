@@ -15,7 +15,7 @@ public class EnemyController : MonoFacade<
     ActionMap>,
         IBoundsCheckMsgReceiver<Collider2D, CanSeeContext>, 
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
-        ISignalReceiverTaggedContext<(bool, FinisherChoice)>,
+        ISignalReceiverTC<(bool, FinisherChoice)>,
     IEntityFacade
 {
     Transform IFacade.transform => gameObject.transform;
