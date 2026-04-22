@@ -43,7 +43,7 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [ShowInInspector] public PlayerBlackboard.AttackDir attackDir { get; set; }
     [ShowInInspector] public bool landing { get; set; }
     [ShowInInspector] public bool isJumping { get; set; }
-    [ShowInInspector] public bool canJumpCoyote { get; set; }
+    [ShowInInspector] public bool canJumpCoyote { get; set; } = true;
     [ShowInInspector] public bool isAttacking { get; set; }
     [ShowInInspector] public bool isMoving { get; set; }
     [ShowInInspector] public bool isHooking { get; set; }

@@ -31,6 +31,7 @@ public class PlayerController : MonoFacade<
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
         public readonly Publisher<bool> AttackColliderSetActive = new();
+        public readonly Publisher<bool> Land = new();
 
         public readonly Publisher<Hook.FinisherContext> Finisher = new();
 
