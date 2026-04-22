@@ -27,6 +27,7 @@ public class PlayerController : MonoFacade<
 
     public class ActionMap : IActionMap
     {
+        public readonly Publisher<IPlayerContextView> Pogo = new();
         public readonly Publisher<AttackCtx> TakeDamage = new();
         public readonly Publisher<IPlayerContextView> IvunrabilityVisualization = new();
         public readonly Publisher<IPlayerContextView> HookAttack = new();
@@ -62,8 +63,14 @@ public class PlayerController : MonoFacade<
 
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
     {
+        if (ctx.attackingColliderTag == "PlayerDownPogo")
+        {
+            Actions.Pogo.Publish(API_Context<PlayerContextData>());
+            return;
+        }
         Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
+        
     }
 
     public void OnStayBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)

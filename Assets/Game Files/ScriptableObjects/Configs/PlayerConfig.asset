@@ -107,6 +107,8 @@ MonoBehaviour:
     BlendTreeVariables: []
   hook:
     <hookForce>k__BackingField: 27
+  pogo:
+    <pogoForceStrength>k__BackingField: 18
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 15
   <hitStop>k__BackingField:

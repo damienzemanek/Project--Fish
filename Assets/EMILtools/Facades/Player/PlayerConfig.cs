@@ -21,10 +21,17 @@ public class PlayerConfig : Config, IEntityConfig
     [SerializeField] public Facing facing;
     [SerializeField] public AnimHandle<PlayerAnimations, PlayerBlendVars> animHandle;
     [SerializeField] public Hook hook;
+    [SerializeField] public Pogo pogo;
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.ClampLateralMov clampLateralMove { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.HitStop hitStop { get; set; }
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
 
+
+    [Serializable]
+    public struct Pogo
+    {
+        [field: SerializeField] public float pogoForceStrength { get; private set; }
+    }
 
 
     [Serializable]

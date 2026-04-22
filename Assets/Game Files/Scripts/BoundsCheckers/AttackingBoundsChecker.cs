@@ -9,6 +9,7 @@ public class AttackingBoundsChecker : BoundsChecker<AttackCtx>
     [Serializable]
     public struct AttackCtx
     {
+        public string attackingColliderTag;
         public IEntityCtx attackerEntityCtx;
         public IDamageable.DamageInfo damageInfo;
     }
