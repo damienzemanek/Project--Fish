@@ -21,6 +21,7 @@ public class EnemyController : MonoFacade<
     Transform IFacade.transform => gameObject.transform;
     public class ActionMap : IActionMap
     {
+        public readonly Publisher<bool> ToggleHyperArmor = new();
         public readonly Publisher Idle = new();
         public readonly Publisher<bool> CanSeeTarget = new ();
         public readonly Publisher<AttackCtx> TakeDamage = new();

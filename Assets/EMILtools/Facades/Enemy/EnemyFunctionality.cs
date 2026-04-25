@@ -15,18 +15,20 @@ public class EnemyFunctionality : Functionalities<
     
     protected override IState AddModulesHere(EnemyController f)
     {
+
         // Add Modules like this
         // AddModule(new ExampleModule(...));
 
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new HyperArmor(facade.Actions.ToggleHyperArmor, f));
         AddModule(new FinisherInputAvaliable(facade.Actions.FinisherInputAvaliable, f));
         AddModule(new Hooked(facade.Actions.isHookedBySomething, f));
         AddModule(new Stunnable(facade.Actions.Stun, f));
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
-        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null));
+        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, new FuncPredicate(() => facade.API_Context<EnemyContextData>().hyperArmorActive)));
         AddModule(new FaceDir(f));
         AddModule(new Idle(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -51,6 +53,24 @@ public class EnemyFunctionality : Functionalities<
         
         fsm.AddTransition<DyingState, Hooked>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isBeingFinished), "Being Finished");
         fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
+    }
+
+    class HyperArmor : BoundSetFunctionality<EnemyController, IEnemyContextView, HyperArmor.Setter>,
+        ON_SET
+    {
+        public class Setter : DataSetter<bool>
+        {
+            [ShowInInspector] public bool hyperArmorActive => Get;
+        }
+        public HyperArmor(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public void MutateUsingNewSetValues()
+        {
+            if (cfg.hyperArmor.useHyperArmor)
+                mutateCtx.hyperArmorActive = SetContext.hyperArmorActive;
+            else
+                mutateCtx.hyperArmorActive = false;
+        }
     }
     
     class FinisherInputAvaliable : BoundSetFunctionality<EnemyController, IEnemyContextView, FinisherInputAvaliable.Setter>, 

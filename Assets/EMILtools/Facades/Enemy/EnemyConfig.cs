@@ -22,7 +22,14 @@ public class EnemyConfig : Config, IEntityConfig
     [field: PropertyOrder(-1)] [field: SerializeField] public IEntityConfig.TakeDmg takeDmg { get; set; }
     [field: SerializeField] public Stunned stunned { get; private set; }
     [field: SerializeField] public Finishable finishable { get; private set; }
+    [field: SerializeField] public HyperArmor hyperArmor { get; private set; }
 
+    [Serializable]
+    public struct HyperArmor
+    {
+        [field: SerializeField] public bool useHyperArmor { get; private set; }
+    }
+    
     [Serializable]
     public struct Finishable
     {

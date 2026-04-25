@@ -42,7 +42,7 @@ MonoBehaviour:
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 4
   <jump>k__BackingField:
-    <jumpForceScalar>k__BackingField: 5
+    <jumpForceScalar>k__BackingField: 20
     <jumpDelay>k__BackingField:
       val: 1
   <viewRange>k__BackingField:
@@ -64,3 +64,5 @@ MonoBehaviour:
   <finishable>k__BackingField:
     <finishTime>k__BackingField:
       val: 3
+  <hyperArmor>k__BackingField:
+    <useHyperArmor>k__BackingField: 1

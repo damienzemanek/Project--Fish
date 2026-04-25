@@ -23,6 +23,7 @@ public interface IEnemyContextView : IEntityCtx
     public float distToEndNode { get; }   
     public float hp { get; }
     public int currentWaypointIndex { get; }
+    public bool hyperArmorActive { get; }
     public LivingEntity.BasicHealthThresholds currentHealthState { get; }
     public IEntityCtx.FaceDirection facingDirection { get; set; }
 }
@@ -34,6 +35,7 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool travelAngleTooCloseToVertical { get; set; }
     [field: ShowInInspector] public bool isStunned { get; set; }
     [field: ShowInInspector] public bool isBeingFinished { get; set; }
+    [field:ShowInInspector] public bool hyperArmorActive { get; set; }
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
     [field: ShowInInspector] public bool invulnerable { get; set; }
     [field: ShowInInspector] public Ref<bool> isFinisherInputAvaliable { get; set; } = new(false);

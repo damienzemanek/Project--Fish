@@ -111,8 +111,9 @@ public class SharedFMs
         }
 
         PersistentAction postCb;
+        FuncPredicate BlockDamage;
         
-        public TakeDmg(IPublisher publisher, TFacade facade, PersistentAction postCb) : base(publisher, facade)
+        public TakeDmg(IPublisher publisher, TFacade facade, PersistentAction postCb, FuncPredicate blockDamage = null) : base(publisher, facade)
             => this.postCb = postCb;
 
         protected override void Awake()
@@ -135,6 +136,9 @@ public class SharedFMs
             Debug.Log("TakingDmg: Passed All Guards");
             
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
+
+            if (BlockDamage.Evaluate()) return;
+            
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
