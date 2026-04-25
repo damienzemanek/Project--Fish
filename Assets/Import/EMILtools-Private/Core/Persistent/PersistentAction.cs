@@ -11,6 +11,8 @@ namespace EMILtools.Core
         public PersistentAction() { }
         public PersistentAction(Action<T1, T2> _del) => _action = _del;
         
+        // No IInvokeWithEnum for multiple parameters as it wouldn't match the signature
+        
         // ------------ IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action<T1, T2>)cb);
         public void API_Remove(Delegate cb) => Remove((Action<T1, T2>)cb);
@@ -40,11 +42,14 @@ namespace EMILtools.Core
         
     }
     
-    public sealed class PersistentAction<T> : IPersistentAction<Action<T>, PersistentAction<T>>
+    public sealed class PersistentAction<T> : IPersistentAction<Action<T>, PersistentAction<T>>, IInvokeWithEnum
     {
         public PersistentAction() { }
         public PersistentAction(Action<T> _del) => _action = _del;
         
+        // ------------ IInvokeWithEnum ------------
+        void IInvokeWithEnum.Invoke(Enum value) => Invoke((T)(object)value);
+
         // ------------ IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action<T>)cb);
         public void API_Remove(Delegate cb) => Remove((Action<T>)cb);
@@ -76,11 +81,14 @@ namespace EMILtools.Core
     /// <summary>
     /// Non-generic version for simple triggers
     /// </summary>
-    public sealed class PersistentAction : IPersistentAction<Action, PersistentAction>
+    public sealed class PersistentAction : IPersistentAction<Action, PersistentAction>, IInvokeWithEnum
     {
         public PersistentAction() { }
         public PersistentAction(Action _del) => _action = _del;
         
+        // ------------ IInvokeWithEnum ------------
+        void IInvokeWithEnum.Invoke(Enum value) => Invoke();
+
         // ------------ API: IPersistentDelegate ------------
         public void API_Add(Delegate cb) => Add((Action)cb);
         public void API_Remove(Delegate cb) => Remove((Action)cb);

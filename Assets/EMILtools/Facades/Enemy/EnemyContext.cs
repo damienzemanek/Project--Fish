@@ -24,7 +24,7 @@ public interface IEnemyContextView : IEntityCtx
     public float hp { get; }
     public int currentWaypointIndex { get; }
     public bool hyperArmorActive { get; }
-    public LivingEntity.BasicHealthThresholds currentHealthState { get; }
+    public LivingEntity.BasicHealthThresholdEnum currentHealthState { get; }
     public IEntityCtx.FaceDirection facingDirection { get; set; }
 }
 
@@ -40,7 +40,7 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool invulnerable { get; set; }
     [field: ShowInInspector] public Ref<bool> isFinisherInputAvaliable { get; set; } = new(false);
     [field: ShowInInspector] public float hp { get; set; }
-    [field: ShowInInspector] public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
+    [field: ShowInInspector] public LivingEntity.BasicHealthThresholdEnum currentHealthState { get; set; }
     [field: ShowInInspector] public IEntityCtx.FaceDirection facingDirection { get; set; }
 
     [field: BoxGroup("A Star")] [field: ShowInInspector] public Path path { get; set; }

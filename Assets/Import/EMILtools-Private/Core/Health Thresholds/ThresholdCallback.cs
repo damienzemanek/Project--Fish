@@ -5,14 +5,18 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 
-public interface IThresholdMutator<TEnum, TDelegator>
+public interface IThresholdMutator
 {
-    public void AddOrReplaceDelegate(TEnum label, TDelegator cb);
+    public void AddOrReplaceDelegate(Enum label, IDelegator cb);
+    public void SetAllDelegates(IDelegator cb);
 }
 
 
+
+
 [Serializable]
-public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
+public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
+    IThresholdMutator
     where TDelegator : IDelegator
     where TEnum : Enum
 {
@@ -28,7 +32,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
     [ShowInInspector] int index;
     
     [Button]
-    public void Reset()
+    public override void Reset()
     {
         if (entries == null || entries.Length == 0)
         {
@@ -40,28 +44,31 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         index = 0; 
     }
     
-    public void SetAllDelegates(TDelegator cb)
+    public override void SetAllDelegates(IDelegator cb)
     {
         if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
+        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
 
         for (int i = 0; i < entries.Length; i++)
         {
             ref var entry = ref entries[i];
-            entry.cb = cb;
+            entry.cb = typedCb;
         }
     }
 
-    public void AddOrReplaceDelegate(TEnum label, TDelegator cb)
+    public override void AddOrReplaceDelegate(Enum label, IDelegator cb)
     {
         if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
+        if (!(label is TEnum typedLabel)) throw new ArgumentException($"Label must be of type {typeof(TEnum)}", nameof(label));
+        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
 
-        int indx = Array.FindIndex(entries, entry => EqualityComparer<TEnum>.Default.Equals(entry.label, label));
+        int indx = Array.FindIndex(entries, entry => EqualityComparer<TEnum>.Default.Equals(entry.label, typedLabel));
         if (indx == -1) throw new ArgumentException("Threshold does not contain label", nameof(label));
         ref var entry = ref entries[indx];
-        entry.cb = cb;
+        entry.cb = typedCb;
     }
 
-    public float GetHighestThreshold()
+    public override float GetHighestThreshold()
     {
         float highest = -1;
         foreach (var entry in entries)
@@ -86,7 +93,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         return label;
     }
     
-    public bool GetNearestLastThreshold(float value, out TEnum label, out TDelegator returnCallback)
+    public override bool GetNearestLastThreshold(float value, out Enum label, out IDelegator returnCallback)
     {
         if (entries == null || entries.Length == 0)
         {
@@ -124,7 +131,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         return true;
     }
     
-    public bool WasThresholdReached(float value, out TEnum label, out TDelegator returnCallback)
+    public override bool WasThresholdReached(float value, out Enum label, out IDelegator returnCallback)
     {
         if (entries == null || index < 0 || index >= entries.Length)
         {
@@ -139,6 +146,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         {
             label = entry.label;
             returnCallback = entry.cb;
+
             index++; 
             return true;
         }
@@ -148,7 +156,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         return false;
     }
     
-    public void SyncIndexToValue(float value)
+    public override void SyncIndexToValue(float value)
     {
         if (entries == null || entries.Length == 0)
         {
@@ -165,7 +173,7 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         index = next; 
     }
     
-    public void LogThresholds(float currentValue)
+    public override void LogThresholds(float currentValue)
     {
         if (entries == null || entries.Length == 0)
         {
@@ -182,4 +190,5 @@ public class Threshold<TEnum, TDelegator> : IThresholdMutator<TEnum, TDelegator>
         }
         Debug.Log(log);
     }
+
 }

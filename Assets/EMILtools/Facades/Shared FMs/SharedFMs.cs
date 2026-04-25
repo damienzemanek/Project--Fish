@@ -16,7 +16,7 @@ public interface IEntityCtx : IContextViewImmutable
     
     public float hp { get; set; }
     public bool invulnerable { get; set; }
-    public LivingEntity.BasicHealthThresholds currentHealthState { get; set; }
+    public LivingEntity.BasicHealthThresholdEnum currentHealthState { get; set; }
     public FaceDirection facingDirection { get; set; }
 }
 
@@ -122,16 +122,16 @@ public class SharedFMs
             facade.InitTimer(bb.invulnerableTimer, true);
             bb.invulnerableTimer.OnTimerStop.Add(InvulnerablitityEnd);
             
-            PersistentAction<LivingEntity.BasicHealthThresholds> newHealthState = new PersistentAction<LivingEntity.BasicHealthThresholds>(NewHealthState);
+            PersistentAction<LivingEntity.BasicHealthThresholdEnum> newHealthState = new PersistentAction<LivingEntity.BasicHealthThresholdEnum>(NewHealthState);
             bb.livingEntity.healthThresholds.SetAllDelegates(newHealthState);
         }
 
         public void MutateUsingNewSetValues()
         {
             if (mutateCtx.invulnerable) return;
-            if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
-            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dying) return;
-            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholds.Dead) return;
+            if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
+            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
+            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dead) return;
             
             Debug.Log("TakingDmg: Passed All Guards");
             
@@ -162,7 +162,7 @@ public class SharedFMs
             bb.rb.linearVelocity = lateral + upwards;
         }
 
-        void NewHealthState(LivingEntity.BasicHealthThresholds newHealthState)
+        void NewHealthState(LivingEntity.BasicHealthThresholdEnum newHealthState)
         {
             Debug.Log("New Health State: " + newHealthState + "");
             mutateCtx.currentHealthState = newHealthState;

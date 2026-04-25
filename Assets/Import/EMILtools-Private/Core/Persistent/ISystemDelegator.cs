@@ -5,6 +5,11 @@ namespace EMILtools.Core
 
 
     public interface IDelegator { }
+
+    public interface IInvokeWithEnum : IDelegator
+    {
+        void Invoke(Enum value);
+    }
     
     /// <summary>
     /// Low level Delegate
