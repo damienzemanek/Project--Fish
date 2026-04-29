@@ -29,10 +29,9 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
     }
     
     [SerializeField] Entry[] entries;
-    [ShowInInspector] int index;
     
     [Button]
-    public override void Reset()
+    public override void Reset(ref int index)
     {
         if (entries == null || entries.Length == 0)
         {
@@ -131,7 +130,7 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         return true;
     }
     
-    public override bool WasThresholdReached(float value, out Enum label, out IDelegator returnCallback)
+    public override bool WasThresholdReached(ref int index, float value, out Enum label, out IDelegator returnCallback)
     {
         if (entries == null || index < 0 || index >= entries.Length)
         {
@@ -156,7 +155,7 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         return false;
     }
     
-    public override void SyncIndexToValue(float value)
+    public override void SyncIndexToValue(ref int index, float value)
     {
         if (entries == null || entries.Length == 0)
         {
@@ -173,7 +172,7 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         index = next; 
     }
     
-    public override void LogThresholds(float currentValue)
+    public override void LogThresholds(ref int index, float currentValue)
     {
         if (entries == null || entries.Length == 0)
         {

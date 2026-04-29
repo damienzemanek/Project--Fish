@@ -16,7 +16,7 @@ public class EnemyBlackboard : Blackboard, IEntityBlackboard
     [field: SerializeField] [field: Required] public Rigidbody2D rb { get; private set; }
     [field: SerializeField] [field: Required] public AttackingBoundsChecker[] attackingBoundsCheckers { get; private set; }
     [field: SerializeField] [field: Required] public DamageFlasher damageFlasher { get; private set; }
-    [field: SerializeField] [field: Required] public Transform target { get; private set; }
+    [field: SerializeField] [field: RequiredIn(PrefabKind.InstanceInScene)] public Transform target { get; private set; }
     [field: SerializeField] [field: Required] public DelayLimitedMethod computePath { get; private set; }
     [field: SerializeField] [field: Required] public Transform[] feetPoints { get; private set; }
     [field: SerializeField] [field: Required] public CountdownTimer jumpTimer { get; set; }

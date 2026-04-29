@@ -30,12 +30,13 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new DyingState(f));
         AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, new FuncPredicate(() => facade.API_Context<EnemyContextData>().hyperArmorActive)));
         AddModule(new FaceDir(f));
-        AddModule(new Idle(f));
+        AddModule(new Follow(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
         AddModule(new Jump(f));
         AddModule(new SharedFMs.ClampLateralMovement<EnemyController>(f));
         AddModule(new InAir(f));
-        return AddModule(new Follow(f));
+        return AddModule(new Idle(f));
+
     }
     protected override void SetupTransitionsForFSM(StateMachine<IEnemyContextView> fsm, IEnemyContextView ctx)
     {
@@ -54,6 +55,9 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<DyingState, Hooked>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isBeingFinished), "Being Finished");
         fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
     }
+
+    class Attacker : BoundSetFunctionality<>
+    
 
     class HyperArmor : BoundSetFunctionality<EnemyController, IEnemyContextView, HyperArmor.Setter>,
         ON_SET

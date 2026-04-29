@@ -37,7 +37,8 @@ public class LivingEntity : Entity,
     [FoldoutGroup("ReadOnly")] [ShowInInspector] ReactiveIntercept<float> health;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
-
+    [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public int healthThresholdsIndex;
+    
     [FoldoutGroup("Settings")] public ThresholdCore healthThresholds;
     
     [FoldoutGroup("Death")] public bool destroyOnDeath = false;
@@ -59,14 +60,14 @@ public class LivingEntity : Entity,
     
     void Awake()
     {
-        healthThresholds.Reset();
+        healthThresholds.Reset(ref healthThresholdsIndex);
         maxHealth = healthThresholds.GetHighestThreshold();
 
         health = new ReactiveIntercept<float>(maxHealth);
         health.Intercepts.Add(value => value < ZeroF ? ZeroF : value);
         health.Reactions.Add(CheckDie);
 
-        healthThresholds.SyncIndexToValue(health.Value);
+        healthThresholds.SyncIndexToValue(ref healthThresholdsIndex, health.Value);
 
         deathFloorCollider.enabled = false;
         TakeDamageCaller = new PersistentFunc<DamageInfo, float>(TakeDamage);
@@ -79,10 +80,10 @@ public class LivingEntity : Entity,
         Debug.Log("[DMG] New hp should be " + newhp + "");
 
         // Debug all health states compared to new hp
-        healthThresholds.LogThresholds(newhp);
+        healthThresholds.LogThresholds(ref healthThresholdsIndex, newhp);
 
         // Use while loop to ensure multiple thresholds are caught if passed at once
-        while (healthThresholds.WasThresholdReached(newhp, out var healthState, out var cb))
+        while (healthThresholds.WasThresholdReached(ref healthThresholdsIndex, newhp, out var healthState, out var cb))
         {
             Debug.Log($"[DMG] Threshold Triggered: {healthState} at {newhp} HP");
             if (cb is IInvokeWithEnum invokable)
@@ -100,7 +101,7 @@ public class LivingEntity : Entity,
         var newhp = health.Value += amount;
         var clamped = Mathf.Clamp(newhp, ZeroF, maxHealth);
         // Rewind threshold progression to match healed HP
-        healthThresholds.SyncIndexToValue(clamped);
+        healthThresholds.SyncIndexToValue(ref healthThresholdsIndex, clamped);
         if (healthThresholds.GetNearestLastThreshold(clamped, out var label, out _) && label is BasicHealthThresholdEnum basicLabel)
             newState = basicLabel;
         else

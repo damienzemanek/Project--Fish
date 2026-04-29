@@ -23,7 +23,15 @@ public class EnemyConfig : Config, IEntityConfig
     [field: SerializeField] public Stunned stunned { get; private set; }
     [field: SerializeField] public Finishable finishable { get; private set; }
     [field: SerializeField] public HyperArmor hyperArmor { get; private set; }
+    [field: SerializeField] public DescisionMaking decisionMaking { get; private set; }
 
+    [Serializable]
+    public struct DescisionMaking
+    {
+        public bool UseDefiniteAttackWhenInRange;
+        [ShowIf("UseDefiniteAttackWhenInRange")] public float attackDist;
+    }
+    
     [Serializable]
     public struct HyperArmor
     {
