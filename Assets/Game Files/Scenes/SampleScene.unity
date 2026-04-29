@@ -1826,6 +1826,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 182527405575838724, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: healthThresholds
+      value: 
+      objectReference: {fileID: 11400000, guid: ccc3d75a0f9cbcd41ac5d4d4213e8bb4, type: 2}
     - target: {fileID: 2692052011199496874, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: SelectedReceiver
       value: 1
@@ -4626,6 +4630,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: F1 Enemy 2 AI Agent
       objectReference: {fileID: 0}
+    - target: {fileID: 6797613205500099099, guid: 2caf96599626088499602537661f46a6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7160758065921376282, guid: 2caf96599626088499602537661f46a6, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.88
@@ -5330,7 +5338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5750729467634582152
 Transform:
   m_ObjectHideFlags: 0
