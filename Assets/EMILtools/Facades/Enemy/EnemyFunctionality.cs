@@ -56,7 +56,30 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
     }
 
-    class Attacker : BoundSetFunctionality<>
+    class Attacking : BoundSetFunctionality<EnemyController, IEnemyContextView, Attacking.Setter>,
+        ON_SET,
+        FSM_STATE_ENTER<IEnemyContextView>
+    {
+        [Serializable]
+        public class Setter : DataSetter<bool>
+        {
+            [ShowInInspector] public bool inAttackRange => Get;
+        }
+
+        public Attacking(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        
+        public void MutateUsingNewSetValues()
+        {
+            if (facade.FSM.CurrentStateType == typeof(Attacking)) return;
+            
+            
+        }
+
+        public void OnEnterState(IEnemyContextView ctx)
+        {
+            throw new NotImplementedException();
+        }
+    }
     
 
     class HyperArmor : BoundSetFunctionality<EnemyController, IEnemyContextView, HyperArmor.Setter>,
