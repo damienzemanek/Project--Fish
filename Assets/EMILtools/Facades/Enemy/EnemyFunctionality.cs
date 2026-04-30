@@ -1,4 +1,5 @@
 using System;
+using EMILtools_Private.Core;
 using EMILtools.Core;
 using EMILtools.Systems;
 using EMILtools.Timers;
@@ -22,13 +23,16 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new AttackColliderEnabler(facade.Actions.AttackColliderSetActive, f));
+        AddModule(new AttackRangeDetector(facade.Actions.AttackInRange, f));
         AddModule(new HyperArmor(facade.Actions.ToggleHyperArmor, f));
         AddModule(new FinisherInputAvaliable(facade.Actions.FinisherInputAvaliable, f));
         AddModule(new Hooked(facade.Actions.isHookedBySomething, f));
         AddModule(new Stunnable(facade.Actions.Stun, f));
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
-        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, new FuncPredicate(() => facade.API_Context<EnemyContextData>().hyperArmorActive)));
+        AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, 
+            new FuncPredicate(() => facade.API_Config<EnemyConfig>().hyperArmor.useHyperArmor && facade.API_Context<EnemyContextData>().hyperArmorActive)));
         AddModule(new FaceDir(f));
         AddModule(new Follow(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -56,29 +60,48 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
     }
 
-    class Attacking : BoundSetFunctionality<EnemyController, IEnemyContextView, Attacking.Setter>,
-        ON_SET,
-        FSM_STATE_ENTER<IEnemyContextView>
+    class AttackRangeDetector : BoundSetFunctionality<EnemyController, IEnemyContextView, AttackRangeDetector.Setter>,
+        ON_SET
     {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         [Serializable]
         public class Setter : DataSetter<bool>
         {
-            [ShowInInspector] public bool inAttackRange => Get;
+            bool inAttackRange => Get;
         }
 
-        public Attacking(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-        
+        Action EndAttackDelegateCached;
+        public AttackRangeDetector(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+
+        protected override void Awake() => EndAttackDelegateCached = EndAttack;
+
+        /// <summary>
+        /// Start Attacking - comes from the BoundSet Publisher
+        /// </summary>
         public void MutateUsingNewSetValues()
         {
-            if (facade.FSM.CurrentStateType == typeof(Attacking)) return;
-            
-            
+            if (mutateCtx.attacking == true) return;
+            mutateCtx.attacking = true;
+            // Animation events will turn on and off the attacking bounds checker collider
+            cfg.animHandle.PlayThenOnEnd(bb.animator, EnemyConfig.EnemyAnims.Attack, EndAttackDelegateCached);
+        }
+        void EndAttack() => mutateCtx.attacking = false;
+    }
+    
+    class AttackColliderEnabler : BoundSetFunctionality<EnemyController, IEnemyContextView, AttackColliderEnabler.Setter>,
+        ON_SET
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+
+        [Serializable]
+        public class Setter : DataSetter<BoolInt>
+        {
+            [ShowInInspector] public BoolInt value => Get;
         }
 
-        public void OnEnterState(IEnemyContextView ctx)
-        {
-            throw new NotImplementedException();
-        }
+        public AttackColliderEnabler(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+        public void MutateUsingNewSetValues() 
+            => bb.attackingBoundsCheckers[SetContext.value.intVal].gameObject.SetActive(SetContext.value.boolVal);
     }
     
 
@@ -215,8 +238,8 @@ public class EnemyFunctionality : Functionalities<
 
         public void OnEnterState(IEnemyContextView ctx)
         {
-            Debug.Log("Dying");
-            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Dying);
+            Debug.Log("Enemy Now Dying");
+            cfg.animHandle.PlayWeightSet(bb.animator, EnemyConfig.EnemyAnims.Dying, 1);
             bb.dyingStateTimer.StartAndReset();
             bb.viewRange.enabled = false;
         }
@@ -225,6 +248,7 @@ public class EnemyFunctionality : Functionalities<
         {
             if(bb.livingEntity.isDead) return;
             Debug.Log("Stopped Dying");
+            bb.animator.SetLayerWeight(cfg.animHandle.GetLayer(EnemyConfig.EnemyAnims.Dying), 0);
             bb.livingEntity.Heal(cfg.dyingState.outOfDeathStateHealAmount, out var newState);
             mutateCtx.currentHealthState = newState;
             bb.viewRange.enabled = true;

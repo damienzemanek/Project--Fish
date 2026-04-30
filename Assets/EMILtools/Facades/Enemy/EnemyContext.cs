@@ -36,6 +36,8 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool isStunned { get; set; }
     [field: ShowInInspector] public bool isBeingFinished { get; set; }
     [field:ShowInInspector] public bool hyperArmorActive { get; set; }
+    [field:ShowInInspector] public bool attacking { get; set; }
+
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
     [field: ShowInInspector] public bool invulnerable { get; set; }
     [field: ShowInInspector] public Ref<bool> isFinisherInputAvaliable { get; set; } = new(false);

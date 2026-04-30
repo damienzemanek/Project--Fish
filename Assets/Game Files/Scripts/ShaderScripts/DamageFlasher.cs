@@ -86,6 +86,7 @@ public class DamageFlasher : MonoBehaviour
             SetAlpha(alpha);
             yield return null;
         }
+        
     }
 
     void SetFlashColor(int flashindex)

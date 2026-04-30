@@ -78,6 +78,11 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
 
     }
 
+    public int GetLayer(TAnimEnum animEnum)
+    {
+        return GetAnimInfo(animEnum).layer;
+    }
+    
     void Initialize()
     {
         states = new Dictionary<TAnimEnum, (int hash, int layer)>();
@@ -247,5 +252,5 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         return true;
         void SetWeightTo1() {lclAnimator.SetLayerWeight(info.layer, endWeight); lclOnEnd?.Invoke();}
     }
-
+    
 }

@@ -18,14 +18,18 @@ MonoBehaviour:
       layer: 0
       animEnum: 0
       hash: 2081823275
-    - name: Walk
+    - name: Move
       layer: 0
       animEnum: 2
-      hash: 765711723
+      hash: 1326225478
     - name: Dying
-      layer: 0
+      layer: 2
       animEnum: 3
       hash: 315139327
+    - name: Attack
+      layer: 0
+      animEnum: 1
+      hash: 1080829965
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 1000
@@ -65,4 +69,7 @@ MonoBehaviour:
     <finishTime>k__BackingField:
       val: 3
   <hyperArmor>k__BackingField:
-    <useHyperArmor>k__BackingField: 1
+    <useHyperArmor>k__BackingField: 0
+  <decisionMaking>k__BackingField:
+    UseDefiniteAttackWhenInRange: 0
+    attackDist: 0

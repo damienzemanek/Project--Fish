@@ -132,13 +132,18 @@ public class SharedFMs
             if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dead) return;
-            
-            Debug.Log("TakingDmg: Passed All Guards");
-            
-            bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
 
-            if (BlockDamage.Evaluate()) return;
-            
+            Debug.Log("TakingDmg: Passed All Guards");
+            bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
+            Debug.Log("TakingDmg: Checking Hyper Armor");
+            // if(BlockDamage != null && BlockDamage.Evaluate())
+            // {
+            //     Debug.Log("TakingDmg: Hyper Armor is active");
+            //
+            //     return;
+            // }
+            Debug.Log("TakingDmg: Is not using hyper armor");
+
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
