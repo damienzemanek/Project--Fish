@@ -18,20 +18,20 @@ MonoBehaviour:
       layer: 0
       animEnum: 0
       hash: 2081823275
-    - name: Walk
+    - name: Move
       layer: 0
       animEnum: 2
-      hash: 765711723
-    - name: Dying
-      layer: 0
-      animEnum: 3
-      hash: 315139327
+      hash: 1326225478
+    - name: Attack
+      layer: 1
+      animEnum: 1
+      hash: 1080829965
     BlendTreeVariables: []
   <follow>k__BackingField:
-    <speedScalar>k__BackingField: 1000
+    <speedScalar>k__BackingField: 1500
     <nextWaypointDistance>k__BackingField: 1
     <stoppingDistToTarget>k__BackingField: 0.5
-    <minHorizAngleToFollow>k__BackingField: 50
+    <minHorizAngleToFollow>k__BackingField: 70
   <inAir>k__BackingField:
     <checkDist>k__BackingField: 0.3
     <mask>k__BackingField:
@@ -42,6 +42,7 @@ MonoBehaviour:
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 4
   <jump>k__BackingField:
+    <canJump>k__BackingField: 0
     <jumpForceScalar>k__BackingField: 20
     <jumpDelay>k__BackingField:
       val: 1
@@ -53,7 +54,7 @@ MonoBehaviour:
     <outOfDeathStateHealAmount>k__BackingField: 2
   <hitStop>k__BackingField:
     <scalar>k__BackingField: 0
-    <period>k__BackingField: 0.2
+    <period>k__BackingField: 0
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
     <pushForceX>k__BackingField: 3

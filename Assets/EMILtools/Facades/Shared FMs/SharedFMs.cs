@@ -16,7 +16,7 @@ public interface IEntityCtx : IContextViewImmutable
     
     public float hp { get; set; }
     public bool invulnerable { get; set; }
-    public LivingEntity.BasicHealthThresholdEnum currentHealthState { get; set; }
+    public Enum currentHealthState { get; set; }
     public FaceDirection facingDirection { get; set; }
 }
 
@@ -126,17 +126,28 @@ public class SharedFMs
             facade.InitTimer(bb.invulnerableTimer, true);
             bb.invulnerableTimer.OnTimerStop.Add(InvulnerablitityEnd);
             
-            PersistentAction<LivingEntity.BasicHealthThresholdEnum> newHealthState = new PersistentAction<LivingEntity.BasicHealthThresholdEnum>(NewHealthState);
-            bb.livingEntity.healthThresholds.SetAllDelegates(newHealthState);
+            PersistentAction<Enum> newHealthState = new PersistentAction<Enum>(NewHealthState);
+            bb.livingEntity.SetAllThresholdCallbacks(newHealthState);
+            
+            if (bb.livingEntity.healthThresholds.GetNearestLastThreshold(0, out var initialState))
+                mutateCtx.currentHealthState = initialState;
+
         }
 
         public void MutateUsingNewSetValues()
         {
+            Debug.Log("A 1");
             if (mutateCtx.invulnerable) return;
-            if (mutateCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
-            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
-            if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dead) return;
-
+            Debug.Log("A 2");
+            string stateName = mutateCtx.currentHealthState.ToString();
+            if (stateName == "Dying") return;
+            Debug.Log("A 3");
+            string attackerStateName = SetContext.AttackCtx.attackerEntityCtx.currentHealthState.ToString();
+            Debug.Log("attackerStateName: " + attackerStateName + "");
+            Debug.Log("A : attacker state: " + attackerStateName + "");
+            if (attackerStateName == "Dying") return;
+            if (attackerStateName == "Dead") return;
+            Debug.Log("A 4");
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
             Debug.Log("TakingDmg: Checking Hyper Armor");
             Debug.Log("TakingDmg: Block: " + BlockDamage);
@@ -173,7 +184,7 @@ public class SharedFMs
             bb.rb.linearVelocity = lateral + upwards;
         }
 
-        void NewHealthState(LivingEntity.BasicHealthThresholdEnum newHealthState)
+        void NewHealthState(Enum newHealthState)
         {
             Debug.Log("New Health State: " + newHealthState + "");
             mutateCtx.currentHealthState = newHealthState;

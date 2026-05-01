@@ -63,6 +63,10 @@ IEntityFacade
     
     public void ReceiveSignal(string tag, BoolInt ctx)
     {
-        if (tag == "ATTACKANIM") Actions.AttackColliderSetActive.Publish(ctx);
+        if (tag == "ATTACKANIM")
+        {
+
+            Actions.AttackColliderSetActive.Publish(ctx);
+        }
     }
 }

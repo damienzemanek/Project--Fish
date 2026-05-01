@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using EMILtools.Core;
 using EMILtools.Systems;
@@ -60,5 +61,5 @@ public class PlayerContextData : ContextData, IPlayerContextView
     [field:ShowInInspector] public bool FallingWithoutJumpingFirst => fallingWithoutJumpingFirst;
     [field:ShowInInspector] public float hp { get; set; }
     [field:ShowInInspector] public bool invulnerable { get; set; }
-    [field:ShowInInspector] public LivingEntity.BasicHealthThresholdEnum currentHealthState { get; set; }
+    [field:ShowInInspector] public Enum currentHealthState { get; set; }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using EMILtools.Core;
 using Sirenix.OdinInspector;
@@ -25,7 +25,6 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
     {
         public TEnum label;
         public float threshold;
-        [NonSerialized] public TDelegator cb;
     }
     
     [SerializeField] Entry[] entries;
@@ -43,30 +42,6 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         index = 0; 
     }
     
-    public override void SetAllDelegates(IDelegator cb)
-    {
-        if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
-        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
-
-        for (int i = 0; i < entries.Length; i++)
-        {
-            ref var entry = ref entries[i];
-            entry.cb = typedCb;
-        }
-    }
-
-    public override void AddOrReplaceDelegate(Enum label, IDelegator cb)
-    {
-        if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
-        if (!(label is TEnum typedLabel)) throw new ArgumentException($"Label must be of type {typeof(TEnum)}", nameof(label));
-        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
-
-        int indx = Array.FindIndex(entries, entry => EqualityComparer<TEnum>.Default.Equals(entry.label, typedLabel));
-        if (indx == -1) throw new ArgumentException("Threshold does not contain label", nameof(label));
-        ref var entry = ref entries[indx];
-        entry.cb = typedCb;
-    }
-
     public override float GetHighestThreshold()
     {
         float highest = -1;
@@ -92,12 +67,11 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         return label;
     }
     
-    public override bool GetNearestLastThreshold(float value, out Enum label, out IDelegator returnCallback)
+    public override bool GetNearestLastThreshold(float value, out Enum label)
     {
         if (entries == null || entries.Length == 0)
         {
             label = default;
-            returnCallback = default;
             return false;
         }
 
@@ -121,21 +95,18 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         if (nearest == -1)
         {
             label = default;
-            returnCallback = default;
             return false;
         }
 
         label = entries[nearest].label;
-        returnCallback = entries[nearest].cb;
         return true;
     }
     
-    public override bool WasThresholdReached(ref int index, float value, out Enum label, out IDelegator returnCallback)
+    public override bool WasThresholdReached(ref int index, float value, out Enum label)
     {
         if (entries == null || index < 0 || index >= entries.Length)
         {
             label = default;
-            returnCallback = default;
             return false;
         }
 
@@ -144,14 +115,12 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         if (value <= entry.threshold)
         {
             label = entry.label;
-            returnCallback = entry.cb;
 
             index++; 
             return true;
         }
 
         label = default;
-        returnCallback = default;
         return false;
     }
     
@@ -190,4 +159,25 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         Debug.Log(log);
     }
 
+    public override void SetAllDelegates(IDelegator cb)
+    {
+        if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
+        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
+
+        // Note: This SO-based method is deprecated in favor of LivingEntity instance-based callbacks
+        // but kept for interface compatibility if needed for other purposes.
+        Debug.LogWarning("SetAllDelegates on Threshold SO is deprecated. Use LivingEntity.SetAllThresholdCallbacks instead.");
+    }
+
+    public override void AddOrReplaceDelegate(Enum label, IDelegator cb)
+    {
+        if (entries == null) throw new InvalidOperationException("Threshold entries are not initialized.");
+        if (!(label is TEnum typedLabel)) throw new ArgumentException($"Label must be of type {typeof(TEnum)}", nameof(label));
+        if (!(cb is TDelegator typedCb)) throw new ArgumentException($"Callback must be of type {typeof(TDelegator)}", nameof(cb));
+
+        int indx = Array.FindIndex(entries, entry => EqualityComparer<TEnum>.Default.Equals(entry.label, typedLabel));
+        if (indx == -1) throw new ArgumentException("Threshold does not contain label", nameof(label));
+
+        Debug.LogWarning("AddOrReplaceDelegate on Threshold SO is deprecated. Use LivingEntity.AddOrReplaceThresholdCallback instead.");
+    }
 }

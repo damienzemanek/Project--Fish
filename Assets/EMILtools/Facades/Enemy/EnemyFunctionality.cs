@@ -53,8 +53,8 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<Idle, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget), "Can See Target");
         fsm.AddTransition<Follow, Idle>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget), "Can't See Target");
         
-        fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState == BasicHealthThresholdEnum.Dying && !ctx.isBeingFinished), "Dying");
-        fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState != BasicHealthThresholdEnum.Dying), "Not Dying");
+        fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState.ToString() == "Dying" && !ctx.isBeingFinished), "Dying");
+        fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState.ToString() != "Dying"), "Not Dying");
         
         fsm.AddAnyTransition<Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isStunned), "Stunned");
         fsm.AddTransition<Stunnable, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isStunned), "Not Stunned");
@@ -357,6 +357,7 @@ public class EnemyFunctionality : Functionalities<
         }
 
         public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+                .Add_ShortCircuit(new FuncPredicate(() => !cfg.jump.canJump))
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(DyingState)))
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.travelAngleTooCloseToVertical))

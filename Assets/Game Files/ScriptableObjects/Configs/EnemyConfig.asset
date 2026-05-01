@@ -46,6 +46,7 @@ MonoBehaviour:
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 4
   <jump>k__BackingField:
+    <canJump>k__BackingField: 1
     <jumpForceScalar>k__BackingField: 20
     <jumpDelay>k__BackingField:
       val: 1

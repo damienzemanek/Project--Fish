@@ -32,6 +32,142 @@ Transform:
   - {fileID: 7915199247364233372}
   m_Father: {fileID: 791449104593340530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &632939336982102126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4111027256039399237}
+  - component: {fileID: 6313991254947464442}
+  - component: {fileID: 4153204406902620769}
+  m_Layer: 0
+  m_Name: Body ATK COL
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4111027256039399237
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632939336982102126}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4334527173879042126}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6313991254947464442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632939336982102126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3730d2aa4704b4a808581d73cbfc66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackingBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 1
+  SelectedReceiver: 0
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 0}
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 0
+  <stay>k__BackingField: 1
+  exitOnDisableEvenIfExitFalse: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  enterContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 1
+      location: 0
+      type: 0
+  stayContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 1
+      location: 0
+      type: 0
+  exitContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+  disableContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+--- !u!60 &4153204406902620769
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632939336982102126}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 4.1029286, y: 3.2208521}
+      - {x: -3.0589824, y: 5.0894923}
+      - {x: -4.8789215, y: -1.599489}
+      - {x: -2.3106146, y: -4.7990193}
+      - {x: 7.011057, y: -4.8285103}
+      - {x: 6.1455894, y: 0.045525253}
+  m_UseDelaunayMesh: 1
 --- !u!1 &1484577726736139770
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 1728675015261729738}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.058767, y: -4.48, z: 0}
+  m_LocalPosition: {x: -0.058767, y: -4.98, z: 0}
   m_LocalScale: {x: 21.947187, y: 5.175, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -357,6 +493,88 @@ Transform:
   - {fileID: 791449104593340530}
   m_Father: {fileID: 8469316555546526976}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -33.858}
+--- !u!1 &2411963028363618226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6554723174653829647}
+  - component: {fileID: 6039207377666502240}
+  m_Layer: 0
+  m_Name: Front ATK COL
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6554723174653829647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2411963028363618226}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -9.93, y: -0.38, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4334527173879042126}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6039207377666502240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2411963028363618226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3730d2aa4704b4a808581d73cbfc66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackingBoundsChecker
+  is2D: 1
+  ThingCollidedWith: 1
+  SelectedReceiver: 0
+  selectedReceiver3D:
+    underlyingValue: {fileID: 0}
+  selectedReceiver2D:
+    underlyingValue: {fileID: 0}
+  <enter>k__BackingField: 1
+  <exit>k__BackingField: 0
+  <stay>k__BackingField: 1
+  exitOnDisableEvenIfExitFalse: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  enterContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 1
+      location: 0
+      type: 0
+  stayContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 1
+      location: 0
+      type: 0
+  exitContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
+  disableContext:
+    attackingColliderTag: 
+    damageInfo:
+      dmg: 0
+      location: 0
+      type: 0
 --- !u!1 &2554383988079309397
 GameObject:
   m_ObjectHideFlags: 0
@@ -1518,6 +1736,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4110269551671163856}
+  - {fileID: 4334527173879042126}
   m_Father: {fileID: 7160758065921376282}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6126362665083306014
@@ -1814,7 +2033,8 @@ MonoBehaviour:
       <animator>k__BackingField: {fileID: 868802278053652880}
       <seeker>k__BackingField: {fileID: 3890270601030045139}
       <rb>k__BackingField: {fileID: 8060168033781819398}
-      <attackingBoundsCheckers>k__BackingField: []
+      <attackingBoundsCheckers>k__BackingField:
+      - {fileID: 6313991254947464442}
       <damageFlasher>k__BackingField: {fileID: 5012567931874402125}
       <target>k__BackingField: {fileID: 0}
       <computePath>k__BackingField:
@@ -1838,6 +2058,9 @@ MonoBehaviour:
       <finishTimer>k__BackingField:
         canRun: 0
         oneShot: 0
+      <hyperArmorStunRemoveTimer>k__BackingField:
+        canRun: 0
+        oneShot: 0
       <faceDirTransform>k__BackingField: {fileID: 7828342540197880619}
       <finisherEvent>k__BackingField: {fileID: 5470849394168698114}
       <livingEntity>k__BackingField: {fileID: 204905493169042215}
@@ -1856,6 +2079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::LivingEntity
   isDead: 0
   deathStatus: 0
+  healthThresholdsIndex: 0
   healthThresholds: {fileID: 11400000, guid: 5604437873eaeb845af0440160afe62b, type: 2}
   destroyOnDeath: 0
   destroyOnDeathTime: 2
@@ -1971,8 +2195,302 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3795515dffc42044b80f3973816f984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageFlasher
-  flashData: []
-  sprites: []
+  flashData:
+  - flashType: 0
+    flashTime: 0.2
+    flashColor: {r: 1, g: 0.9575472, b: 0.9575472, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.18446165
+        value: 0.51610696
+        inSlope: -1.4634601
+        outSlope: -1.4634601
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 1
+    flashTime: 0.2
+    flashColor: {r: 0.16521744, g: 0.7924528, b: 0.063545756, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 2
+    flashTime: 0.2
+    flashColor: {r: 0.5377358, g: 0.4672281, b: 0.012682447, a: 1}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.2911736
+        value: 0.39898327
+        inSlope: -1.4963963
+        outSlope: -1.4963963
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  - flashType: 3
+    flashTime: 0.6
+    flashColor: {r: 1, g: 1, b: 1, a: 0}
+    flashCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    alphaCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: -11.118971
+        outSlope: -11.118971
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.08993638
+        value: 0
+        inSlope: 0.0039750426
+        outSlope: 0.0039750426
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.37160966
+      - serializedVersion: 3
+        time: 0.16710877
+        value: 1
+        inSlope: -0.012462797
+        outSlope: -0.012462797
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.3410409
+        value: 0
+        inSlope: 1.0099074
+        outSlope: 1.0099074
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.39166358
+        value: 1
+        inSlope: -0.012317583
+        outSlope: -0.012317583
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.63036364
+        value: 0
+        inSlope: 0.34162772
+        outSlope: 0.34162772
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.68029785
+        value: 1
+        inSlope: -0.005991266
+        outSlope: -0.005991266
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 1
+      - serializedVersion: 3
+        time: 0.8439015
+        value: 0
+        inSlope: -0.3242937
+        outSlope: -0.3242937
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 6.406212
+        outSlope: 6.406212
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  sprites:
+  - {fileID: 8412331023491448254}
+  - {fileID: 3293403611168885415}
+  - {fileID: 4236799623365857961}
+  - {fileID: 4800236630009969321}
+  - {fileID: 3244947992988553269}
+  - {fileID: 6406010733869788336}
+  - {fileID: 6361049331945576140}
+  - {fileID: 5660866876387429775}
+  - {fileID: 729175225745172205}
 --- !u!1 &6865365338603233841
 GameObject:
   m_ObjectHideFlags: 0
@@ -2117,6 +2635,39 @@ MonoBehaviour:
     canSeeTarget: 0
   disableContext:
     canSeeTarget: 0
+--- !u!1 &7242398497481636316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4334527173879042126}
+  m_Layer: 0
+  m_Name: Attack Colliders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4334527173879042126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7242398497481636316}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6554723174653829647}
+  - {fileID: 4111027256039399237}
+  m_Father: {fileID: 7828342540197880619}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8290131585891001795
 GameObject:
   m_ObjectHideFlags: 0

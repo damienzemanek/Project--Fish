@@ -70,7 +70,6 @@ public class PlayerController : MonoFacade<
         }
         Debug.Log($"Player took damage: {ctx.damageInfo.dmg}");
         Actions.TakeDamage.Publish(ctx);
-        
     }
 
     public void OnStayBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)

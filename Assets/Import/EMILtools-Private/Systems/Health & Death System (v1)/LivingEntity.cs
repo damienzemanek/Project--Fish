@@ -19,7 +19,7 @@ public interface ILivingEntityControlled
 
 public class LivingEntity : Entity,
     IDamageable,
-    IHealable<BasicHealthThresholdEnum>,
+    IHealable<Enum>,
     ILivingEntityControlled
 {
     public enum BasicHealthThresholdEnum { Alive, Dying, Dead }
@@ -40,6 +40,11 @@ public class LivingEntity : Entity,
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public int healthThresholdsIndex;
     
     [FoldoutGroup("Settings")] public ThresholdCore healthThresholds;
+    IDelegator allThresholdCb;
+    Dictionary<Enum, IDelegator> thresholdCbs = new();
+
+    public void SetAllThresholdCallbacks(IDelegator cb) => allThresholdCb = cb;
+    public void AddOrReplaceThresholdCallback(Enum label, IDelegator cb) => thresholdCbs[label] = cb;
     
     [FoldoutGroup("Death")] public bool destroyOnDeath = false;
     [FoldoutGroup("Death")] [ShowIf("destroyOnDeath")] public float destroyOnDeathTime = 2f;
@@ -83,27 +88,41 @@ public class LivingEntity : Entity,
         healthThresholds.LogThresholds(ref healthThresholdsIndex, newhp);
 
         // Use while loop to ensure multiple thresholds are caught if passed at once
-        while (healthThresholds.WasThresholdReached(ref healthThresholdsIndex, newhp, out var healthState, out var cb))
+        while (healthThresholds.WasThresholdReached(ref healthThresholdsIndex, newhp, out var healthState))
         {
             Debug.Log($"[DMG] Threshold Triggered: {healthState} at {newhp} HP");
-            if (cb is IInvokeWithEnum invokable)
-                invokable.Invoke(healthState);
-            else
-                Debug.LogWarning($"[DMG] Callback does not support IInvokeWithEnum for threshold {healthState}");
+
+            if (thresholdCbs.TryGetValue(healthState, out var cb))
+            {
+                InvokeCb(cb, healthState);
+            }
+            
+            if (allThresholdCb != null)
+            {
+                InvokeCb(allThresholdCb, healthState);
+            }
         }
     
         Debug.Log("[DMG] Finished Taking Damage, final hp is " + health.Value + "");
         return newhp;
     }
+
+    void InvokeCb(IDelegator cb, Enum healthState)
+    {
+        if (cb is IInvokeWithEnum invokable)
+            invokable.Invoke(healthState);
+        else
+            Debug.LogWarning($"[DMG] Callback does not support IInvokeWithEnum for threshold {healthState}");
+    }
     
-    public float Heal(float amount, out BasicHealthThresholdEnum newState)
+    public float Heal(float amount, out Enum newState)
     {
         var newhp = health.Value += amount;
         var clamped = Mathf.Clamp(newhp, ZeroF, maxHealth);
         // Rewind threshold progression to match healed HP
         healthThresholds.SyncIndexToValue(ref healthThresholdsIndex, clamped);
-        if (healthThresholds.GetNearestLastThreshold(clamped, out var label, out _) && label is BasicHealthThresholdEnum basicLabel)
-            newState = basicLabel;
+        if (healthThresholds.GetNearestLastThreshold(clamped, out var label))
+            newState = label;
         else
             newState = BasicHealthThresholdEnum.Alive;
         return newhp;
