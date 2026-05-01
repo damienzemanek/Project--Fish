@@ -24,6 +24,8 @@ public class EnemyBlackboard : Blackboard, IEntityBlackboard
     [field: SerializeField] [field: Required] public CountdownTimer dyingStateTimer { get; set; }
     [field: SerializeField] [field: Required] public CountdownTimer stunnedTimer { get; set; }
     [field: SerializeField] [field: Required] public CountdownTimer finishTimer { get; set; }
+    [field: SerializeField] [field: Required] public CountdownTimer hyperArmorStunRemoveTimer { get; set; }
+
     [field: SerializeField] [field: Required] public Transform faceDirTransform { get; private set; }
     [field: SerializeField] [field: Required] public FinisherEvent finisherEvent { get; private set; }
     [field: SerializeField] [field: Required] public LivingEntity livingEntity { get; private set; }

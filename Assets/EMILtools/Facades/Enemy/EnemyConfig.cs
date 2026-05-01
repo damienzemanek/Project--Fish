@@ -36,6 +36,8 @@ public class EnemyConfig : Config, IEntityConfig
     public struct HyperArmor
     {
         [field: SerializeField] public bool useHyperArmor { get; private set; }
+        [field: SerializeField] [field: ShowIf("useHyperArmor")] public bool stunRemovesHyperArmorForTime { get; private set; }
+        [field: SerializeField] [field: ShowIf("useHyperArmor")] public float stunHyperArmorRemoveTime { get; private set; }
     }
     
     [Serializable]

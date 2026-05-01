@@ -66,3 +66,8 @@ MonoBehaviour:
       val: 3
   <hyperArmor>k__BackingField:
     <useHyperArmor>k__BackingField: 1
+    <stunRemovesHyperArmorForTime>k__BackingField: 1
+    <stunHyperArmorRemoveTime>k__BackingField: 6
+  <decisionMaking>k__BackingField:
+    UseDefiniteAttackWhenInRange: 0
+    attackDist: 0

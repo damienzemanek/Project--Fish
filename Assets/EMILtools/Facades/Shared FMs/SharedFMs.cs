@@ -112,9 +112,13 @@ public class SharedFMs
 
         PersistentAction postCb;
         FuncPredicate BlockDamage;
-        
-        public TakeDmg(IPublisher publisher, TFacade facade, PersistentAction postCb, FuncPredicate blockDamage = null) : base(publisher, facade)
-            => this.postCb = postCb;
+
+        public TakeDmg(IPublisher publisher, TFacade facade, PersistentAction postCb, FuncPredicate blockDamage = null)
+            : base(publisher, facade)
+        {
+            BlockDamage = blockDamage;
+            this.postCb = postCb;
+        }
 
         protected override void Awake()
         {
@@ -133,15 +137,17 @@ public class SharedFMs
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dying) return;
             if (SetContext.AttackCtx.attackerEntityCtx.currentHealthState == LivingEntity.BasicHealthThresholdEnum.Dead) return;
 
-            Debug.Log("TakingDmg: Passed All Guards");
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
             Debug.Log("TakingDmg: Checking Hyper Armor");
-            // if(BlockDamage != null && BlockDamage.Evaluate())
-            // {
-            //     Debug.Log("TakingDmg: Hyper Armor is active");
-            //
-            //     return;
-            // }
+            Debug.Log("TakingDmg: Block: " + BlockDamage);
+            Debug.Log("TakingDmg: Block Damage Eval: " + BlockDamage.Evaluate());
+
+            if(BlockDamage != null && BlockDamage.Evaluate())
+            {
+                Debug.Log("TakingDmg: Hyper Armor is active");
+            
+                return;
+            }
             Debug.Log("TakingDmg: Is not using hyper armor");
 
             bb.invulnerableTimer.StartAndReset();

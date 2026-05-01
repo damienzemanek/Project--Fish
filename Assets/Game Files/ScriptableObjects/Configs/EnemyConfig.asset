@@ -57,7 +57,7 @@ MonoBehaviour:
     <outOfDeathStateHealAmount>k__BackingField: 2
   <hitStop>k__BackingField:
     <scalar>k__BackingField: 0
-    <period>k__BackingField: 0.2
+    <period>k__BackingField: 0
   <takeDmg>k__BackingField:
     <invulnerablePeriod>k__BackingField: 0.2
     <pushForceX>k__BackingField: 3
@@ -69,7 +69,9 @@ MonoBehaviour:
     <finishTime>k__BackingField:
       val: 3
   <hyperArmor>k__BackingField:
-    <useHyperArmor>k__BackingField: 0
+    <useHyperArmor>k__BackingField: 1
+    <stunRemovesHyperArmorForTime>k__BackingField: 1
+    <stunHyperArmorRemoveTime>k__BackingField: 2
   <decisionMaking>k__BackingField:
     UseDefiniteAttackWhenInRange: 0
     attackDist: 0

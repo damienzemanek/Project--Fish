@@ -16,6 +16,9 @@ public class EnemyFunctionality : Functionalities<
     
     protected override IState AddModulesHere(EnemyController f)
     {
+        EnemyConfig cfg = facade.API_Config<EnemyConfig>();
+        EnemyBlackboard bb = facade.API_Blackboard<EnemyBlackboard>();
+        EnemyContextData mutateCtx = facade.API_Context<EnemyContextData>();
 
         // Add Modules like this
         // AddModule(new ExampleModule(...));
@@ -32,7 +35,7 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
         AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, 
-            new FuncPredicate(() => facade.API_Config<EnemyConfig>().hyperArmor.useHyperArmor && facade.API_Context<EnemyContextData>().hyperArmorActive)));
+            new FuncPredicate(() => cfg.hyperArmor.useHyperArmor && mutateCtx.hyperArmorActive)));
         AddModule(new FaceDir(f));
         AddModule(new Follow(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -112,12 +115,23 @@ public class EnemyFunctionality : Functionalities<
         {
             [ShowInInspector] public bool hyperArmorActive => Get;
         }
+
+        protected override void Awake()
+        {
+            bb.hyperArmorStunRemoveTimer = new CountdownTimer(cfg.hyperArmor.stunHyperArmorRemoveTime);
+            bb.hyperArmorStunRemoveTimer.OnTimerStop.Add(() => mutateCtx.hyperArmorActive = true);
+            facade.InitTimer(bb.hyperArmorStunRemoveTimer, true);
+        }
+
         public HyperArmor(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public void MutateUsingNewSetValues()
         {
             if (cfg.hyperArmor.useHyperArmor)
+            {
+                if(cfg.hyperArmor.stunRemovesHyperArmorForTime) bb.hyperArmorStunRemoveTimer.StartAndReset();
                 mutateCtx.hyperArmorActive = SetContext.hyperArmorActive;
+            }
             else
                 mutateCtx.hyperArmorActive = false;
         }
@@ -218,6 +232,7 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.isStunned = true;
             bb.rb.linearVelocity = new Vector2(0, bb.rb.linearVelocity.y);
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
+            facade.Actions.ToggleHyperArmor.Publish(false);
         }
         public void MutateUsingNewSetValues() => mutateCtx.isStunned = SetContext.isStunned;
 
