@@ -70,7 +70,7 @@ MonoBehaviour:
     <finishTime>k__BackingField:
       val: 3
   <hyperArmor>k__BackingField:
-    <useHyperArmor>k__BackingField: 1
+    <useHyperArmor>k__BackingField: 0
     <stunRemovesHyperArmorForTime>k__BackingField: 1
     <stunHyperArmorRemoveTime>k__BackingField: 2
   <decisionMaking>k__BackingField:
