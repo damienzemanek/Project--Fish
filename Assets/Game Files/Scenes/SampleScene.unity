@@ -1590,7 +1590,7 @@ PrefabInstance:
     - target: {fileID: 182527405575838724, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: healthThresholds
       value: 
-      objectReference: {fileID: 11400000, guid: ccc3d75a0f9cbcd41ac5d4d4213e8bb4, type: 2}
+      objectReference: {fileID: 11400000, guid: 440eaaca665c1df42a0b2a1de94c18d2, type: 2}
     - target: {fileID: 2692052011199496874, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: SelectedReceiver
       value: 1

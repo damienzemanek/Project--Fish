@@ -47,7 +47,7 @@ IEntityFacade
     // Receive Attack DI
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
     {
-        Debug.Log("Taking Damge");
+        Debug.Log("DMG : to " + gameObject.name);
         Actions.TakeDamage.Publish(ctx);
     }
     

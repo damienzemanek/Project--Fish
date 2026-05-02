@@ -10,12 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4bc3919051c98ef40a94f7e5bd2dbdb3, type: 3}
-  m_Name: BasicHealthThresholds
+  m_Name: PlayerHealthTreshold
   m_EditorClassIdentifier: EMILtools::BasicHealthThresholds
   entries:
   - label: 0
-    threshold: 6
-  - label: 1
-    threshold: 1
+    threshold: 20
   - label: 2
     threshold: 0
