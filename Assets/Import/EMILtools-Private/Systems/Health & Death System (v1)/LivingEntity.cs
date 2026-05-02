@@ -34,10 +34,11 @@ public class LivingEntity : Entity,
     float maxHealth;
 
 
-    [FoldoutGroup("ReadOnly")] [ShowInInspector] ReactiveIntercept<float> health;
+    [FoldoutGroup("ReadOnly")] [ShowInInspector] public ReactiveIntercept<float> health;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public bool isDead = false;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public DeathType deathStatus;
     [FoldoutGroup("ReadOnly")] [ShowInInspector, ReadOnly] public int healthThresholdsIndex;
+
     
     [FoldoutGroup("Settings")] public ThresholdCore healthThresholds;
     IDelegator allThresholdCb;
@@ -56,7 +57,6 @@ public class LivingEntity : Entity,
     [FoldoutGroup("Animation")] [Required] public Animator animator;
     [FoldoutGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     [FoldoutGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
-
     public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
     public PersistentAction<DeathType> OnDeath { get; set; } = new();
     [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
@@ -65,18 +65,20 @@ public class LivingEntity : Entity,
     
     void Awake()
     {
-        healthThresholds.Reset(ref healthThresholdsIndex);
+        deathFloorCollider.enabled = false;
+        TakeDamageCaller = new PersistentFunc<DamageInfo, float>(TakeDamage);
+    }
+
+    public void SetupHealth()
+    {
+        healthThresholds.Sort();
         maxHealth = healthThresholds.GetHighestThreshold();
 
         health = new ReactiveIntercept<float>(maxHealth);
         health.Intercepts.Add(value => value < ZeroF ? ZeroF : value);
         health.Reactions.Add(CheckDie);
-
-        healthThresholds.SyncIndexToValue(ref healthThresholdsIndex, health.Value);
-
-        deathFloorCollider.enabled = false;
-        TakeDamageCaller = new PersistentFunc<DamageInfo, float>(TakeDamage);
     }
+        
     
     public float TakeDamage(DamageInfo info)
     {
@@ -118,14 +120,14 @@ public class LivingEntity : Entity,
     public float Heal(float amount, out Enum newState)
     {
         var newhp = health.Value += amount;
-        var clamped = Mathf.Clamp(newhp, ZeroF, maxHealth);
-        // Rewind threshold progression to match healed HP
-        healthThresholds.SyncIndexToValue(ref healthThresholdsIndex, clamped);
-        if (healthThresholds.GetNearestLastThreshold(clamped, out var label))
-            newState = label;
-        else
-            newState = BasicHealthThresholdEnum.Alive;
-        return newhp;
+        health.Value = Mathf.Clamp(newhp, ZeroF, maxHealth);
+        
+        // Resync threshold index and state
+        healthThresholdsIndex = healthThresholds.ResyncThresholdIndex(health.Value, out newState);
+        
+        Debug.Log($"[HEAL] {gameObject.name} Healed {amount}, HP: {health.Value}, State: {newState}, Next Index: {healthThresholdsIndex}");
+        
+        return health.Value;
     }
     
     

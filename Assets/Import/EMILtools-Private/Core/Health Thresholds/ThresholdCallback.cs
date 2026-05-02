@@ -30,16 +30,12 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
     [SerializeField] Entry[] entries;
     
     [Button]
-    public override void Reset(ref int index)
+    public override void Sort()
     {
         if (entries == null || entries.Length == 0)
-        {
-            index = -1;
             return;
-        }
 
         Array.Sort(entries, (a, b) => b.threshold.CompareTo(a.threshold)); 
-        index = 0; 
     }
     
     public override float GetHighestThreshold()
@@ -47,11 +43,15 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         float highest = -1;
         foreach (var entry in entries)
         {
+            Debug.Log("PPS - state: " + entry.label + " threshold: " + entry.threshold);
             if (entry.threshold > highest) highest = entry.threshold;
         }
+        Debug.Log("PPS - highest threshold: " + highest);
         return highest;
     }
     
+    public override Enum GetHighestThresholdState() => GetHighestThresholdLabel();
+
     public TEnum GetHighestThresholdLabel()
     {
         float highest = float.MinValue;
@@ -123,23 +123,60 @@ public abstract class Threshold<TEnum, TDelegator> : ThresholdCore,
         label = default;
         return false;
     }
-    
-    public override void SyncIndexToValue(ref int index, float value)
+
+    public override int ResyncThresholdIndex(float value, out Enum state)
     {
         if (entries == null || entries.Length == 0)
         {
-            index = -1;
-            return;
+            state = default;
+            return 0;
         }
 
-        Array.Sort(entries, (a, b) => b.threshold.CompareTo(a.threshold));
+        // Entries are expected to be sorted descending (highest HP first)
+        // index 0: Alive (100)
+        // index 1: Phase2 (50)
+        // index 2: Dying (10)
+        // index 3: Dead (0)
+        
+        // If we are at 60 HP, the NEXT threshold to reach is index 1 (Phase2 at 50)
+        // So we should return index 1.
+        // The current state is index 0 (Alive).
 
-        int next = 0;
-        while (next < entries.Length && value <= entries[next].threshold)
-            next++;
+        int nextIndex = 0;
+        for (int i = 0; i < entries.Length; i++)
+        {
+            if (value <= entries[i].threshold)
+            {
+                // We have passed this threshold (or we are exactly at it)
+                // The NEXT threshold will be the one after this.
+                nextIndex = i + 1;
+            }
+            else
+            {
+                // We haven't reached this threshold yet.
+                // So this is the NEXT threshold.
+                nextIndex = i;
+                break;
+            }
+        }
 
-        index = next; 
+        // Clamp nextIndex to entries.Length
+        if (nextIndex > entries.Length) nextIndex = entries.Length;
+        
+        // State is the last reached threshold.
+        if (nextIndex == 0)
+        {
+            // Haven't even reached the first one? (Shouldn't happen if first is max health)
+            state = entries[0].label;
+        }
+        else
+        {
+            state = entries[nextIndex - 1].label;
+        }
+        
+        return nextIndex;
     }
+    
     
     public override void LogThresholds(ref int index, float currentValue)
     {

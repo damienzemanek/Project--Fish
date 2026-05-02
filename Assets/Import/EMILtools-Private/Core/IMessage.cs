@@ -15,11 +15,10 @@ public interface ISignalReceiverC<T> : ISignalReceiver { }
 /// <summary>
 /// Tagged Signal
 /// </summary>
-public interface ISignalReceiverT : ISignalReceiver
+public interface ISignalReceiverT<T> : ISignalReceiver
 {
-    string tag { get; }
-    void Send(string senderTag) => ReceiveSignal(senderTag);
-    void ReceiveSignal(string senderTag);
+    void Send(T t) => ReceiveSignal(t);
+    void ReceiveSignal(T t);
 }
 
 

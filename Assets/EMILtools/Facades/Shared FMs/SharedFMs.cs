@@ -13,8 +13,6 @@ public interface IEntityFacade : IFacade, ITimerUser { }
 public interface IEntityCtx : IContextViewImmutable
 {
     public enum FaceDirection { Left, Right }
-    
-    public float hp { get; set; }
     public bool invulnerable { get; set; }
     public Enum currentHealthState { get; set; }
     public FaceDirection facingDirection { get; set; }
@@ -127,46 +125,39 @@ public class SharedFMs
             bb.invulnerableTimer.OnTimerStop.Add(InvulnerablitityEnd);
             
             PersistentAction<Enum> newHealthState = new PersistentAction<Enum>(NewHealthState);
+            bb.livingEntity.SetupHealth();
             bb.livingEntity.SetAllThresholdCallbacks(newHealthState);
+            bb.livingEntity.healthThresholds.GetNearestLastThreshold(bb.livingEntity.health, out var hpState);
+            Debug.Log("PPS HP Index State: " + hpState + " w/ hp of " + bb.livingEntity.health.Value + "");
             
-            if (bb.livingEntity.healthThresholds.GetNearestLastThreshold(0, out var initialState))
-                mutateCtx.currentHealthState = initialState;
-
+            mutateCtx.currentHealthState = hpState;
+            
         }
 
         public void MutateUsingNewSetValues()
         {
-            Debug.Log("A 1");
             if (mutateCtx.invulnerable) return;
-            Debug.Log("A 2");
             string stateName = mutateCtx.currentHealthState.ToString();
             if (stateName == "Dying") return;
-            Debug.Log("A 3");
             string attackerStateName = SetContext.AttackCtx.attackerEntityCtx.currentHealthState.ToString();
-            Debug.Log("attackerStateName: " + attackerStateName + "");
-            Debug.Log("A : attacker state: " + attackerStateName + "");
             if (attackerStateName == "Dying") return;
             if (attackerStateName == "Dead") return;
-            Debug.Log("A 4");
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
-            Debug.Log("TakingDmg: Checking Hyper Armor");
-            Debug.Log("TakingDmg: Block: " + BlockDamage);
-            Debug.Log("TakingDmg: Block Damage Eval: " + BlockDamage.Evaluate());
 
-            if(BlockDamage != null && BlockDamage.Evaluate())
-            {
-                Debug.Log("TakingDmg: Hyper Armor is active");
-            
-                return;
-            }
+            if(BlockDamage != null && BlockDamage.Evaluate()) return;
+
             Debug.Log("TakingDmg: Is not using hyper armor");
 
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
-            mutateCtx.hp = bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
+            bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
             SlowTime();
             
-            Debug.Log("Received Damage");
+            Debug.Log("A 5: Received Damage");
+            
+            bb.livingEntity.healthThresholds.GetNearestLastThreshold(bb.livingEntity.health, out var hpState);
+            if(facade is ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum> receiver && hpState is LivingEntity.PhasedHealthThresholdEnum phasedState)
+                receiver.Send(phasedState);
         }
 
         async void SlowTime()

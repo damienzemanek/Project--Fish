@@ -35,7 +35,7 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
         AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, 
-            new FuncPredicate(() => cfg.hyperArmor.useHyperArmor && mutateCtx.hyperArmorActive)));
+            new FuncPredicate(() => cfg.hyperArmor.useHyperArmor && mutateCtx.hyperArmorUsableInState && mutateCtx.hyperArmorCurrentlyActive)));
         AddModule(new FaceDir(f));
         AddModule(new Follow(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -119,8 +119,9 @@ public class EnemyFunctionality : Functionalities<
         protected override void Awake()
         {
             bb.hyperArmorStunRemoveTimer = new CountdownTimer(cfg.hyperArmor.stunHyperArmorRemoveTime);
-            bb.hyperArmorStunRemoveTimer.OnTimerStop.Add(() => mutateCtx.hyperArmorActive = true);
+            bb.hyperArmorStunRemoveTimer.OnTimerStop.Add(() => mutateCtx.hyperArmorCurrentlyActive = true);
             facade.InitTimer(bb.hyperArmorStunRemoveTimer, true);
+            mutateCtx.hyperArmorUsableInState = false;
         }
 
         public HyperArmor(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
@@ -130,10 +131,10 @@ public class EnemyFunctionality : Functionalities<
             if (cfg.hyperArmor.useHyperArmor)
             {
                 if(cfg.hyperArmor.stunRemovesHyperArmorForTime) bb.hyperArmorStunRemoveTimer.StartAndReset();
-                mutateCtx.hyperArmorActive = SetContext.hyperArmorActive;
+                mutateCtx.hyperArmorCurrentlyActive = SetContext.hyperArmorActive;
             }
             else
-                mutateCtx.hyperArmorActive = false;
+                mutateCtx.hyperArmorCurrentlyActive = false;
         }
     }
     

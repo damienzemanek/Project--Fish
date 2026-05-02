@@ -1,3 +1,4 @@
+using System;
 using EMILtools_Private.Core;
 using UnityEngine;
 using EMILtools.Systems;
@@ -14,9 +15,12 @@ public class EnemyController : MonoFacade<
         IBoundsCheckMsgReceiver<Collider2D, AttackCtx>,
         ISignalReceiverTC<(bool, FinisherChoice)>,
         ISignalReceiverTC<BoolInt>,
+        ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum>,
         IBoundsCheckMsgReceiver<Collider2D, InRangeBoundsChecker.InRangeContext>,
 IEntityFacade
 {
+    
+    
     Transform IFacade.transform => gameObject.transform;
     public class ActionMap : IActionMap
     {
@@ -42,7 +46,10 @@ IEntityFacade
     
     // Receive Attack DI
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)
-     => Actions.TakeDamage.Publish(ctx);
+    {
+        Debug.Log("Taking Damge");
+        Actions.TakeDamage.Publish(ctx);
+    }
     
     
     // In Range DI
@@ -67,6 +74,30 @@ IEntityFacade
         {
 
             Actions.AttackColliderSetActive.Publish(ctx);
+        }
+    }
+
+    public void ReceiveSignal(LivingEntity.PhasedHealthThresholdEnum t)
+    {
+        Debug.Log("PHASE CHECK: " + t);
+        
+        switch (t)
+        {
+            case LivingEntity.PhasedHealthThresholdEnum.PhaseFour:
+                
+                break;
+            case LivingEntity.PhasedHealthThresholdEnum.PhaseThree:
+                
+                break;
+            case LivingEntity.PhasedHealthThresholdEnum.PhaseTwo: 
+                
+                API_Context<EnemyContextData>().hyperArmorUsableInState = true;
+
+                
+                break;
+            case LivingEntity.PhasedHealthThresholdEnum.PhaseOne:
+                
+                break;
         }
     }
 }
