@@ -41,23 +41,23 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Background
+  - name: Background Far
     uniqueID: 3722210055
     locked: 0
-  - name: MidgroundBack
+  - name: Background Close
     uniqueID: 1107342499
     locked: 0
   - name: Player
     uniqueID: 1012326635
     locked: 0
-  - name: MidgroundFront
+  - name: Foreground Close
     uniqueID: 1575054119
+    locked: 0
+  - name: Foreground Far
+    uniqueID: 602505091
     locked: 0
   - name: UI
     uniqueID: 926387321
-    locked: 0
-  - name: Foreground
-    uniqueID: 335176445
     locked: 0
   m_RenderingLayers:
   - Default
