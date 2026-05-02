@@ -1,13 +1,16 @@
 fileFormatVersion: 2
-guid: 75ae1b48cfd8e354f951cf775199cb38
+guid: a3c9e3602c3ef184f94b05dcea6a3734
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3125598167033166894
-    second: GrassGround1_0
+      213: 6334593158136989451
+    second: 3430E957-6D51-4B09-AF3D-EF3754043D09_0
   - first:
-      213: -4498434576849142437
-    second: GrassGround1_1
+      213: -361299350137588678
+    second: 3430E957-6D51-4B09-AF3D-EF3754043D09_1
+  - first:
+      213: -8934833920395443446
+    second: 3430E957-6D51-4B09-AF3D-EF3754043D09_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +78,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 8192
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -99,75 +102,71 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WebGL
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: WindowsStoreApps
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 1
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GrassGround1_0
+      name: 3430E957-6D51-4B09-AF3D-EF3754043D09_0
       rect:
         serializedVersion: 2
-        x: 474
-        y: 323
-        width: 14
-        height: 12
+        x: 191
+        y: 317
+        width: 150
+        height: 160
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e2cbf9809fa506b20800000000000000
-      internalID: 3125598167033166894
+      spriteID: b07006b4aeef8e750800000000000000
+      internalID: 6334593158136989451
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: GrassGround1_1
+      name: 3430E957-6D51-4B09-AF3D-EF3754043D09_1
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 512
-        height: 167
+        x: 351
+        y: 257
+        width: 134
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b5d729906995291c0800000000000000
-      internalID: -4498434576849142437
+      spriteID: a343871c7286cfaf0800000000000000
+      internalID: -361299350137588678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 3430E957-6D51-4B09-AF3D-EF3754043D09_2
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 81
+        width: 200
+        height: 215
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0308bf53e7110480800000000000000
+      internalID: -8934833920395443446
       vertices: []
       indices: 
       edges: []
@@ -176,7 +175,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ed69539c26d4cf24f80702c3e6ddf5ea
     internalID: 0
     vertices: []
     indices: 
@@ -186,8 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GrassGround1_0: 3125598167033166894
-      GrassGround1_1: -4498434576849142437
+      3430E957-6D51-4B09-AF3D-EF3754043D09_0: 6334593158136989451
+      3430E957-6D51-4B09-AF3D-EF3754043D09_1: -361299350137588678
+      3430E957-6D51-4B09-AF3D-EF3754043D09_2: -8934833920395443446
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
