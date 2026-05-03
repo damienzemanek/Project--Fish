@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "EMILtools/ScriptableObjects/Configs/Enemy")]
 public class EnemyConfig : Config, IEntityConfig
 {
-    public enum EnemyAnims { Idle, Attack, Walk, Dying }
+    public enum EnemyAnims { Idle, Attack, Walk, Dying, Stunned, Blocking }
     public enum EnemyBlendVars { }
     
     [field: SerializeField] public AnimHandle<EnemyAnims, EnemyBlendVars> animHandle { get; private set; }
@@ -28,16 +28,13 @@ public class EnemyConfig : Config, IEntityConfig
     [Serializable]
     public struct DescisionMaking
     {
-        public bool UseDefiniteAttackWhenInRange;
-        [ShowIf("UseDefiniteAttackWhenInRange")] public float attackDist;
+        [field: SerializeField] public float blockWaitTime { get; private set; }
     }
     
     [Serializable]
     public struct HyperArmor
     {
         [field: SerializeField] public bool useHyperArmor { get; private set; }
-        [field: SerializeField] [field: ShowIf("useHyperArmor")] public bool stunRemovesHyperArmorForTime { get; private set; }
-        [field: SerializeField] [field: ShowIf("useHyperArmor")] public float stunHyperArmorRemoveTime { get; private set; }
     }
     
     [Serializable]
@@ -49,6 +46,7 @@ public class EnemyConfig : Config, IEntityConfig
     [Serializable]
     public struct Stunned
     {
+        [field: SerializeField] public bool canBeStunned { get; private set; }
         [field: SerializeField] public Ref<float> stunnedPeriod { get; private set; }
     }
     

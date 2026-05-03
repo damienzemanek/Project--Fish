@@ -24,5 +24,10 @@ public class PlayerBlackboard : Blackboard, IEntityBlackboard
     [field: SerializeField] [field: Required] public DamageFlasher damageFlasher { get; private set; }
     [field: SerializeField] public CountdownTimer invulnerableTimer { get; set; }
     [field: SerializeField] public CurveValue jumpCurve { get; private set; } = new();
+    
+    
+    [field: SerializeField] [field: Required] public Transform statIndicatorsParent { get; private set; }
+    [field: SerializeField] [field: Required] public GameObject armoredStatIndicatorPrefab { get; set; }
+
 
 }

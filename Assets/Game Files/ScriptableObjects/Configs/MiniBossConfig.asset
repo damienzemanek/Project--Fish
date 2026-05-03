@@ -26,6 +26,14 @@ MonoBehaviour:
       layer: 1
       animEnum: 1
       hash: 1080829965
+    - name: Block
+      layer: 0
+      animEnum: 5
+      hash: 1121630246
+    - name: Stun
+      layer: 0
+      animEnum: 4
+      hash: 1397128752
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 1500
@@ -60,15 +68,13 @@ MonoBehaviour:
     <pushForceX>k__BackingField: 3
     <pushForceY>k__BackingField: 1
   <stunned>k__BackingField:
+    <canBeStunned>k__BackingField: 1
     <stunnedPeriod>k__BackingField:
-      val: 1
+      val: 3
   <finishable>k__BackingField:
     <finishTime>k__BackingField:
       val: 3
   <hyperArmor>k__BackingField:
     <useHyperArmor>k__BackingField: 1
-    <stunRemovesHyperArmorForTime>k__BackingField: 1
-    <stunHyperArmorRemoveTime>k__BackingField: 6
   <decisionMaking>k__BackingField:
-    UseDefiniteAttackWhenInRange: 0
-    attackDist: 0
+    <blockWaitTime>k__BackingField: 2

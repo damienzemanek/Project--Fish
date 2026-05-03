@@ -5,6 +5,7 @@ using EMILtools.Systems;
 using EMILtools.Timers;
 using Pathfinding;
 using Sirenix.OdinInspector;
+using Unity.Collections;
 using UnityEngine;
 using static AttackingBoundsChecker;
 using static LivingEntity;
@@ -26,6 +27,8 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new Blocking(facade));
+        AddModule(new DescisionMaker(facade));
         AddModule(new AttackColliderEnabler(facade.Actions.AttackColliderSetActive, f));
         AddModule(new AttackRangeDetector(facade.Actions.AttackInRange, f));
         AddModule(new HyperArmor(facade.Actions.ToggleHyperArmor, f));
@@ -35,7 +38,7 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new SharedFMs.InjectCtxIntoBoundsChecker<EnemyController>(f));
         AddModule(new DyingState(f));
         AddModule(new SharedFMs.TakeDmg<EnemyController>(facade.Actions.TakeDamage, f, null, 
-            new FuncPredicate(() => cfg.hyperArmor.useHyperArmor && mutateCtx.hyperArmorUsableInState && mutateCtx.hyperArmorCurrentlyActive)));
+            new FuncPredicate(() => cfg.hyperArmor.useHyperArmor && mutateCtx.hyperArmorUsableInState && mutateCtx.hyperArmorWindowActive)));
         AddModule(new FaceDir(f));
         AddModule(new Follow(f));
         AddModule(new ViewRange(facade.Actions.CanSeeTarget, f));
@@ -49,6 +52,9 @@ public class EnemyFunctionality : Functionalities<
     {
         // Add State Transitions here
         // fsm.AddAnyTransition<Jump>(new FuncPredicate(() => ctx.isJumping), "Jumping");
+        EnemyConfig cfg = facade.API_Config<EnemyConfig>();
+        EnemyContextData mutateCtx = facade.API_Context<EnemyContextData>();
+
         
         fsm.AddTransition<Idle, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.canSeeTarget), "Can See Target");
         fsm.AddTransition<Follow, Idle>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget), "Can't See Target");
@@ -56,11 +62,66 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddAnyTransition<DyingState>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState.ToString() == "Dying" && !ctx.isBeingFinished), "Dying");
         fsm.AddTransition<DyingState, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.currentHealthState.ToString() != "Dying"), "Not Dying");
         
-        fsm.AddAnyTransition<Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isStunned), "Stunned");
+        fsm.AddTransition<Follow, Blocking>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.decidedToBlock), "Decided To Block");
+        fsm.AddTransition<Blocking, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.decidedToBlock), "Decided To Block");
+        
+        fsm.AddTransition<Blocking, Stunnable>(new FuncCtxPredicate<IEnemyContextView>(ctx => cfg.stunned.canBeStunned && mutateCtx.stunWindowActive && ctx.isStunned), "Stunned");
         fsm.AddTransition<Stunnable, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isStunned), "Not Stunned");
         
         fsm.AddTransition<DyingState, Hooked>(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.isBeingFinished), "Being Finished");
         fsm.AddTransition<Hooked, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.isBeingFinished), "Not Being Finished");
+    }
+
+    public struct EnemyDescisions
+    {
+        public bool blockingAllowed;
+    }
+    
+    public interface IAPI_EnemyDescisionMaker : IAPI_Dependant<EnemyDescisions> { }
+    
+    class DescisionMaker : UnboundFunctionality<EnemyController, IEnemyContextView>, 
+        IAPI_EnemyDescisionMaker
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        public DescisionMaker(EnemyController facade) : base(facade) { }
+
+        protected override void Awake()
+        {
+            bb.blockWaitTimer = new CountdownTimer(cfg.decisionMaking.blockWaitTime);
+            bb.blockWaitTimer.OnTimerStop.Add(() => mutateCtx.decidedToBlock = true);
+            facade.InitTimer(bb.blockWaitTimer, true);
+        }
+
+        void IAPI_Dependant<EnemyDescisions>.DependanciesReceived(EnemyDescisions injectedContext)
+        {
+            if (injectedContext.blockingAllowed)
+                bb.blockWaitTimer.StartAndReset();
+            
+            Debug.Log("DSM : CAN NOW BLOCK");
+        }
+    }
+
+    class Blocking : UnboundFunctionality<EnemyController, IEnemyContextView>,
+        FSM_STATE_ENTER<IEnemyContextView>,
+        FSM_STATE_EXIT<IEnemyContextView>
+    {
+        public Blocking(EnemyController facade) : base(facade) { }
+
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+        
+        public void OnEnterState(IEnemyContextView ctx)
+        {
+            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Blocking);
+            mutateCtx.stunWindowActive = true;
+            mutateCtx.hyperArmorWindowActive = true;
+        }
+
+        public void OnExitState(IEnemyContextView ctx)
+        {
+            mutateCtx.stunWindowActive = false;
+            mutateCtx.hyperArmorWindowActive = false;
+            bb.blockWaitTimer.StartAndReset();
+        }
     }
 
     class AttackRangeDetector : BoundSetFunctionality<EnemyController, IEnemyContextView, AttackRangeDetector.Setter>,
@@ -84,6 +145,9 @@ public class EnemyFunctionality : Functionalities<
         public void MutateUsingNewSetValues()
         {
             if (mutateCtx.attacking == true) return;
+            if(facade.FSM.CurrentStateType == typeof(Blocking)) return;
+            if(facade.FSM.CurrentStateType == typeof(Stunnable)) return;
+
             mutateCtx.attacking = true;
             // Animation events will turn on and off the attacking bounds checker collider
             cfg.animHandle.PlayThenOnEnd(bb.animator, EnemyConfig.EnemyAnims.Attack, EndAttackDelegateCached);
@@ -91,6 +155,9 @@ public class EnemyFunctionality : Functionalities<
         void EndAttack() => mutateCtx.attacking = false;
     }
     
+    /// <summary>
+    /// Comes from the ANimation Event
+    /// </summary>
     class AttackColliderEnabler : BoundSetFunctionality<EnemyController, IEnemyContextView, AttackColliderEnabler.Setter>,
         ON_SET
     {
@@ -103,8 +170,13 @@ public class EnemyFunctionality : Functionalities<
         }
 
         public AttackColliderEnabler(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-        public void MutateUsingNewSetValues() 
-            => bb.attackingBoundsCheckers[SetContext.value.intVal].gameObject.SetActive(SetContext.value.boolVal);
+
+        public void MutateUsingNewSetValues()
+        {
+            if(facade.FSM.CurrentStateType == typeof(Blocking)) return; 
+            if(facade.FSM.CurrentStateType == typeof(Stunnable)) return;
+            bb.attackingBoundsCheckers[SetContext.value.intVal].gameObject.SetActive(SetContext.value.boolVal);
+        }
     }
     
 
@@ -116,13 +188,7 @@ public class EnemyFunctionality : Functionalities<
             [ShowInInspector] public bool hyperArmorActive => Get;
         }
 
-        protected override void Awake()
-        {
-            bb.hyperArmorStunRemoveTimer = new CountdownTimer(cfg.hyperArmor.stunHyperArmorRemoveTime);
-            bb.hyperArmorStunRemoveTimer.OnTimerStop.Add(() => mutateCtx.hyperArmorCurrentlyActive = true);
-            facade.InitTimer(bb.hyperArmorStunRemoveTimer, true);
-            mutateCtx.hyperArmorUsableInState = false;
-        }
+        protected override void Awake() => mutateCtx.hyperArmorUsableInState = false;
 
         public HyperArmor(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
@@ -130,11 +196,10 @@ public class EnemyFunctionality : Functionalities<
         {
             if (cfg.hyperArmor.useHyperArmor)
             {
-                if(cfg.hyperArmor.stunRemovesHyperArmorForTime) bb.hyperArmorStunRemoveTimer.StartAndReset();
-                mutateCtx.hyperArmorCurrentlyActive = SetContext.hyperArmorActive;
+                mutateCtx.hyperArmorWindowActive = SetContext.hyperArmorActive;
             }
             else
-                mutateCtx.hyperArmorCurrentlyActive = false;
+                mutateCtx.hyperArmorWindowActive = false;
         }
     }
     
@@ -209,7 +274,8 @@ public class EnemyFunctionality : Functionalities<
     
     class Stunnable : BoundSetFunctionality<EnemyController, IEnemyContextView, Stunnable.Setter>,
         FSM_STATE_ENTER<IEnemyContextView>,
-        ON_SET
+        FSM_STATE_EXIT<IEnemyContextView>,
+    ON_SET
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public class Setter : DataSetter<bool>
@@ -230,13 +296,27 @@ public class EnemyFunctionality : Functionalities<
         {
             Debug.Log("Entered Stun State");
             bb.stunnedTimer.StartAndReset();
+            mutateCtx.hyperArmorWindowActive = true;
+            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Stunned);
             mutateCtx.isStunned = true;
             bb.rb.linearVelocity = new Vector2(0, bb.rb.linearVelocity.y);
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
             facade.Actions.ToggleHyperArmor.Publish(false);
         }
-        public void MutateUsingNewSetValues() => mutateCtx.isStunned = SetContext.isStunned;
 
+        public void MutateUsingNewSetValues()
+        {
+            if (facade.FSM.CurrentStateType != typeof(Blocking))
+                mutateCtx.isStunned = false;
+            else 
+                mutateCtx.isStunned = SetContext.isStunned;
+        }
+
+        public void OnExitState(IEnemyContextView ctx)
+        {
+            mutateCtx.decidedToBlock = false;
+            mutateCtx.hyperArmorWindowActive = false;
+        }
     }
     
     class DyingState : UnboundFunctionality<EnemyController, IEnemyContextView>,
@@ -415,6 +495,7 @@ public class EnemyFunctionality : Functionalities<
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Hooked)))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(DyingState)))
                 .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Stunnable)))
+                .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(Blocking)))
                 .Add_Middleware(_ => bb.computePath.RateLimitedUpdateTick())
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.path == null))
                 .Add_Middleware(GrabVariables)

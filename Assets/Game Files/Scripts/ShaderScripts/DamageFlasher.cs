@@ -16,7 +16,7 @@ public class DamageFlasher : MonoBehaviour
         public AnimationCurve alphaCurve;
     }
 
-    public enum FlashType { Damage, Heal, Stun, Invunerable }
+    public enum FlashType { Damage, Heal, Stun, Invunerable, Blocked }
     
     static readonly int FlashColor = Shader.PropertyToID("_FlashColor");
     static readonly int FlashAmount = Shader.PropertyToID("_FlashAmount");

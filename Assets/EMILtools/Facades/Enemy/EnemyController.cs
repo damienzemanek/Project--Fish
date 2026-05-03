@@ -79,7 +79,7 @@ IEntityFacade
 
     public void ReceiveSignal(LivingEntity.PhasedHealthThresholdEnum t)
     {
-        Debug.Log("PHASE CHECK: " + t);
+        Debug.Log("PHASE CHANGE STATE RECEIVED: " + t);
         
         switch (t)
         {
@@ -92,7 +92,11 @@ IEntityFacade
             case LivingEntity.PhasedHealthThresholdEnum.PhaseTwo: 
                 
                 API_Context<EnemyContextData>().hyperArmorUsableInState = true;
-
+                
+                Debug.Log("PHASE CHANGE STATE COMPLETE: " + t);
+                
+                EnemyFunctionality.EnemyDescisions CanNowBlock = new EnemyFunctionality.EnemyDescisions { blockingAllowed = true };
+                GetFunctionality<EnemyFunctionality.IAPI_EnemyDescisionMaker>().InvokeAndSendDepdancies(CanNowBlock);
                 
                 break;
             case LivingEntity.PhasedHealthThresholdEnum.PhaseOne:
@@ -101,3 +105,14 @@ IEntityFacade
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,6 @@
 using System;
 using EMILtools.Core;
+using EMILtools.Extensions;
 using EMILtools.Systems;
 using EMILtools.Timers;
 using Sirenix.OdinInspector;
@@ -25,6 +26,9 @@ public interface IEntityBlackboard : IBlackboard
     public Rigidbody2D rb { get; }
     public AttackingBoundsChecker[] attackingBoundsCheckers { get; }
     public DamageFlasher damageFlasher { get; }
+    public Transform statIndicatorsParent { get; }
+    public GameObject armoredStatIndicatorPrefab { get; }
+
 }
 
 public interface IEntityConfig : IConfig
@@ -110,6 +114,7 @@ public class SharedFMs
 
         PersistentAction postCb;
         FuncPredicate BlockDamage;
+        MovingEffect armoredIndicatorMEffect;
 
         public TakeDmg(IPublisher publisher, TFacade facade, PersistentAction postCb, FuncPredicate blockDamage = null)
             : base(publisher, facade)
@@ -151,11 +156,22 @@ public class SharedFMs
             if (attackerStateName == "Dead") return;
             Debug.Log("DMG 5");
 
-            bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
             Debug.Log("DMG 6");
 
 
-            if(BlockDamage != null && BlockDamage.Evaluate()) return;
+            if (BlockDamage != null && BlockDamage.Evaluate())
+            {
+                bb.damageFlasher.Flash(DamageFlasher.FlashType.Blocked);
+                if (armoredIndicatorMEffect == null)
+                {
+                    armoredIndicatorMEffect = GameObject.Instantiate(bb.armoredStatIndicatorPrefab, bb.statIndicatorsParent).Get<MovingEffect>();
+                    armoredIndicatorMEffect.transform.localPosition = Vector3.zero;
+                }
+                armoredIndicatorMEffect.Move();
+            }
+            else
+                bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
+
 
             Debug.Log("DMG 7");
 
@@ -169,8 +185,12 @@ public class SharedFMs
             Debug.Log("DMG 8: Received Damage");
             
             bb.livingEntity.healthThresholds.GetNearestLastThreshold(bb.livingEntity.health, out var hpState);
-            if(facade is ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum> receiver && hpState is LivingEntity.PhasedHealthThresholdEnum phasedState)
+            if (facade is ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum> receiver &&
+                hpState is LivingEntity.PhasedHealthThresholdEnum phasedState)
+            {
+                Debug.Log("PHASE CHANGE STATE + " + phasedState);
                 receiver.Send(phasedState);
+            }
             
             Debug.Log("DMG 9");
 

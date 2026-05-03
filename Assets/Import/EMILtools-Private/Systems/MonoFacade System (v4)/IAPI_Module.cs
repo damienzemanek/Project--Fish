@@ -23,8 +23,8 @@ public interface IMsgReceiver<TClass> : IAPI_Module
 
 public interface IAPI_Dependant<T> : IAPI_Module
 {
-    public void SendDependencies(T dependencies) => GrabDependancies(dependencies);
-    protected void GrabDependancies(T injectedContext);
+    public void InvokeAndSendDepdancies(T dependencies) => DependanciesReceived(dependencies);
+    protected void DependanciesReceived(T injectedContext);
 }
 
 public interface IAPI_Spawn : IAPI_Module
