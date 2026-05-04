@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: EMILtools::PhasedHealthThresholds
   entries:
   - label: 2
-    threshold: 35
+    threshold: 50
   - label: 3
-    threshold: 20
+    threshold: 35
   - label: 4
-    threshold: 10
+    threshold: 20
   - label: 5
     threshold: 1
   - label: 6

@@ -1641,6 +1641,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5932286161570280673, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: structure.Blackboard.<statIndicatorsParent>k__BackingField
+      value: 
+      objectReference: {fileID: 1754502698}
+    - target: {fileID: 5932286161570280673, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      propertyPath: structure.Blackboard.<armoredStatIndicatorPrefab>k__BackingField
+      value: 
+      objectReference: {fileID: 8281074235125446207, guid: 95758a874efc2094880956b8f26f2f3b, type: 3}
     - target: {fileID: 6068482760437122135, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
       propertyPath: m_Distance
       value: 2.0703375
@@ -1691,7 +1699,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 7150858989621047036, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1754502698}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f14e20c1d8b5da41848b4722694989d, type: 3}
 --- !u!114 &1132408519 stripped
@@ -2856,6 +2867,37 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8417640711077279124, guid: 5a36d84fef309c144a76f4b85fca6496, type: 3}
   m_PrefabInstance: {fileID: 1984385313}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1754502697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1754502698}
+  m_Layer: 6
+  m_Name: Stat Indicators
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1754502698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754502697}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1132408524}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1812060048
 GameObject:
   m_ObjectHideFlags: 0
@@ -3673,7 +3715,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_Sprite: {fileID: 2961969748044527414, guid: 49a3ea7a3cf78354b8c00706a9312e05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -3835,6 +3877,14 @@ MonoBehaviour:
     data:
       boolVal: 0
       intVal: 1
+  - tag: YELL
+    data:
+      boolVal: 0
+      intVal: 0
+  - tag: FWDATTACK
+    data:
+      boolVal: 0
+      intVal: 0
 --- !u!4 &719776234600287781
 Transform:
   m_ObjectHideFlags: 0
@@ -4253,7 +4303,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_MaskInteraction: 0
   m_Sprite: {fileID: 4760595770923883072, guid: 49a3ea7a3cf78354b8c00706a9312e05, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4951,11 +5001,18 @@ MonoBehaviour:
       <blockWaitTimer>k__BackingField:
         canRun: 0
         oneShot: 0
+      <fwdAttackTimer>k__BackingField:
+        canRun: 0
+        oneShot: 0
       <armoredStatIndicatorPrefab>k__BackingField: {fileID: 8281074235125446207, guid: 95758a874efc2094880956b8f26f2f3b, type: 3}
       <faceDirTransform>k__BackingField: {fileID: 4747990382415586112}
       <finisherEvent>k__BackingField: {fileID: 7398218474970862953}
       <livingEntity>k__BackingField: {fileID: 3427349806351463244}
       <viewRange>k__BackingField: {fileID: 7625063600696138641}
+  phaseFourHit: 0
+  phaseThreeHit: 0
+  phaseTwoHit: 0
+  phaseOneHit: 0
 --- !u!1 &3812098921246549563
 GameObject:
   m_ObjectHideFlags: 0
@@ -5339,11 +5396,18 @@ MonoBehaviour:
       <blockWaitTimer>k__BackingField:
         canRun: 0
         oneShot: 0
+      <fwdAttackTimer>k__BackingField:
+        canRun: 0
+        oneShot: 0
       <armoredStatIndicatorPrefab>k__BackingField: {fileID: 8281074235125446207, guid: 95758a874efc2094880956b8f26f2f3b, type: 3}
       <faceDirTransform>k__BackingField: {fileID: 4363985193211131252}
       <finisherEvent>k__BackingField: {fileID: 2801311053078113403}
       <livingEntity>k__BackingField: {fileID: 4720809320730155057}
       <viewRange>k__BackingField: {fileID: 3410314794822017141}
+  phaseFourHit: 0
+  phaseThreeHit: 0
+  phaseTwoHit: 0
+  phaseOneHit: 0
 --- !u!4 &4363985193211131252
 Transform:
   m_ObjectHideFlags: 0
@@ -5913,7 +5977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5570227877293426373
 Transform:
   m_ObjectHideFlags: 0
@@ -7281,7 +7345,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &8314108575026378425
 MonoBehaviour:
   m_ObjectHideFlags: 0

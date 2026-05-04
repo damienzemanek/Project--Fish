@@ -24,7 +24,9 @@ public interface IEnemyContextView : IEntityCtx
     public float distToEndNode { get; }   
     public int currentWaypointIndex { get; }
     public bool hyperArmorWindowActive { get; }
+    public bool yelling { get; }
     public bool decidedToBlock { get; }
+    public bool decidedToFwdAttack { get; }
     public Enum currentHealthState { get; }
     public IEntityCtx.FaceDirection facingDirection { get; set; }
 }
@@ -36,10 +38,13 @@ public class EnemyContextData : ContextData, IEnemyContextView
     [field: ShowInInspector] public bool travelAngleTooCloseToVertical { get; set; }
     [field: ShowInInspector] public bool isStunned { get; set; }
     [field: ShowInInspector] public bool isBeingFinished { get; set; }
+    [field:ShowInInspector] public bool forwardAttackUsableInState { get; set; }
     [field:ShowInInspector] public bool hyperArmorUsableInState { get; set; }
     [field:ShowInInspector] public bool hyperArmorWindowActive { get; set; }
     [field:ShowInInspector] public bool decidedToBlock { get; set; }
+    [field:ShowInInspector] public bool decidedToFwdAttack { get; set; }
     [field:ShowInInspector] public bool attacking { get; set; }
+    [field:ShowInInspector] public bool yelling { get; set; }
     [field:ShowInInspector] public bool stunWindowActive { get; set; }
     [field: ShowInInspector] public DelayBuffer<bool> canSeeTarget { get; set; }
     [field: ShowInInspector] public bool invulnerable { get; set; }

@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 [CreateAssetMenu(fileName = "EnemyConfig", menuName = "EMILtools/ScriptableObjects/Configs/Enemy")]
 public class EnemyConfig : Config, IEntityConfig
 {
-    public enum EnemyAnims { Idle, Attack, Walk, Dying, Stunned, Blocking }
+    public enum EnemyAnims { Idle, Attack, Walk, Dying, Stunned, Blocking, Yell, ForwardAttack }
     public enum EnemyBlendVars { }
     
     [field: SerializeField] public AnimHandle<EnemyAnims, EnemyBlendVars> animHandle { get; private set; }
@@ -24,11 +24,28 @@ public class EnemyConfig : Config, IEntityConfig
     [field: SerializeField] public Finishable finishable { get; private set; }
     [field: SerializeField] public HyperArmor hyperArmor { get; private set; }
     [field: SerializeField] public DescisionMaking decisionMaking { get; private set; }
+    [field: SerializeField] public Yell yell { get; private set; }
+    [field: SerializeField] public ForwardAttack forwardAttack { get; private set; }
+    
+    [Serializable]
+    public struct ForwardAttack
+    {
+        [field: SerializeField] public bool canForwardAttack { get; private set; }
+        [field: SerializeField] public float forwardAttackForce { get; private set; }
+    }
+    
+    [Serializable]
+    public struct Yell
+    {
+        [field: SerializeField] public bool yellAfterPhaseChange { get; private set; }
+    }
 
     [Serializable]
     public struct DescisionMaking
     {
         [field: SerializeField] public float blockWaitTime { get; private set; }
+        [field: SerializeField] public float fwdAttackTime { get; private set; }
+
     }
     
     [Serializable]

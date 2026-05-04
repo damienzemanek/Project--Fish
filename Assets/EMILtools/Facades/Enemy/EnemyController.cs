@@ -24,6 +24,7 @@ IEntityFacade
     Transform IFacade.transform => gameObject.transform;
     public class ActionMap : IActionMap
     {
+        public readonly Publisher<bool> Yell = new();
         public readonly Publisher<bool> AttackInRange = new();
         public readonly Publisher<bool> ToggleHyperArmor = new();
         public readonly Publisher Idle = new();
@@ -33,6 +34,7 @@ IEntityFacade
         public readonly Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> isHookedBySomething = new();
         public readonly Publisher<bool> FinisherInputAvaliable = new();
         public readonly Publisher<BoolInt> AttackColliderSetActive = new();
+        
 
         public IContextViewImmutable ctx { get; }
     }
@@ -71,11 +73,20 @@ IEntityFacade
     public void ReceiveSignal(string tag, BoolInt ctx)
     {
         if (tag == "ATTACKANIM")
-        {
-
             Actions.AttackColliderSetActive.Publish(ctx);
-        }
+        
+        if (tag == "YELL" && ctx.boolVal == false)
+            Actions.Yell.Publish(false);
+
+        if (tag == "FWDATTACK" && ctx.boolVal == false)
+            API_Context<EnemyContextData>().decidedToFwdAttack = false;
     }
+
+
+    public bool phaseFourHit;
+    public bool phaseThreeHit;
+    public bool phaseTwoHit;
+    public bool phaseOneHit;
 
     public void ReceiveSignal(LivingEntity.PhasedHealthThresholdEnum t)
     {
@@ -85,15 +96,23 @@ IEntityFacade
         {
             case LivingEntity.PhasedHealthThresholdEnum.PhaseFour:
                 
+                if(phaseFourHit != true) Actions.Yell.Publish(true);
+                phaseFourHit = true;
+                
                 break;
             case LivingEntity.PhasedHealthThresholdEnum.PhaseThree:
+                
+                if(phaseThreeHit != true) Actions.Yell.Publish(true);
+                phaseThreeHit = true;
+                
                 
                 break;
             case LivingEntity.PhasedHealthThresholdEnum.PhaseTwo: 
                 
-                API_Context<EnemyContextData>().hyperArmorUsableInState = true;
+                if(phaseTwoHit != true) Actions.Yell.Publish(true);
+                phaseTwoHit = true;
                 
-                Debug.Log("PHASE CHANGE STATE COMPLETE: " + t);
+                API_Context<EnemyContextData>().hyperArmorUsableInState = true;
                 
                 EnemyFunctionality.EnemyDescisions CanNowBlock = new EnemyFunctionality.EnemyDescisions { blockingAllowed = true };
                 GetFunctionality<EnemyFunctionality.IAPI_EnemyDescisionMaker>().InvokeAndSendDepdancies(CanNowBlock);
@@ -101,10 +120,19 @@ IEntityFacade
                 break;
             case LivingEntity.PhasedHealthThresholdEnum.PhaseOne:
                 
+                if(phaseOneHit != true) Actions.Yell.Publish(true);
+                phaseOneHit = true;
+                
+                API_Context<EnemyContextData>().forwardAttackUsableInState = true;
+                
+                EnemyFunctionality.EnemyDescisions CanNowFwdAttack = new EnemyFunctionality.EnemyDescisions { fwdAttackingAllowed = true };
+                GetFunctionality<EnemyFunctionality.IAPI_EnemyDescisionMaker>().InvokeAndSendDepdancies(CanNowFwdAttack);
+                
                 break;
         }
     }
 }
+
 
 
 

@@ -34,6 +34,14 @@ MonoBehaviour:
       layer: 0
       animEnum: 4
       hash: 1397128752
+    - name: Yell
+      layer: 0
+      animEnum: 6
+      hash: 1410440999
+    - name: MoveAttack
+      layer: 0
+      animEnum: 7
+      hash: 1225513192
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 1500
@@ -77,4 +85,10 @@ MonoBehaviour:
   <hyperArmor>k__BackingField:
     <useHyperArmor>k__BackingField: 1
   <decisionMaking>k__BackingField:
-    <blockWaitTime>k__BackingField: 2
+    <blockWaitTime>k__BackingField: 3
+    <fwdAttackTime>k__BackingField: 4.2
+  <yell>k__BackingField:
+    <yellAfterPhaseChange>k__BackingField: 1
+  <forwardAttack>k__BackingField:
+    <canForwardAttack>k__BackingField: 1
+    <forwardAttackForce>k__BackingField: 10

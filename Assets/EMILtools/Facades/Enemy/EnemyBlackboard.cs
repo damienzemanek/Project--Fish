@@ -28,7 +28,8 @@ public class EnemyBlackboard : Blackboard, IEntityBlackboard
     [field: SerializeField] [field: Required] public CountdownTimer stunnedTimer { get; set; }
     [field: SerializeField] [field: Required] public CountdownTimer finishTimer { get; set; }
     [field: SerializeField] [field: Required] public CountdownTimer blockWaitTimer { get; set; }
-
+    [field: SerializeField] [field: Required] public CountdownTimer fwdAttackTimer { get; set; }
+    
     [field: SerializeField] [field: Required] public GameObject armoredStatIndicatorPrefab { get; set; }
     [field: SerializeField] [field: Required] public Transform faceDirTransform { get; private set; }
     [field: SerializeField] [field: Required] public FinisherEvent finisherEvent { get; private set; }

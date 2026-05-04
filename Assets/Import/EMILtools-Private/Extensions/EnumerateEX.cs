@@ -35,6 +35,12 @@ namespace EMILtools.Extensions
         {
             return UnityEngine.Random.Range(v.x, v.y);
         }
+        
+        public static int RandInt(this Vector2 v)
+        {
+            return (int)UnityEngine.Random.Range(v.x, v.y);
+        }
+
 
 
         #region Privates
