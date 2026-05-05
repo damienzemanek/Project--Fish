@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 125292883209616801}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.2, y: -8.34, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1024,7 +1024,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 2.0703373
+  m_Distance: 2.0703375
   m_MaxDistanceOnly: 0
 --- !u!1 &3928251075175174206
 GameObject:
@@ -2028,6 +2028,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &7344533219332282829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2721987067950916334}
+  m_Layer: 6
+  m_Name: Stat Indicators
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2721987067950916334
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7344533219332282829}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7150858989621047036}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7358551351667840750
 GameObject:
   m_ObjectHideFlags: 0
@@ -2246,11 +2277,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackingBoundsChecker
   is2D: 1
   ThingCollidedWith: 1
-  SelectedReceiver: 0
+  SelectedReceiver: 1
   selectedReceiver3D:
     underlyingValue: {fileID: 0}
   selectedReceiver2D:
-    underlyingValue: {fileID: 0}
+    underlyingValue: {fileID: 5932286161570280673}
   <enter>k__BackingField: 1
   <exit>k__BackingField: 1
   <stay>k__BackingField: 0
@@ -2259,7 +2290,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
-    attackingColliderTag: 
+    attackingColliderTag: PlayerDownPogo
     damageInfo:
       dmg: 1
       location: 0
@@ -2358,6 +2389,7 @@ Transform:
   - {fileID: 1713128766598091900}
   - {fileID: 797386785988930746}
   - {fileID: 8780597923003966070}
+  - {fileID: 2721987067950916334}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &5440876091878206333
@@ -2513,6 +2545,8 @@ MonoBehaviour:
           m_RotationOrder: 4
         operationScalar: 1
         pauseProgress: -1
+      <statIndicatorsParent>k__BackingField: {fileID: 2721987067950916334}
+      <armoredStatIndicatorPrefab>k__BackingField: {fileID: 8281074235125446207, guid: 95758a874efc2094880956b8f26f2f3b, type: 3}
   <inputSubordinateContext>k__BackingField:
     Subordinate:
       underlyingValue: {fileID: 5932286161570280673}
@@ -2531,14 +2565,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b5058e0ba4855149960de366808b6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: EMILtools::LivingEntity
+  health:
+    _value: 0
   isDead: 0
   deathStatus: 0
-  healthThresholds:
-    entries:
-    - label: 0
-      threshold: 99
-    - label: 2
-      threshold: 0
+  healthThresholdsIndex: 0
+  healthThresholds: {fileID: 11400000, guid: 440eaaca665c1df42a0b2a1de94c18d2, type: 2}
   destroyOnDeath: 0
   destroyOnDeathTime: 2
   rb: {fileID: 5440876091878206333}

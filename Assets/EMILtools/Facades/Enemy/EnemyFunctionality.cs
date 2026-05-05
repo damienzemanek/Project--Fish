@@ -231,7 +231,6 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.attacking = true;
             
             facade.StartCoroutine(C_LandNaiveImplm());
-
         }
         
 // simple impl cause this games needs to be done
@@ -430,6 +429,10 @@ public class EnemyFunctionality : Functionalities<
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
             facade.Actions.ToggleHyperArmor.Publish(false);
             
+            foreach (var abc in bb.attackingBoundsCheckers)
+                abc.gameObject.SetActive(false);
+
+
             
             bb.fwdAttackTimer.Pause();
         }

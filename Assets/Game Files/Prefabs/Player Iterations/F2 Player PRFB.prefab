@@ -872,6 +872,37 @@ Transform:
   - {fileID: 7899764464000389635}
   m_Father: {fileID: 4668575736575838297}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4172030204597536962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2805993465446905974}
+  m_Layer: 6
+  m_Name: SI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2805993465446905974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4172030204597536962}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2904149160259310878}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4749146690817694162
 GameObject:
   m_ObjectHideFlags: 0
@@ -979,21 +1010,25 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   disableContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
@@ -1105,21 +1140,25 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   disableContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
@@ -1708,21 +1747,25 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enterContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 1
       location: 0
       type: 0
   stayContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   exitContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
       type: 0
   disableContext:
+    attackingColliderTag: 
     damageInfo:
       dmg: 0
       location: 0
@@ -2273,6 +2316,7 @@ Transform:
   - {fileID: 7797376822151463912}
   - {fileID: 8106462697473790374}
   - {fileID: 9095357810177439731}
+  - {fileID: 2805993465446905974}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &6599203005103523359
@@ -2428,6 +2472,8 @@ MonoBehaviour:
           m_RotationOrder: 4
         operationScalar: 1
         pauseProgress: -1
+      <statIndicatorsParent>k__BackingField: {fileID: 2805993465446905974}
+      <armoredStatIndicatorPrefab>k__BackingField: {fileID: 4172030204597536962}
   <inputSubordinateContext>k__BackingField:
     Subordinate:
       underlyingValue: {fileID: 4192200934562876397}
@@ -2446,20 +2492,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b5058e0ba4855149960de366808b6f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: EMILtools::LivingEntity
+  health:
+    _value: 0
   isDead: 0
   deathStatus: 0
-  healthThresholds:
-    entries:
-    - label: 0
-      threshold: 99
-    - label: 2
-      threshold: 0
-  deathLayer: 2
-  hitLayer: 1
+  healthThresholdsIndex: 0
+  healthThresholds: {fileID: 0}
   destroyOnDeath: 0
+  destroyOnDeathTime: 2
   rb: {fileID: 6599203005103523359}
   deathFloorCollider: {fileID: 5379197517030918645}
   enableOnDeathAndUnparents: []
+  animator: {fileID: 2654966600124252470}
+  deathAnimHandle:
+    States:
+    - name: Die
+      layer: 0
+      animEnum: 0
+      hash: 20298039
+    BlendTreeVariables: []
+  damageLocationAnimHandle:
+    States:
+    - name: Hit
+      layer: 0
+      animEnum: 0
+      hash: 1654612129
+    BlendTreeVariables: []
   OnDeathUnityEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2487,19 +2545,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  animator: {fileID: 2654966600124252470}
-  deathAnimHandle:
-    States:
-    - name: Die
-      animEnum: 0
-      hash: 20298039
-    BlendTreeVariables: []
-  damageLocationAnimHandle:
-    States:
-    - name: Hit
-      animEnum: 0
-      hash: 1654612129
-    BlendTreeVariables: []
+  OnDestroyUnityEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7592261624253112017
 MonoBehaviour:
   m_ObjectHideFlags: 0
