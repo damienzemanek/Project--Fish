@@ -24,6 +24,7 @@ IEntityFacade
     Transform IFacade.transform => gameObject.transform;
     public class ActionMap : IActionMap
     {
+        public readonly Publisher<string> AddBodyColliderExclusionLayer = new();
         public readonly Publisher<bool> Yell = new();
         public readonly Publisher<bool> AttackInRange = new();
         public readonly Publisher<bool> ToggleHyperArmor = new();

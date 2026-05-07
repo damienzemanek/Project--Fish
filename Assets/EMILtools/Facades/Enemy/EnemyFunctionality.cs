@@ -30,6 +30,7 @@ public class EnemyFunctionality : Functionalities<
         // Return the module that is the starting state, ex:
         // return AddModule(new Idle(...))
 
+        AddModule(new AddBodyColliderExclusionLayer(facade.Actions.AddBodyColliderExclusionLayer, f));
         AddModule(new ForwardAttack(facade));
         AddModule(new Yell(facade.Actions.Yell, facade));
         AddModule(new Blocking(facade));
@@ -84,7 +85,33 @@ public class EnemyFunctionality : Functionalities<
         fsm.AddTransition<ForwardAttack, Follow>(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.decidedToFwdAttack), "Decided To Forward Attack");
     }
 
-    
+
+    public struct ResetBodyExclusionLayers { }
+    public interface IAPI_ResetExclusionLayers : IAPI_Dependant<ResetBodyExclusionLayers> { }
+    public class AddBodyColliderExclusionLayer : BoundSetFunctionality<EnemyController, IEnemyContextView, AddBodyColliderExclusionLayer.Setter>,
+        ON_SET,
+        IAPI_ResetExclusionLayers
+    {
+        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
+
+        private LayerMask origExcludeLayers;
+        
+        [Serializable]
+        public class Setter : DataSetter<string>
+        {
+            [ShowInInspector] public string excludedLayerName => Get;
+        }
+        public AddBodyColliderExclusionLayer(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
+
+        protected override void Awake() 
+            => origExcludeLayers = bb.bodyCollider.excludeLayers;
+        
+        public void MutateUsingNewSetValues()
+         => bb.bodyCollider.excludeLayers |= LayerMask.GetMask(SetContext.Get);
+
+        void IAPI_Dependant<ResetBodyExclusionLayers>.DependanciesReceived(ResetBodyExclusionLayers _)
+            => bb.bodyCollider.excludeLayers = origExcludeLayers;
+    }
     
     
 
@@ -133,9 +160,7 @@ public class EnemyFunctionality : Functionalities<
         public bool blockingAllowed;
         public bool fwdAttackingAllowed;
     }
-    
     public interface IAPI_EnemyDescisionMaker : IAPI_Dependant<EnemyDescisions> { }
-    
     class DescisionMaker : UnboundFunctionality<EnemyController, IEnemyContextView>, 
         IAPI_EnemyDescisionMaker
     {
@@ -231,7 +256,6 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.attacking = true;
             
             facade.StartCoroutine(C_LandNaiveImplm());
-
         }
         
 // simple impl cause this games needs to be done
@@ -430,8 +454,13 @@ public class EnemyFunctionality : Functionalities<
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
             facade.Actions.ToggleHyperArmor.Publish(false);
             
-            
+            foreach (var abc in bb.attackingBoundsCheckers)
+                abc.gameObject.SetActive(false);
+
             bb.fwdAttackTimer.Pause();
+            
+            facade.Actions.AddBodyColliderExclusionLayer.Publish("Enemy");
+
         }
 
         public void MutateUsingNewSetValues()
@@ -449,6 +478,8 @@ public class EnemyFunctionality : Functionalities<
             bb.blockWaitTimer.StartAndReset();
             
             bb.fwdAttackTimer.Resume();
+            
+            facade.GetFunctionality<IAPI_ResetExclusionLayers>().InvokeAndSendDepdancies(new ResetBodyExclusionLayers());
         }
     }
     
@@ -471,6 +502,7 @@ public class EnemyFunctionality : Functionalities<
             cfg.animHandle.PlayWeightSet(bb.animator, EnemyConfig.EnemyAnims.Dying, 1);
             bb.dyingStateTimer.StartAndReset();
             bb.viewRange.enabled = false;
+            facade.Actions.AddBodyColliderExclusionLayer.Publish("Enemy");
         }
 
         void StopDyingAfterCertainTime()
@@ -482,6 +514,7 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.currentHealthState = newState;
             bb.viewRange.enabled = true;
             mutateCtx.isBeingFinished = false;
+            facade.GetFunctionality<IAPI_ResetExclusionLayers>().InvokeAndSendDepdancies(new ResetBodyExclusionLayers());
         }
     }
     
@@ -517,7 +550,8 @@ public class EnemyFunctionality : Functionalities<
     }
     
     class Idle : UnboundFunctionality<EnemyController, IEnemyContextView>,
-        FSM_STATE_ENTER<IEnemyContextView>
+        FSM_STATE_ENTER<IEnemyContextView>,
+        FSM_STATE_EXIT<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public Idle(EnemyController facade) : base(facade) { }
@@ -529,6 +563,12 @@ public class EnemyFunctionality : Functionalities<
         {
             Debug.Log("Entered Idle State");
             cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Idle);
+            facade.Actions.AddBodyColliderExclusionLayer.Publish("Enemy");
+        }
+
+        public void OnExitState(IEnemyContextView ctx)
+        {
+            facade.GetFunctionality<IAPI_ResetExclusionLayers>().InvokeAndSendDepdancies(new ResetBodyExclusionLayers());
         }
     }
 

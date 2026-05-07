@@ -141,23 +141,16 @@ public class SharedFMs
 
         public void MutateUsingNewSetValues()
         {
-            Debug.Log("DMG 1");
             if (mutateCtx.invulnerable) return;
-            Debug.Log("DMG 2");
 
             string stateName = mutateCtx.currentHealthState.ToString();
             if (stateName == "Dying") return;
-            Debug.Log("DMG 3");
 
             string attackerStateName = SetContext.AttackCtx.attackerEntityCtx.currentHealthState.ToString();
             if (attackerStateName == "Dying") return;
-            Debug.Log("DMG 4");
 
             if (attackerStateName == "Dead") return;
-            Debug.Log("DMG 5");
-
-            Debug.Log("DMG 6");
-
+            
 
             if (BlockDamage != null && BlockDamage.Evaluate())
             {
@@ -171,18 +164,11 @@ public class SharedFMs
             }
             else
                 bb.damageFlasher.Flash(DamageFlasher.FlashType.Damage);
-
-
-            Debug.Log("DMG 7");
-
-            Debug.Log("TakingDmg: Is not using hyper armor");
-
+            
             bb.invulnerableTimer.StartAndReset();
             mutateCtx.invulnerable = true;
             bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
             SlowTime();
-            
-            Debug.Log("DMG 8: Received Damage");
             
             bb.livingEntity.healthThresholds.GetNearestLastThreshold(bb.livingEntity.health, out var hpState);
             if (facade is ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum> receiver &&
@@ -192,8 +178,6 @@ public class SharedFMs
                 receiver.Send(phasedState);
             }
             
-            Debug.Log("DMG 9");
-
         }
 
         async void SlowTime()

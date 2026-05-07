@@ -86,28 +86,22 @@ public class PlayerController : MonoFacade<
     /// <param name="ctx"></param>
     public void OnEnterBounds(Collider2D collidedWith, CollisionChecker<HookContext> sender, HookContext ctx)
     {
-        Debug.Log("1");
         if (collidedWith == null)
         {
-            Debug.Log("1.1");
             ResetHook();
             return;
         }
-        Debug.Log("2");
         if (collidedWith.Has<LivingEntity>(out var livingEntity) && livingEntity.isDead)
         {
-            Debug.Log("2.1");
             ResetHook();
             return;
         }
         Debug.Log("3");
         if (!collidedWith.TryGetComponent<EnemyController>(out var enemyCont))
         {
-            Debug.Log("3.1");
             ResetHook();
             return;
         }
-        Debug.Log("4");
         var actionMap = enemyCont.API_Actions<EnemyController.ActionMap>();
         API_Context<PlayerContextData>().targetStunPublisher = actionMap.Stun;
         API_Context<PlayerContextData>().isHookLatchedOntoTarget = true;

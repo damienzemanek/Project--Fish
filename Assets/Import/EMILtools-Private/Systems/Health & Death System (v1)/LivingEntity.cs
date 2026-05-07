@@ -166,7 +166,5 @@ public class LivingEntity : Entity,
         Destroy(gameObject);   
     }
     
-    
-    
     [Button] public void TakeDamageTesting(int dmg) => health.Value -= dmg;
 }
