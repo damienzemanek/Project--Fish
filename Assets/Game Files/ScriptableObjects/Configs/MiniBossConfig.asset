@@ -42,6 +42,10 @@ MonoBehaviour:
       layer: 0
       animEnum: 7
       hash: 1225513192
+    - name: Dying
+      layer: 3
+      animEnum: 3
+      hash: 315139327
     BlendTreeVariables: []
   <follow>k__BackingField:
     <speedScalar>k__BackingField: 1500
