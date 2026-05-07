@@ -44,7 +44,7 @@ IEntityFacade
 
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
     public void OnExitBounds(Collider2D collidedWith, BoundsChecker<CanSeeContext> sender, CanSeeContext ctx) => CanSee(ctx.canSeeTarget);
-    void CanSee(bool canSee) => Actions.CanSeeTarget.Publish(canSee).Forget("Can See");
+    void CanSee(bool canSee) => Actions?.CanSeeTarget.Publish(canSee).Forget("Can See");
     
     // Receive Attack DI
     public void OnEnterBounds(Collider2D collidedWith, BoundsChecker<AttackCtx> sender, AttackCtx ctx)

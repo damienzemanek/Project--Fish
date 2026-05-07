@@ -104,7 +104,7 @@ public abstract class BoundsChecker<TContext> : MonoBehaviour
         if (SelectedReceiver && count > 0)
         {
             for (int i = 0; i < count; i++)
-                selectedReceiver2D.Value?.OnEnterBounds(hits[0], this, enterContext);
+                selectedReceiver2D?.Value?.OnEnterBounds(hits[0], this, enterContext);
         }
     }
 
