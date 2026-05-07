@@ -35,7 +35,6 @@ public class EnemyFunctionality : Functionalities<
         AddModule(new Yell(facade.Actions.Yell, facade));
         AddModule(new Blocking(facade));
         AddModule(new DescisionMaker(facade));
-        AddModule(new AttackColliderEnabler(facade.Actions.AttackColliderSetActive, f));
         AddModule(new AttackRangeDetector(facade.Actions.AttackInRange, f));
         AddModule(new HyperArmor(facade.Actions.ToggleHyperArmor, f));
         AddModule(new FinisherInputAvaliable(facade.Actions.FinisherInputAvaliable, f));
@@ -272,6 +271,7 @@ public class EnemyFunctionality : Functionalities<
         public void OnExitState(IEnemyContextView ctx)
         {
             bb.fwdAttackTimer.StartAndReset();
+            mutateCtx.attacking = false;
         }
         
     }
@@ -304,30 +304,6 @@ public class EnemyFunctionality : Functionalities<
             cfg.animHandle.PlayThenOnEnd(bb.animator, EnemyConfig.EnemyAnims.Attack, EndAttackDelegateCached);
         }
         void EndAttack() => mutateCtx.attacking = false;
-    }
-    
-    /// <summary>
-    /// Comes from the ANimation Event
-    /// </summary>
-    class AttackColliderEnabler : BoundSetFunctionality<EnemyController, IEnemyContextView, AttackColliderEnabler.Setter>,
-        ON_SET
-    {
-        EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
-
-        [Serializable]
-        public class Setter : DataSetter<BoolInt>
-        {
-            [ShowInInspector] public BoolInt value => Get;
-        }
-
-        public AttackColliderEnabler(IPublisher publisher, EnemyController facade) : base(publisher, facade) { }
-
-        public void MutateUsingNewSetValues()
-        {
-            if(facade.FSM.CurrentStateType == typeof(Blocking)) return; 
-            if(facade.FSM.CurrentStateType == typeof(Stunnable)) return;
-            bb.attackingBoundsCheckers[SetContext.value.intVal].gameObject.SetActive(SetContext.value.boolVal);
-        }
     }
     
 
@@ -442,7 +418,8 @@ public class EnemyFunctionality : Functionalities<
             bb.stunnedTimer.OnTimerStop.Add(() => mutateCtx.isStunned = false);
             facade.InitTimer(bb.stunnedTimer, true);
         }
-        
+        int bodyAttkColliderIndex = 0;
+
         public void OnEnterState(IEnemyContextView ctx)
         {
             Debug.Log("Entered Stun State");
@@ -460,7 +437,6 @@ public class EnemyFunctionality : Functionalities<
             bb.fwdAttackTimer.Pause();
             
             facade.Actions.AddBodyColliderExclusionLayer.Publish("Enemy");
-
         }
 
         public void MutateUsingNewSetValues()
@@ -478,7 +454,8 @@ public class EnemyFunctionality : Functionalities<
             bb.blockWaitTimer.StartAndReset();
             
             bb.fwdAttackTimer.Resume();
-            
+            bb.attackingBoundsCheckers[bodyAttkColliderIndex].gameObject.SetActive(true);
+
             facade.GetFunctionality<IAPI_ResetExclusionLayers>().InvokeAndSendDepdancies(new ResetBodyExclusionLayers());
         }
     }

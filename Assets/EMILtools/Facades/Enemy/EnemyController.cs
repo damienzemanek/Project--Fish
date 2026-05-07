@@ -34,7 +34,6 @@ IEntityFacade
         public readonly Publisher<bool> Stun = new();
         public readonly Publisher<(bool isHooked, Publisher<Hook.FinisherContext>)> isHookedBySomething = new();
         public readonly Publisher<bool> FinisherInputAvaliable = new();
-        public readonly Publisher<BoolInt> AttackColliderSetActive = new();
         
 
         public IContextViewImmutable ctx { get; }
@@ -73,17 +72,22 @@ IEntityFacade
     
     public void ReceiveSignal(string tag, BoolInt ctx)
     {
+        Debug.Log("ANIM EVENT, BOOL INT: int: " + ctx.intVal + " bool: " + ctx.boolVal + " tag: " + tag + "");
+        
         if (tag == "ATTACKANIM")
-            Actions.AttackColliderSetActive.Publish(ctx);
+            API_Blackboard<EnemyBlackboard>().attackingBoundsCheckers[1].gameObject.SetActive(ctx.boolVal);
         
         if (tag == "YELL" && ctx.boolVal == false)
             Actions.Yell.Publish(false);
 
-        if (tag == "FWDATTACK" && ctx.boolVal == false)
-            API_Context<EnemyContextData>().decidedToFwdAttack = false;
+        if (tag == "FWDATTACK")
+        {
+            API_Blackboard<EnemyBlackboard>().attackingBoundsCheckers[1].gameObject.SetActive(ctx.boolVal);
+            if(ctx.boolVal == false)
+                API_Context<EnemyContextData>().decidedToFwdAttack = false;
+        }
     }
-
-
+    
     public bool phaseFourHit;
     public bool phaseThreeHit;
     public bool phaseTwoHit;
