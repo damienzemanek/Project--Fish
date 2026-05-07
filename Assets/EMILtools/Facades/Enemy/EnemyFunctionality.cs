@@ -104,9 +104,11 @@ public class EnemyFunctionality : Functionalities<
 
         protected override void Awake() 
             => origExcludeLayers = bb.bodyCollider.excludeLayers;
-        
+
         public void MutateUsingNewSetValues()
-         => bb.bodyCollider.excludeLayers |= LayerMask.GetMask(SetContext.Get);
+        {
+            // bb.bodyCollider.excludeLayers |= LayerMask.GetMask(SetContext.Get);
+        }
 
         void IAPI_Dependant<ResetBodyExclusionLayers>.DependanciesReceived(ResetBodyExclusionLayers _)
             => bb.bodyCollider.excludeLayers = origExcludeLayers;
@@ -298,6 +300,9 @@ public class EnemyFunctionality : Functionalities<
             if (mutateCtx.attacking == true) return;
             if(facade.FSM.CurrentStateType == typeof(Blocking)) return;
             if(facade.FSM.CurrentStateType == typeof(Stunnable)) return;
+            if(facade.FSM.CurrentStateType == typeof(ForwardAttack)) return;
+            if(facade.FSM.CurrentStateType == typeof(Yell)) return;
+
 
             mutateCtx.attacking = true;
             // Animation events will turn on and off the attacking bounds checker collider
@@ -502,9 +507,11 @@ public class EnemyFunctionality : Functionalities<
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>(); EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
         public FaceDir(EnemyController facade) : base(facade) { }
 
-        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) => builder
+        public override PipelineBuilder<IEnemyContextView> InjectSteps(PipelineBuilder<IEnemyContextView> builder) =>
+            builder
                 .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => !ctx.canSeeTarget))
-                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.yelling));
+                .Add_ShortCircuit(new FuncCtxPredicate<IEnemyContextView>(ctx => ctx.yelling))
+                .Add_ShortCircuit(new FuncPredicate(() => facade.FSM.CurrentStateType == typeof(ForwardAttack)));
         
 
         public override void Execute(IEnemyContextView ctx)
