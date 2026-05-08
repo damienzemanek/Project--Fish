@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EMILtools.Core;
-using FlyingWormConsole3.LiteNetLibEditor.Utils;
 
 namespace EMILtools.Systems
 {
@@ -86,14 +85,14 @@ namespace EMILtools.Systems
             throw SubscriberTypeError(sub, "published");
         }
         
-        private InvalidTypeException SubscriberTypeError(object obj, string operation)
+        private Exception SubscriberTypeError(object obj, string operation)
         {
             var givenType = FormatType(obj.GetType());
             var expectedType = FormatType(typeof(ISubscriber<TContext>));
             var publisher = FormatType(GetType());
 
-            throw new InvalidTypeException(
-                $"Subscriber type '{givenType}' cannot be added.\n" +
+            throw new Exception(
+                $"Subscriber type '{givenType}' cannot be {operation}.\n" +
                 $"Expected type: '{expectedType}'.\n" +
                 $"Publisher: {publisher}."
             );
