@@ -39,6 +39,9 @@ public class StateMachine<TViewCtx> : IFSM
     }
 
     bool isPollingTransitions = false;
+    bool blockTransitions = false;
+    
+    public void SetBlockTransitions(bool _blockTransitions) => blockTransitions = _blockTransitions;
     
     public async Task PollTransitionsAsync()
     {
@@ -53,6 +56,16 @@ public class StateMachine<TViewCtx> : IFSM
         finally
         {
             isPollingTransitions = false;
+        }
+    }
+
+    public void CheckTransitions()
+    {
+        var transition = TryResolveAndGetTransition().Result;
+        if (transition != null)
+        {
+            ChangeState(transition);
+            Debug.Log($"Transitioning to {transition.To.GetType().Name}");
         }
     }
 
@@ -160,6 +173,7 @@ public class StateMachine<TViewCtx> : IFSM
         CurrentNode = Nodes[transition.To.GetType()];
     }
     
+    [Serializable]
     public class StateNode
     {
         [ShowInInspector] public readonly string name;

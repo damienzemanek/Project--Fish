@@ -1,0 +1,416 @@
+fileFormatVersion: 2
+guid: dccbf3c49414c124a8e0bef2faa9bf7f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4762198177276169798
+    second: TitlecardFEM_0
+  - first:
+      213: -1186500107897225748
+    second: TitlecardFEM_1
+  - first:
+      213: 1308616969602727499
+    second: TitlecardFEM_2
+  - first:
+      213: -5059492396333511944
+    second: TitlecardFEM_3
+  - first:
+      213: -8846340246216397551
+    second: TitlecardFEM_4
+  - first:
+      213: 5545753758040565473
+    second: TitlecardFEM_5
+  - first:
+      213: 6377153039247969691
+    second: TitlecardFEM_6
+  - first:
+      213: -1493368566909691802
+    second: TitlecardFEM_7
+  - first:
+      213: 543222638324019698
+    second: TitlecardFEM_8
+  - first:
+      213: 3703754930662369127
+    second: TitlecardFEM_9
+  - first:
+      213: -8727045865409670481
+    second: TitlecardFEM_10
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: TitlecardFEM_0
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 279
+        width: 339
+        height: 532
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64e0f82d20ab61240800000000000000
+      internalID: 4762198177276169798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_1
+      rect:
+        serializedVersion: 2
+        x: 503
+        y: 279
+        width: 120
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cedb2de2074b88fe0800000000000000
+      internalID: -1186500107897225748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_2
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 272
+        width: 396
+        height: 550
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4ef7345334292210800000000000000
+      internalID: 1308616969602727499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_3
+      rect:
+        serializedVersion: 2
+        x: 1168
+        y: 279
+        width: 409
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fa40ccc87219c9b0800000000000000
+      internalID: -5059492396333511944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_4
+      rect:
+        serializedVersion: 2
+        x: 1693
+        y: 282
+        width: 355
+        height: 529
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11da70e7a6c7b3580800000000000000
+      internalID: -8846340246216397551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_5
+      rect:
+        serializedVersion: 2
+        x: 2134
+        y: 277
+        width: 401
+        height: 538
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e6abc709a976fc40800000000000000
+      internalID: 5545753758040565473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_6
+      rect:
+        serializedVersion: 2
+        x: 2642
+        y: 284
+        width: 500
+        height: 617
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9d8daec6e2308850800000000000000
+      internalID: 6377153039247969691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_7
+      rect:
+        serializedVersion: 2
+        x: 3280
+        y: 279
+        width: 338
+        height: 532
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6681d9a533d764be0800000000000000
+      internalID: -1493368566909691802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_8
+      rect:
+        serializedVersion: 2
+        x: 3690
+        y: 279
+        width: 121
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f1f0478c1ae98700800000000000000
+      internalID: 543222638324019698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_9
+      rect:
+        serializedVersion: 2
+        x: 3882
+        y: 272
+        width: 395
+        height: 550
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7676b317c71666330800000000000000
+      internalID: 3703754930662369127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TitlecardFEM_10
+      rect:
+        serializedVersion: 2
+        x: 4356
+        y: 279
+        width: 409
+        height: 536
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa217b5f50e43e680800000000000000
+      internalID: -8727045865409670481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      TitlecardFEM_0: 4762198177276169798
+      TitlecardFEM_1: -1186500107897225748
+      TitlecardFEM_10: -8727045865409670481
+      TitlecardFEM_2: 1308616969602727499
+      TitlecardFEM_3: -5059492396333511944
+      TitlecardFEM_4: -8846340246216397551
+      TitlecardFEM_5: 5545753758040565473
+      TitlecardFEM_6: 6377153039247969691
+      TitlecardFEM_7: -1493368566909691802
+      TitlecardFEM_8: 543222638324019698
+      TitlecardFEM_9: 3703754930662369127
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
