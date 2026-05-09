@@ -1,0 +1,62 @@
+using System;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEngine;
+
+[Serializable]
+public struct SoundState<TSoundEnum>
+    where TSoundEnum : Enum
+{
+    public AudioClip clip;
+    public TSoundEnum soundEnum;
+
+    public SoundState(AudioClip clip, TSoundEnum soundEnum)
+    {
+        this.clip = clip;
+        this.soundEnum = soundEnum;
+    }
+}
+
+[LabelWidth(125)]
+[InlineProperty]
+[Serializable]
+public class SoundHandle<TSoundEnum>
+    where TSoundEnum : Enum
+{
+    [LabelWidth(150)] public SoundState<TSoundEnum>[] Sounds;
+
+    Dictionary<TSoundEnum, AudioClip> sounds;
+
+    void Initialize()
+    {
+        sounds = new Dictionary<TSoundEnum, AudioClip>();
+        if (Sounds != null)
+        {
+            foreach (var sound in Sounds)
+            {
+                if (sound.soundEnum != null && !sounds.ContainsKey(sound.soundEnum))
+                    sounds.Add(sound.soundEnum, sound.clip);
+            }
+        }
+    }
+
+    public AudioClip GetClip(TSoundEnum soundEnum)
+    {
+        if (sounds == null) Initialize();
+        if (sounds.TryGetValue(soundEnum, out var clip)) return clip;
+        return null;
+    }
+
+    public void Play(AudioSource source, TSoundEnum soundEnum, float volume = 1f)
+    {
+        var clip = GetClip(soundEnum);
+        if (clip != null && source != null)
+        {
+            source.PlayOneShot(clip, volume);
+        }
+    }
+}
+
+public class SoundConfig : ScriptableObject
+{
+}
