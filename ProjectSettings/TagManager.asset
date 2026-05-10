@@ -47,8 +47,14 @@ TagManager:
   - name: Background Close
     uniqueID: 1107342499
     locked: 0
+  - name: PlayerSpace
+    uniqueID: 902599907
+    locked: 0
   - name: Player
     uniqueID: 1012326635
+    locked: 0
+  - name: PlayerHelmet
+    uniqueID: 3496271665
     locked: 0
   - name: Foreground Close
     uniqueID: 1575054119

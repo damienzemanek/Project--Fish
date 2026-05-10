@@ -83,7 +83,8 @@ public class LivingEntity : Entity,
     public float TakeDamage(DamageInfo info)
     {
         Debug.Log($"[DMG] {gameObject.name} Taking Damage: {info.dmg}, health is currently: {health.Value}");
-        var newhp = health.Value -= info.dmg;
+        float newhp = Mathf.Max(0, health.Value - info.dmg);
+        health.Value = newhp;
         Debug.Log("[DMG] New hp should be " + newhp + "");
 
         // Debug all health states compared to new hp
@@ -148,15 +149,62 @@ public class LivingEntity : Entity,
     void Die()
     {
         if (isDead) return;
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
         isDead = true;
         deathStatus = DeathType.Regular;
-        OnDeath.Invoke(deathStatus);
-        OnDeathUnityEvent.Invoke();
-        deathAnimHandle.PlayWeightSet(animator, deathStatus, 1, FromBeginning);
-        deathFloorCollider.enabled = true;
-        foreach (var g in enableOnDeathAndUnparents) g.SetActiveThen(true).transform.parent = null;
-        if (destroyOnDeath) StartCoroutine(DestroyOnDeath());
+
+        // Freeze safely
+        if (rb != null)
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+
+        // Enable collider safely
+        if (deathFloorCollider != null)
+            deathFloorCollider.enabled = true;
+
+        // SAFER UNPARENTING
+        foreach (var g in enableOnDeathAndUnparents)
+        {
+            if (g == null) 
+                continue;
+
+            // Prevent catastrophic hierarchy issues
+            if (g == gameObject)
+            {
+                Debug.LogError($"Tried to unparent self on {name}");
+                continue;
+            }
+
+            // Prevent unparenting shared roots accidentally
+            if (g.transform == transform)
+            {
+                Debug.LogError($"Tried to unparent root transform on {name}");
+                continue;
+            }
+
+            // Preserve world position properly
+            g.transform.SetParent(null, true);
+
+            // Activate AFTER unparenting
+            g.SetActive(true);
+        }
+
+        // Events AFTER hierarchy changes
+        OnDeath?.Invoke(deathStatus);
+        OnDeathUnityEvent?.Invoke();
+
+        // Animation safely
+        if (animator != null)
+        {
+            deathAnimHandle.PlayWeightSet(
+                animator,
+                deathStatus,
+                1,
+                FromBeginning
+            );
+        }
+
+        if (destroyOnDeath)
+            StartCoroutine(DestroyOnDeath());
     }
 
     IEnumerator DestroyOnDeath()
