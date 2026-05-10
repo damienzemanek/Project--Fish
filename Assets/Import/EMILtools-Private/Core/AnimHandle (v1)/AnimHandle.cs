@@ -232,6 +232,8 @@ public class AnimHandle<TAnimEnum, TAnimBlendEnum>
         Animator lclAnimator = animator;
         var info = GetAnimInfo(animEnum);
         animator.SetLayerWeight(info.layer, weight);
+        if(!Mathf.Approximately(animator.GetLayerWeight(info.layer), weight))      
+            animator.SetLayerWeight(info.layer, weight);
         if(!Play(animator, animEnum, normalizedTime)) return false;
         return true;
     }

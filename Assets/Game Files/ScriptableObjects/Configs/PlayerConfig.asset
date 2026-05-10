@@ -100,10 +100,6 @@ MonoBehaviour:
       layer: 1
       animEnum: 10
       hash: 2054080663
-    - name: CastBreakoff
-      layer: 1
-      animEnum: 11
-      hash: -910330368
     BlendTreeVariables: []
   hook:
     <hookForce>k__BackingField: 27

@@ -53,6 +53,8 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public AnimationCurve lineVerticalOffsetCurve;
     public float verticalOffsetScalar = 3f;
     public LineRenderer line;
+    public Transform hookVisual;
+    public GameObject rodVisual;
 
     public float maxDistanceToAutoRecal = 8f;
     public float maxDistanceToBreak = 12f;
@@ -110,6 +112,8 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     {
         rb.bodyType = RigidbodyType2D.Kinematic;
         joint.enabled = false;
+
+        ResetHook();
     }
 
     void Update()
@@ -127,7 +131,11 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
             
             switch (phase)
             {
-                case HookPhases.Held: line.SetPosition(i, rodParent.position); continue;
+                case HookPhases.Held: 
+                    line.SetPosition(i, rodParent.position); 
+                    transform.position = rodParent.position;
+
+                    continue;
                 case HookPhases.CastingOut: CastOut(); break;
                 case HookPhases.HitMaxDistAndFalling: HitMaxDistAndFalling(); break;
                 case HookPhases.HookedToSomething: HookedOntoSomething(); break;
@@ -153,6 +161,9 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
                 pos = pos.With(y: pos.y + nonEndPointsOffset);
                // Debug.Log($"Curved: {distanceResponsiveScalar} Regular: {nonEndPointsOffset}, Dist Prog : {distProg}");
                 line.SetPosition(i, pos);
+                
+                
+                hookVisual.transform.rotation = Quaternion.LookRotation(Vector3.forward, rodParent.position - transform.position);
             }
             
             void HitMaxDistAndFalling()
@@ -280,9 +291,10 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         phase = HookPhases.CastingOut;
         lineDroopTimer.canRun = true;
         snapToHookedTimer.canRun = true;
-        StartCoroutine(C_CheckIfHookDistanceIsTooFar());
+        if(gameObject.activeInHierarchy)
+            StartCoroutine(C_CheckIfHookDistanceIsTooFar());
     }
-    
+
     public void SetupHookAttackFinishedSignal(Action signal) => hookAttackFinished = signal;
 
     public bool ResetHook()
@@ -294,6 +306,8 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         joint.enabled = false;
         phase = HookPhases.Held;
         withinRange = false;
+        var defaultHookRot = Quaternion.Euler(new Vector3(0, 180, 70));
+        hookVisual.localRotation = defaultHookRot;
         for (int i = 0; i < linePoints; i++) line.SetPosition(i, rodParent.position);
         return true;
     }
