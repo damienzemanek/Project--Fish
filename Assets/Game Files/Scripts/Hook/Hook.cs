@@ -49,6 +49,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public Transform rodParent;
     public Collider2D hookCollider;
     public DistanceJoint2D joint;
+    public GameObject breakerCollider;
 
     public AnimationCurve lineVerticalOffsetCurve;
     public float verticalOffsetScalar = 3f;
@@ -269,6 +270,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     {
         hookAttackTimer.StartAndReset();
         phase = HookPhases.HookAttacking;
+        breakerCollider.SetActive(true);
     }
 
     public void CastHook(Vector2 mousePos, float forceScalar)
@@ -285,6 +287,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
         //Debug.Log("[CH] mousePos: " +  mousePos + ", inv Trans: " + rodParent.InverseTransformDirection(mousePos).normalized + " dist: " + addY);
 
         
+        breakerCollider.SetActive(false);
         rb.AddForce(dir, ForceMode2D.Impulse);
         transform.position = rodParent.position;
         transform.SetParent(null);
@@ -300,6 +303,7 @@ public class Hook : MonoBehaviour, TimerUtility.ITimerUser
     public bool ResetHook()
     {
         if(phase == HookPhases.HookAttacking) return false;
+        breakerCollider.SetActive(false);
         transform.SetParent(rodParent);
         transform.position = rodParent.position;
         rb.bodyType = RigidbodyType2D.Kinematic;
