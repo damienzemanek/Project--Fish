@@ -65,5 +65,11 @@ TagManager:
   - name: UI
     uniqueID: 926387321
     locked: 0
+  - name: ScreenFX
+    uniqueID: 1722610397
+    locked: 0
+  - name: Very Front
+    uniqueID: 4053520261
+    locked: 0
   m_RenderingLayers:
   - Default

@@ -188,6 +188,33 @@ public class ButtonPlus : MonoBehaviour, IPointerEnterHandler, IPointerClickHand
     }
     
     [Serializable]
+    public class AudioPlayFromSoundUser : ButtonBehaviour
+    {
+        [Required] public SoundUser soundUser;
+        
+        [ValueDropdown("GetSoundOptions")]
+        public string soundName;
+        public bool loop;
+
+        private System.Collections.IEnumerable GetSoundOptions()
+        {
+            if (soundUser == null || soundUser.soundConfig == null) return null;
+            return soundUser.soundConfig.GetSoundNames();
+        }
+
+        public override void OnEnterState()
+        {
+            if(useOnEnter && soundUser != null && soundUser.soundConfig != null)
+                soundUser.soundConfig.Play(soundUser.audioSource, soundName, loop);
+        }
+        public override void OnExitState()
+        {
+            if(useOnExit && soundUser != null && soundUser.soundConfig != null)
+                soundUser.soundConfig.Play(soundUser.audioSource, soundName, loop);
+        }
+    }
+    
+    [Serializable]
     public class DisapearFade : ButtonBehaviour
     {
         [Required] public Transform target;

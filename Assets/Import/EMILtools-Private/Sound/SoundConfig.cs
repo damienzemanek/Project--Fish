@@ -47,16 +47,31 @@ public class SoundHandle<TSoundEnum>
         return null;
     }
 
-    public void Play(AudioSource source, TSoundEnum soundEnum, float volume = 1f)
+    public void Play(AudioSource source, TSoundEnum soundEnum, float volume = 1f, bool loop = false, float startTime = 0f)
     {
         var clip = GetClip(soundEnum);
         if (clip != null && source != null)
         {
-            source.PlayOneShot(clip, volume);
+            if (loop)
+            {
+                source.clip = clip;
+                source.loop = true;
+                source.volume = volume;
+                source.time = Mathf.Clamp(startTime, 0, clip.length - 0.001f);
+                source.Play();
+            }
+            else
+            {
+                source.PlayOneShot(clip, volume);
+            }
         }
     }
 }
 
-public class SoundConfig : ScriptableObject
+[Serializable]
+public abstract class SoundConfig : ScriptableObject
 {
+    public abstract void Play(AudioSource source, string soundName, bool loop = false, float startTime = 0f);
+    public abstract string[] GetSoundNames();
+    public abstract AudioClip GetClip(string soundName);
 }
