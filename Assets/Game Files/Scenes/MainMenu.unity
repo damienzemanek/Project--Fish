@@ -9544,7 +9544,7 @@ MonoBehaviour:
         useOnExit: 0
         target: {fileID: 1064818611}
         delay: 1
-        delayTime: 0.5
+        delayTime: 1.3
         enterActiveState: 1
         exitActiveState: 0
     - rid: 667813931128455267
