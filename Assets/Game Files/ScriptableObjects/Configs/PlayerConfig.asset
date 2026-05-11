@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: PlayerConfig
   m_EditorClassIdentifier: Assembly-CSharp::PlayerConfig
   move:
-    <speedScalar>k__BackingField: 13
+    <speedScalar>k__BackingField: 10
     <forceMode2d>k__BackingField: 0
-    <maxVelocity>k__BackingField: 11
-    <acceleration>k__BackingField: 1
-    <deceleration>k__BackingField: 25
+    <maxVelocity>k__BackingField: 10
+    <acceleration>k__BackingField: 1.4
+    <deceleration>k__BackingField: 30
   jump:
     <jumpCurveRate>k__BackingField: 0.05
     <maxJumps>k__BackingField: 1
@@ -104,7 +104,7 @@ MonoBehaviour:
   hook:
     <hookForce>k__BackingField: 27
   pogo:
-    <pogoForceStrength>k__BackingField: 18
+    <pogoForceStrength>k__BackingField: 23
   <clampLateralMove>k__BackingField:
     <maxVelocityX>k__BackingField: 15
   <hitStop>k__BackingField:
