@@ -62,6 +62,9 @@ public class LivingEntity : Entity,
     [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
     [FoldoutGroup("Death")] public UnityEvent OnDestroyUnityEvent = new();
 
+    // Curr, Max
+    public PersistentAction<float, float> NewHealthEvent = new();
+    
     
     void Awake()
     {
@@ -107,6 +110,9 @@ public class LivingEntity : Entity,
         }
     
         Debug.Log("[DMG] Finished Taking Damage, final hp is " + health.Value + "");
+        
+        NewHealthEvent.Invoke(health, maxHealth);
+        
         return newhp;
     }
 
