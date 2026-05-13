@@ -66,6 +66,32 @@ public class SoundHandle<TSoundEnum>
             }
         }
     }
+
+    [Button]
+    public void GenerateSounds()
+    {
+        var enumValues = (TSoundEnum[])Enum.GetValues(typeof(TSoundEnum));
+        var newSounds = new List<SoundState<TSoundEnum>>();
+
+        foreach (var value in enumValues)
+        {
+            AudioClip existingClip = null;
+            if (Sounds != null)
+            {
+                foreach (var s in Sounds)
+                {
+                    if (EqualityComparer<TSoundEnum>.Default.Equals(s.soundEnum, value))
+                    {
+                        existingClip = s.clip;
+                        break;
+                    }
+                }
+            }
+            newSounds.Add(new SoundState<TSoundEnum>(existingClip, value));
+        }
+
+        Sounds = newSounds.ToArray();
+    }
 }
 
 [Serializable]
@@ -74,4 +100,7 @@ public abstract class SoundConfig : ScriptableObject
     public abstract void Play(AudioSource source, string soundName, bool loop = false, float startTime = 0f);
     public abstract string[] GetSoundNames();
     public abstract AudioClip GetClip(string soundName);
+
+    [Button]
+    public abstract void GenerateSounds();
 }

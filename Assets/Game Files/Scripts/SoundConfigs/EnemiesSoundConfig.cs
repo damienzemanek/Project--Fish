@@ -26,4 +26,6 @@ public class EnemiesSoundConfig : SoundConfig
         }
         return null;
     }
+
+    public override void GenerateSounds() => soundHandle.GenerateSounds();
 }
