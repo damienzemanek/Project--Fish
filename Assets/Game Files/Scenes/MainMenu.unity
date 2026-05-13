@@ -828,6 +828,10 @@ MonoBehaviour:
   scenesToLoad:
   - name: Level1
     values: 02000000
+  - name: Win
+    values: 03000000
+  - name: FrontEndMenu
+    values: 00000000
   LoadingScreenObjects: []
   disables: []
 --- !u!4 &270527045
@@ -1071,7 +1075,7 @@ GameObject:
   - component: {fileID: 328960692}
   - component: {fileID: 328960691}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: FadeCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10066,6 +10070,7 @@ GameObject:
   - component: {fileID: 2107176081}
   - component: {fileID: 2107176083}
   - component: {fileID: 2107176082}
+  - component: {fileID: 2107176084}
   m_Layer: 5
   m_Name: Fade
   m_TagString: Untagged
@@ -10130,6 +10135,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2107176080}
   m_CullTransparentMesh: 1
+--- !u!114 &2107176084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2107176080}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aeecab5ea1ebb74dabe053b38bc5aa5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EMILtools::FaderUI
+  targ: {fileID: 2107176082}
+  FadeInOnStart: 1
+  fade:
+    targ: {fileID: 0}
+    step: 0.01
+    delay: 0.006
+    delayToStartFading: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

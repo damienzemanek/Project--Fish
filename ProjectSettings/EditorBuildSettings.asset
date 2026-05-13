@@ -12,11 +12,11 @@ EditorBuildSettings:
     path: Assets/Game Files/Scenes/LoadingScreen.unity
     guid: 387851f866eafc14eb2ea07c6d179bae
   - enabled: 1
-    path: Assets/Game Files/Scenes/Test Scene.unity
-    guid: 765a8266bbbab114983746ac2bbb4efe
+    path: Assets/Game Files/Scenes/Damien Scene.unity
+    guid: ebec9abe1ef68e54cb016ff536bca1e9
   - enabled: 1
-    path: Assets/Game Files/Scenes/Tutorial Blockout.unity
-    guid: 482fbbb78131ea54993e3c6a32c8195f
+    path: Assets/Game Files/Scenes/WinScreen.unity
+    guid: 123527e72027e544b94133a80c66c80a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
