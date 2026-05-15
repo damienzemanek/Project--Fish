@@ -1,19 +1,10 @@
 fileFormatVersion: 2
-guid: 6df284c4d248a1e40845b6db65568ad4
+guid: a728f8dc39e07ed468e4c17d4d888267
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7508633101924219933
-    second: ForeGround_0
-  - first:
-      213: -6548735459514812814
-    second: ForeGround_1
-  - first:
-      213: 890333200171420123
-    second: ForeGround_2
-  - first:
-      213: -6756671136450555910
-    second: ForeGround_3
+      213: -2304432510905272006
+    second: Pool_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -105,83 +96,43 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ForeGround_0
-      rect:
-        serializedVersion: 2
-        x: 2721
-        y: 1173
-        width: 11
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d1cbee41606043860800000000000000
-      internalID: 7508633101924219933
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ForeGround_1
-      rect:
-        serializedVersion: 2
-        x: 1630
-        y: 1073
-        width: 45
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 2767d97dbc73e15a0800000000000000
-      internalID: -6548735459514812814
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ForeGround_2
-      rect:
-        serializedVersion: 2
-        x: 1563
-        y: 861
-        width: 29
-        height: 19
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: bd944ff04591b5c00800000000000000
-      internalID: 890333200171420123
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ForeGround_3
+      name: Pool_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 2355
-        height: 732
+        y: 148
+        width: 2000
+        height: 869
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -190,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: affcab7566b7b32a0800000000000000
-      internalID: -6756671136450555910
+      spriteID: a3931aa37d20500e0800000000000000
+      internalID: -2304432510905272006
       vertices: []
       indices: 
       edges: []
@@ -210,10 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ForeGround_0: 7508633101924219933
-      ForeGround_1: -6548735459514812814
-      ForeGround_2: 890333200171420123
-      ForeGround_3: -6756671136450555910
+      Pool_0: -2304432510905272006
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
