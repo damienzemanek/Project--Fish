@@ -54,6 +54,8 @@ public class SoundHandle<TSoundEnum>
         {
             if (loop)
             {
+                if (source.isPlaying && source.loop && source.clip == clip) return;
+
                 source.clip = clip;
                 source.loop = true;
                 source.volume = volume;
@@ -63,8 +65,43 @@ public class SoundHandle<TSoundEnum>
             else
             {
                 source.PlayOneShot(clip, volume);
+                Debug.Log("TEST PLAY ONESHOT: " + clip.name);
             }
         }
+    }
+
+    public void StopIfLooping(AudioSource source, TSoundEnum soundEnum)
+    {
+        var clip = GetClip(soundEnum);
+        if (source == null || clip == null || source.clip != clip || !source.loop) return;
+        source.loop = false;
+        source.clip = null;
+    }
+
+    [Button]
+    public void GenerateSounds()
+    {
+        var enumValues = (TSoundEnum[])Enum.GetValues(typeof(TSoundEnum));
+        var newSounds = new List<SoundState<TSoundEnum>>();
+
+        foreach (var value in enumValues)
+        {
+            AudioClip existingClip = null;
+            if (Sounds != null)
+            {
+                foreach (var s in Sounds)
+                {
+                    if (EqualityComparer<TSoundEnum>.Default.Equals(s.soundEnum, value))
+                    {
+                        existingClip = s.clip;
+                        break;
+                    }
+                }
+            }
+            newSounds.Add(new SoundState<TSoundEnum>(existingClip, value));
+        }
+
+        Sounds = newSounds.ToArray();
     }
 }
 
@@ -74,4 +111,7 @@ public abstract class SoundConfig : ScriptableObject
     public abstract void Play(AudioSource source, string soundName, bool loop = false, float startTime = 0f);
     public abstract string[] GetSoundNames();
     public abstract AudioClip GetClip(string soundName);
+
+    [Button]
+    public abstract void GenerateSounds();
 }

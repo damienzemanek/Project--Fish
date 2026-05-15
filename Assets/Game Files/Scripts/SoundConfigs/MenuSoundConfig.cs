@@ -25,4 +25,6 @@ public class MenuSoundConfig : SoundConfig
         }
         return null;
     }
+
+    public override void GenerateSounds() => soundHandle.GenerateSounds();
 }

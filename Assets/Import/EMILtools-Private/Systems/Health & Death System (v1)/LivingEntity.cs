@@ -55,6 +55,7 @@ public class LivingEntity : Entity,
 
     
     [FoldoutGroup("Animation")] [Required] public Animator animator;
+    [FoldoutGroup("Animation")] [Optional] public DamageFlasher damageFlasher;
     [FoldoutGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     [FoldoutGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
     public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
@@ -62,6 +63,9 @@ public class LivingEntity : Entity,
     [FoldoutGroup("Death")] public UnityEvent OnDeathUnityEvent = new();
     [FoldoutGroup("Death")] public UnityEvent OnDestroyUnityEvent = new();
 
+    // Curr, Max
+    public PersistentAction<float, float> NewHealthEvent = new();
+    
     
     void Awake()
     {
@@ -107,6 +111,9 @@ public class LivingEntity : Entity,
         }
     
         Debug.Log("[DMG] Finished Taking Damage, final hp is " + health.Value + "");
+        
+        NewHealthEvent.Invoke(health, maxHealth);
+        
         return newhp;
     }
 
@@ -128,6 +135,13 @@ public class LivingEntity : Entity,
         
         Debug.Log($"[HEAL] {gameObject.name} Healed {amount}, HP: {health.Value}, State: {newState}, Next Index: {healthThresholdsIndex}");
         
+        NewHealthEvent.Invoke(health.Value, maxHealth);
+        
+        if (damageFlasher != null)
+        {
+            damageFlasher.Flash(DamageFlasher.FlashType.Heal);
+        }
+
         return health.Value;
     }
     
@@ -139,27 +153,33 @@ public class LivingEntity : Entity,
     }
 
     void LocationalDamageReaction() 
-        => damageLocationAnimHandle.PlayWeightSet(
+    {
+        damageLocationAnimHandle.PlayWeightSet(
             animator,
             DamageLocation.Body,
             initialWeight: 1, 
             endWeight: ZeroF, 
             RestartAnimation);
+    }
     
     void Die()
     {
         if (isDead) return;
+        Debug.Log("DEATH TEST 1");
 
         isDead = true;
         deathStatus = DeathType.Regular;
+        Debug.Log("DEATH TEST 2");
 
         // Freeze safely
         if (rb != null)
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        Debug.Log("DEATH TEST 3");
 
         // Enable collider safely
         if (deathFloorCollider != null)
             deathFloorCollider.enabled = true;
+        Debug.Log("DEATH TEST 4");
 
         // SAFER UNPARENTING
         foreach (var g in enableOnDeathAndUnparents)
@@ -187,10 +207,28 @@ public class LivingEntity : Entity,
             // Activate AFTER unparenting
             g.SetActive(true);
         }
+        Debug.Log("DEATH TEST 5");
 
         // Events AFTER hierarchy changes
-        OnDeath?.Invoke(deathStatus);
-        OnDeathUnityEvent?.Invoke();
+        try
+        {
+            OnDeath?.Invoke(deathStatus);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Exception during OnDeath.Invoke: {e}");
+        }
+
+        try
+        {
+            OnDeathUnityEvent?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Exception during OnDeathUnityEvent.Invoke: {e}");
+        }
+        
+        Debug.Log("DEATH TEST 6");
 
         // Animation safely
         if (animator != null)
@@ -201,6 +239,7 @@ public class LivingEntity : Entity,
                 1,
                 FromBeginning
             );
+            Debug.Log("DEATH ANIM SUCCESSFULLY CALLED");
         }
 
         if (destroyOnDeath)
