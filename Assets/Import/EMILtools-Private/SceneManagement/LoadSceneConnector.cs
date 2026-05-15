@@ -7,6 +7,13 @@ public class LoadSceneConnector : MonoBehaviour
         Debug.Log("Attempting to load new level: " + sceneIndx);
 
         LoadScene loader = FindAnyObjectByType<LoadScene>();
-        loader.LoadSceneFadeScreenToOpaque(sceneIndx);
+        if (loader != null)
+        {
+            loader.LoadSceneFadeScreenToOpaque(sceneIndx);
+        }
+        else
+        {
+            Debug.LogError($"LoadSceneConnector on {name} failed: No LoadScene component found in the scene to handle loading scene index {sceneIndx}.");
+        }
     }
 }

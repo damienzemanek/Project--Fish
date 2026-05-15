@@ -54,6 +54,8 @@ public class SoundHandle<TSoundEnum>
         {
             if (loop)
             {
+                if (source.isPlaying && source.loop && source.clip == clip) return;
+
                 source.clip = clip;
                 source.loop = true;
                 source.volume = volume;
@@ -63,8 +65,17 @@ public class SoundHandle<TSoundEnum>
             else
             {
                 source.PlayOneShot(clip, volume);
+                Debug.Log("TEST PLAY ONESHOT: " + clip.name);
             }
         }
+    }
+
+    public void StopIfLooping(AudioSource source, TSoundEnum soundEnum)
+    {
+        var clip = GetClip(soundEnum);
+        if (source == null || clip == null || source.clip != clip || !source.loop) return;
+        source.loop = false;
+        source.clip = null;
     }
 
     [Button]

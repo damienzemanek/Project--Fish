@@ -142,7 +142,10 @@ public class EnemyFunctionality : Functionalities<
             if(mutateCtx.isStunned)
                 facade.StartCoroutine(C_WaitUntilNotStunnedIfStunned());
             else
-                cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Yell);
+            {
+                bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Yell);
+                facade.StartCoroutine(YellSFX());
+            }
         }
 
         IEnumerator C_WaitUntilNotStunnedIfStunned()
@@ -152,6 +155,13 @@ public class EnemyFunctionality : Functionalities<
             yield return null;
             yield return null;
             yield return null;
+            cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Yell);
+            facade.StartCoroutine(YellSFX());
+        }
+
+        IEnumerator YellSFX()
+        {
+            yield return new WaitForSeconds(1f);
             cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Yell);
         }
     }
@@ -223,6 +233,13 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.hyperArmorWindowActive = true;
             
             bb.fwdAttackTimer.Pause();
+            facade.StartCoroutine(BlockSound());
+        }
+
+        IEnumerator BlockSound()
+        {
+            yield return new WaitForSeconds(0.83f);
+            bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Block);
         }
 
         public void OnExitState(IEnemyContextView ctx)
@@ -263,6 +280,7 @@ public class EnemyFunctionality : Functionalities<
         IEnumerator C_LandNaiveImplm()
         {
             yield return new WaitForSeconds(0.5f);
+            bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Attack);
             while (mutateCtx.decidedToFwdAttack)
             {
                 yield return null;
@@ -307,6 +325,8 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.attacking = true;
             // Animation events will turn on and off the attacking bounds checker collider
             cfg.animHandle.PlayThenOnEnd(bb.animator, EnemyConfig.EnemyAnims.Attack, EndAttackDelegateCached);
+            bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Attack);
+
         }
         void EndAttack() => mutateCtx.attacking = false;
     }
@@ -434,6 +454,7 @@ public class EnemyFunctionality : Functionalities<
             mutateCtx.isStunned = true;
             bb.rb.linearVelocity = new Vector2(0, bb.rb.linearVelocity.y);
             bb.damageFlasher.Flash(DamageFlasher.FlashType.Stun);
+            bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Stunned);
             facade.Actions.ToggleHyperArmor.Publish(false);
             
             foreach (var abc in bb.attackingBoundsCheckers)
@@ -634,7 +655,8 @@ public class EnemyFunctionality : Functionalities<
 
     class Follow : UnboundFunctionality<EnemyController, IEnemyContextView>,
         FIXED_UPDATE<IEnemyContextView>,
-        FSM_STATE_ENTER<IEnemyContextView>
+        FSM_STATE_ENTER<IEnemyContextView>,
+        FSM_STATE_EXIT<IEnemyContextView>
     {
         EnemyConfig cfg => facade.API_Config<EnemyConfig>(); EnemyBlackboard bb => facade.API_Blackboard<EnemyBlackboard>();
         EnemyContextData mutateCtx => facade.API_Context<EnemyContextData>();
@@ -670,6 +692,7 @@ public class EnemyFunctionality : Functionalities<
                 if (ctx.currentWaypointIndex + 1 < ctx.path.vectorPath.Count) mutateCtx.currentWaypointIndex++;
             
             bb.rb.AddForce(ctx.force);
+            bb.enemiesSoundConfig.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Walk, true);
         }
 
         void GrabVariables(IEnemyContextView ctx)
@@ -690,6 +713,8 @@ public class EnemyFunctionality : Functionalities<
             if (dot < 0f) return false;  // If moving downward, always allow
             float threshold = Mathf.Cos(cfg.follow.minHorizAngleToFollow * Mathf.Deg2Rad); // Only restrict upward movement
             bool isTooVertical = dot > threshold;
+            if(isTooVertical)
+                bb.enemiesSoundConfig.soundHandle.StopIfLooping(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Walk);
             return mutateCtx.travelAngleTooCloseToVertical = isTooVertical;
         }
 
@@ -697,7 +722,12 @@ public class EnemyFunctionality : Functionalities<
         bool ReachedEndOfPath(IEnemyContextView ctx)
         {
             if (ctx.distToEndNode < cfg.follow.stoppingDistToTarget)
-                { mutateCtx.reachedEndOfPath = true; return true; }
+                { 
+                    mutateCtx.reachedEndOfPath = true;
+                    bb.enemiesSoundConfig.soundHandle.StopIfLooping(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Walk);
+                    return true;
+                    
+                }
             else
                 { mutateCtx.reachedEndOfPath = false; return false; }
         }
@@ -713,6 +743,11 @@ public class EnemyFunctionality : Functionalities<
         {
             Debug.Log("Entered Follow State");
             cfg.animHandle.Play(bb.animator, EnemyConfig.EnemyAnims.Walk);
+        }
+
+        public void OnExitState(IEnemyContextView ctx)
+        {
+            bb.enemiesSoundConfig.soundHandle.StopIfLooping(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Walk);
         }
     }
     

@@ -28,6 +28,8 @@ public interface IEntityBlackboard : IBlackboard
     public DamageFlasher damageFlasher { get; }
     public Transform statIndicatorsParent { get; }
     public GameObject armoredStatIndicatorPrefab { get; }
+    public SoundConfig soundConfig { get; }
+    public AudioSource audioSource {get; }
 
 }
 
@@ -142,19 +144,23 @@ public class SharedFMs
         public void MutateUsingNewSetValues()
         {
             if (mutateCtx.invulnerable) return;
-
             string stateName = mutateCtx.currentHealthState.ToString();
             if (stateName == "Dying") return;
-
             string attackerStateName = SetContext.AttackCtx.attackerEntityCtx.currentHealthState.ToString();
             if (attackerStateName == "Dying") return;
-
             if (attackerStateName == "Dead") return;
             
 
             if (BlockDamage != null && BlockDamage.Evaluate())
             {
                 bb.damageFlasher.Flash(DamageFlasher.FlashType.Blocked);
+                switch (bb.soundConfig)
+                {
+                    case EnemiesSoundConfig cfg:
+                        cfg.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.Immune);
+                        break;
+                }
+                
                 if (armoredIndicatorMEffect == null)
                 {
                     armoredIndicatorMEffect = GameObject.Instantiate(bb.armoredStatIndicatorPrefab, bb.statIndicatorsParent).Get<MovingEffect>();
@@ -169,6 +175,19 @@ public class SharedFMs
             mutateCtx.invulnerable = true;
             bb.livingEntity.TakeDamageCaller.Invoke(SetContext.AttackCtx.damageInfo);
             SlowTime();
+
+            switch (bb.soundConfig)
+            {
+                case EnemiesSoundConfig cfg:
+                    cfg.Play(bb.audioSource, EnemiesSoundConfig.EnemiesSounds.TakeDamage);
+                    break;
+                case PlayerSoundConfig cfg:
+                    cfg.Play(bb.audioSource, PlayerSoundConfig.PlayerSounds.TakeDamage);
+                    break;
+                default:
+                    Debug.LogError("Unknown sound config type for hit sound");
+                    break;
+            }
             
             bb.livingEntity.healthThresholds.GetNearestLastThreshold(bb.livingEntity.health, out var hpState);
             if (facade is ISignalReceiverT<LivingEntity.PhasedHealthThresholdEnum> receiver &&

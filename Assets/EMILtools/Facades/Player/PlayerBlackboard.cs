@@ -28,6 +28,7 @@ public class PlayerBlackboard : Blackboard, IEntityBlackboard
     
     [field: SerializeField] [field: Required] public Transform statIndicatorsParent { get; private set; }
     [field: SerializeField] [field: Required] public GameObject armoredStatIndicatorPrefab { get; set; }
-
-
+    [field: SerializeField] [field: Required] public SoundConfig soundConfig { get; set;  }
+    [field: SerializeField] [field: Required] public AudioSource audioSource { get; set; }
+    [field: SerializeField] [field: Required] public PlayerSoundConfig playerSoundConfig { get; set;  }
 }

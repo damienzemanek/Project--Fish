@@ -134,6 +134,8 @@ public class LivingEntity : Entity,
         
         Debug.Log($"[HEAL] {gameObject.name} Healed {amount}, HP: {health.Value}, State: {newState}, Next Index: {healthThresholdsIndex}");
         
+        NewHealthEvent.Invoke(health.Value, maxHealth);
+
         return health.Value;
     }
     
@@ -155,17 +157,21 @@ public class LivingEntity : Entity,
     void Die()
     {
         if (isDead) return;
+        Debug.Log("DEATH TEST 1");
 
         isDead = true;
         deathStatus = DeathType.Regular;
+        Debug.Log("DEATH TEST 2");
 
         // Freeze safely
         if (rb != null)
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        Debug.Log("DEATH TEST 3");
 
         // Enable collider safely
         if (deathFloorCollider != null)
             deathFloorCollider.enabled = true;
+        Debug.Log("DEATH TEST 4");
 
         // SAFER UNPARENTING
         foreach (var g in enableOnDeathAndUnparents)
@@ -193,10 +199,28 @@ public class LivingEntity : Entity,
             // Activate AFTER unparenting
             g.SetActive(true);
         }
+        Debug.Log("DEATH TEST 5");
 
         // Events AFTER hierarchy changes
-        OnDeath?.Invoke(deathStatus);
-        OnDeathUnityEvent?.Invoke();
+        try
+        {
+            OnDeath?.Invoke(deathStatus);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Exception during OnDeath.Invoke: {e}");
+        }
+
+        try
+        {
+            OnDeathUnityEvent?.Invoke();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Exception during OnDeathUnityEvent.Invoke: {e}");
+        }
+        
+        Debug.Log("DEATH TEST 6");
 
         // Animation safely
         if (animator != null)
@@ -207,6 +231,7 @@ public class LivingEntity : Entity,
                 1,
                 FromBeginning
             );
+            Debug.Log("DEATH ANIM SUCCESSFULLY CALLED");
         }
 
         if (destroyOnDeath)

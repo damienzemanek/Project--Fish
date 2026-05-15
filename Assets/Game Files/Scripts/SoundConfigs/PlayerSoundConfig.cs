@@ -4,8 +4,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerSoundConfig", menuName = "ScriptableObjects/SoundConfigs/PlayerSounds")]
 public class PlayerSoundConfig : SoundConfig
 {
-    public enum PlayerSounds { Walk, Attack, Hook, Pull, TakeDamage, Jump, Die  }
+    public enum PlayerSounds { Walk, Attack, Hook, Pull, TakeDamage, Jump, Die, Land, StunAttk  }
     [SerializeField] public SoundHandle<PlayerSounds> soundHandle;
+
+    public void Play(AudioSource source, PlayerSounds soundName, bool loop = false, float startTime = 0f)
+        => soundHandle.Play(source, soundName, 1f, loop, startTime);
 
     public override void Play(AudioSource source, string soundName, bool loop = false, float startTime = 0f)
     {
