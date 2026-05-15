@@ -55,6 +55,7 @@ public class LivingEntity : Entity,
 
     
     [FoldoutGroup("Animation")] [Required] public Animator animator;
+    [FoldoutGroup("Animation")] [Optional] public DamageFlasher damageFlasher;
     [FoldoutGroup("Animation")] public AnimHandle<DeathType, NoBlends> deathAnimHandle;
     [FoldoutGroup("Animation")] public AnimHandle<DamageLocation, NoBlends> damageLocationAnimHandle;
     public PersistentFunc<DamageInfo, float> TakeDamageCaller { get; private set; }
@@ -135,6 +136,11 @@ public class LivingEntity : Entity,
         Debug.Log($"[HEAL] {gameObject.name} Healed {amount}, HP: {health.Value}, State: {newState}, Next Index: {healthThresholdsIndex}");
         
         NewHealthEvent.Invoke(health.Value, maxHealth);
+        
+        if (damageFlasher != null)
+        {
+            damageFlasher.Flash(DamageFlasher.FlashType.Heal);
+        }
 
         return health.Value;
     }
@@ -147,12 +153,14 @@ public class LivingEntity : Entity,
     }
 
     void LocationalDamageReaction() 
-        => damageLocationAnimHandle.PlayWeightSet(
+    {
+        damageLocationAnimHandle.PlayWeightSet(
             animator,
             DamageLocation.Body,
             initialWeight: 1, 
             endWeight: ZeroF, 
             RestartAnimation);
+    }
     
     void Die()
     {

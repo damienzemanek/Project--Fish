@@ -469,6 +469,7 @@ MonoBehaviour:
   deathFloorCollider: {fileID: 7858413827214995834}
   enableOnDeathAndUnparents: []
   animator: {fileID: 300045531023888915}
+  damageFlasher: {fileID: 0}
   deathAnimHandle:
     States:
     - name: Die
