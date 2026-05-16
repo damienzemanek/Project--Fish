@@ -1839,7 +1839,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 0.9560002
+  m_Distance: 0.95600253
   m_MaxDistanceOnly: 0
 --- !u!1 &3928251075175174206
 GameObject:
@@ -3818,6 +3818,7 @@ MonoBehaviour:
   deathFloorCollider: {fileID: 7222409963890433745}
   enableOnDeathAndUnparents: []
   animator: {fileID: 3497128293693878074}
+  damageFlasher: {fileID: 2032792130614573431}
   deathAnimHandle:
     States:
     - name: Die
@@ -5153,8 +5154,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -0.00062561035, y: -0.0007019043, z: 0}
-      m_Extent: {x: 3.1970825, y: 2.9576874, z: 0}
+      m_Center: {x: -0.0005645752, y: -0.0006866455, z: 0}
+      m_Extent: {x: 3.1971436, y: 2.9576874, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.02
     m_FlipX: 0
@@ -5216,8 +5217,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -0.020690918, y: 0.017868042, z: 0}
-      m_Extent: {x: 2.14917, y: 2.3471375, z: 0}
+      m_Center: {x: -0.020561218, y: 0.017875671, z: 0}
+      m_Extent: {x: 2.1491776, y: 2.347145, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.01
     m_FlipX: 0
@@ -5289,8 +5290,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -0.006713867, y: 0.006958008, z: 0}
-      m_Extent: {x: 1.4372864, y: 1.9094696, z: 0}
+      m_Center: {x: -0.0068511963, y: 0.006965637, z: 0}
+      m_Extent: {x: 1.4372864, y: 1.9094772, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.01
     m_FlipX: 0
@@ -5431,8 +5432,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: 0.001045227, y: 0.0016860962, z: 0}
-      m_Extent: {x: 1.6369247, y: 1.8681259, z: 0}
+      m_Center: {x: 0.0011062622, y: 0.0016860962, z: 0}
+      m_Extent: {x: 1.6368637, y: 1.8681259, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.01
     m_FlipX: 0
@@ -5489,7 +5490,7 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -0.0004119873, y: 0.00907135, z: 0}
+      m_Center: {x: -0.0004119873, y: 0.009086609, z: 0}
       m_Extent: {x: 1.8012695, y: 2.3257523, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.01
@@ -5552,8 +5553,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: 0.013015747, y: 0.003189087, z: 0}
-      m_Extent: {x: 1.4186401, y: 1.2011719, z: 0}
+      m_Center: {x: 0.013008118, y: 0.0031967163, z: 0}
+      m_Extent: {x: 1.4186325, y: 1.2011642, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.009
     m_FlipX: 0
@@ -5610,8 +5611,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -0.001991272, y: 0.006713867, z: 0}
-      m_Extent: {x: 1.4193954, y: 1.2048798, z: 0}
+      m_Center: {x: -0.001991272, y: 0.006706238, z: 0}
+      m_Extent: {x: 1.4193954, y: 1.2048721, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.009
     m_FlipX: 0
@@ -5699,8 +5700,8 @@ MonoBehaviour:
   m_ShadowMesh:
     m_Mesh: {fileID: 0}
     m_LocalBounds:
-      m_Center: {x: -6.959526, y: 2.4157562, z: 0}
-      m_Extent: {x: 6.138756, y: 4.837372, z: 0}
+      m_Center: {x: -6.9594574, y: 2.4157562, z: 0}
+      m_Extent: {x: 6.1387634, y: 4.837372, z: 0}
     m_EdgeProcessing: 1
     m_TrimEdge: 0.03
     m_FlipX: 0
